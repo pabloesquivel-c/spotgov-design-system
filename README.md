@@ -1,38 +1,48 @@
-<p align="center">
-  <a href="https://alignui.com">
-    <img src="./public/images/logo.svg" height="96">
-    <h3 align="center">AlignUI Design System</h3>
-  </a>
-  <p align="center">The Design System You Need</p>
-</p>
+# SpotGov Design System
 
-[Join the AlignUI Community](https://discord.gg/alignui)
+SpotGov's shared design system built on [AlignUI](https://alignui.com). This repo is the team's source of truth for UI components, design tokens, and AI agent rules.
 
-# AlignUI Starter Template with Next.js
+Based on the [AlignUI Next.js TypeScript starter](https://github.com/alignui/alignui-nextjs-typescript-starter), pre-configured with tokens, utilities, icons, and base components.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## What's included
 
-## Features
+- AlignUI design tokens in `app/globals.css`
+- All AlignUI base components in `components/ui/`
+- Required utilities in `utils/` (`cn`, `tv`, `polymorphic`, `recursive-clone-children`)
+- Inter font + dark mode via `next-themes`
+- Remix Icon (`@remixicon/react`)
 
-- 🔸 Includes all styles
-- 🔸 Ready-to-use Tailwind setup
-- 🔸 All base components included
-- 🔸 All utils included
-- 🔸 Inter font setup
-- 🔸 Dark mode toggle included
+## Folder structure
 
-## Getting Started
-
-**Install dependencies**
-
-```bash
-pnpm i
+```
+app/
+  globals.css       ← design tokens (customize in Step 3 of the playbook)
+components/
+  ui/               ← AlignUI base components
+  blocks/           ← Pro blocks and composed patterns (add as needed)
+utils/              ← AlignUI helper utilities
+hooks/              ← shared React hooks
 ```
 
-**Run the development server:**
+## Getting started
 
 ```bash
-pnpm dev
+npm install
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
+
+## Playbook
+
+Setup follows the [AlignUI Setup Playbook](https://app.notion.com/p/38c382d6159381608549fcb8c633b6a8) in Notion:
+
+- **Step 2 (done):** Repo + AlignUI foundation
+- **Step 3 (next):** Customize tokens in `globals.css` after style direction session
+- **Step 4:** Pull additional components as needed
+- **Step 5:** Build 2–3 reference pages
+- **Step 6:** Add AI rules (`.cursor/rules/`, `AGENTS.md`, etc.)
+
+## License
+
+AlignUI components follow the [AlignUI license](https://alignui.com). See `LICENSE` for the starter template terms.
