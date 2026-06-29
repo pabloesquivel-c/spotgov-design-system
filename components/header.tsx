@@ -1,9 +1,4 @@
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-
-const DynamicThemeSwitch = dynamic(() => import('./theme-switch'), {
-  ssr: false,
-});
 
 export default function Header() {
   return (
@@ -19,10 +14,8 @@ export default function Header() {
             alt=''
             className='size-9 object-contain'
           />
-          AlignUI
+          SpotGov Design System
         </Link>
-
-        <DynamicThemeSwitch />
       </header>
     </div>
   );

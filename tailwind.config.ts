@@ -179,6 +179,62 @@ export const texts = {
       fontWeight: '400',
     },
   ],
+  'sg-hero': [
+    '1.5rem',
+    {
+      lineHeight: '2rem',
+      letterSpacing: '-0.01em',
+      fontWeight: '500',
+    },
+  ],
+  'sg-page-title': [
+    '1.25rem',
+    {
+      lineHeight: '1.75rem',
+      letterSpacing: '-0.01em',
+      fontWeight: '500',
+    },
+  ],
+  'sg-section': [
+    '1rem',
+    {
+      lineHeight: '1.5rem',
+      letterSpacing: '-0.006em',
+      fontWeight: '500',
+    },
+  ],
+  'sg-label': [
+    '.875rem',
+    {
+      lineHeight: '1.25rem',
+      letterSpacing: '-0.006em',
+      fontWeight: '500',
+    },
+  ],
+  'sg-body': [
+    '.875rem',
+    {
+      lineHeight: '1.25rem',
+      letterSpacing: '-0.006em',
+      fontWeight: '400',
+    },
+  ],
+  'sg-small-label': [
+    '.75rem',
+    {
+      lineHeight: '1rem',
+      letterSpacing: '0em',
+      fontWeight: '500',
+    },
+  ],
+  'sg-metadata': [
+    '.75rem',
+    {
+      lineHeight: '1rem',
+      letterSpacing: '0em',
+      fontWeight: '400',
+    },
+  ],
 } as unknown as Record<string, string>;
 
 export const shadows = {
@@ -252,7 +308,9 @@ export const shadows = {
 } as unknown as Record<string, string>;
 
 export const borderRadii = {
-  '10': '.625rem',
+  lg: 'var(--radius-sm)',
+  '10': 'var(--radius)',
+  'sg-lg': 'var(--radius-lg)',
   '20': '1.25rem',
 } as unknown as Record<string, string>;
 
