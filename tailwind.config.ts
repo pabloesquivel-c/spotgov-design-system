@@ -650,8 +650,14 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)'],
-        mono: ['var(--font-geist-mono)'],
+        sans: [
+          'var(--font-sans)',
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif',
+        ],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'monospace'],
       },
       size: {
         'icon-inline': '0.875rem',

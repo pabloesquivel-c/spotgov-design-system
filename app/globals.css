@@ -50,6 +50,10 @@
     --radius-lg: 16px;
     --radius-full: 9999px;
 
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+
     --neutral-alpha-24: #868da23d;
     --neutral-alpha-16: #868da229;
     --neutral-alpha-10: #868da21a;
@@ -416,6 +420,10 @@
     --social-zendesk: #fff;
   }
   /*#endregion Colors */
+
+  html {
+    font-family: var(--font-sans);
+  }
 }
 
 /* custom scale for Remix Icon */
