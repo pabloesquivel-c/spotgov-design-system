@@ -6,7 +6,6 @@ import { ThemeProvider } from 'next-themes';
 import { cn } from '@/utils/cn';
 import { Provider as TooltipProvider } from '@/components/ui/tooltip';
 import { NotificationProvider } from '@/components/ui/notification-provider';
-import Header from '@/components/header';
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -38,10 +37,7 @@ export default function RootLayout({
       <body className='bg-bg-white-0 text-text-strong-950'>
         <ThemeProvider attribute='class'>
           <TooltipProvider>
-            <div className='flex min-h-screen flex-col'>
-              <Header />
-              <main className='flex flex-1 flex-col'>{children}</main>
-            </div>
+            <main className='flex min-h-screen flex-col'>{children}</main>
           </TooltipProvider>
         </ThemeProvider>
         <NotificationProvider />

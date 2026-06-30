@@ -2,15 +2,9 @@ type ColorSwatchProps = {
   name: string;
   cssVar: string;
   hex?: string;
-  darkText?: boolean;
 };
 
-export function ColorSwatch({
-  name,
-  cssVar,
-  hex,
-  darkText = false,
-}: ColorSwatchProps) {
+export function ColorSwatch({ name, cssVar, hex }: ColorSwatchProps) {
   return (
     <div className='flex flex-col gap-2'>
       <div
@@ -18,14 +12,8 @@ export function ColorSwatch({
         style={{ backgroundColor: `var(${cssVar})` }}
       />
       <div>
-        <p className='text-sg-small-label text-text-strong-950'>{name}</p>
-        <p
-          className={
-            darkText
-              ? 'font-mono text-sg-metadata text-text-sub-600'
-              : 'font-mono text-sg-metadata text-text-soft-400'
-          }
-        >
+        <p className='text-label-xs text-text-strong-950'>{name}</p>
+        <p className='text-paragraph-xs text-text-soft-400'>
           {hex ?? cssVar}
         </p>
       </div>

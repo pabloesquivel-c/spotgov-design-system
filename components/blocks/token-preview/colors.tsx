@@ -6,63 +6,62 @@ export function ColorsSection() {
     <>
       <Section
         title='Primary'
-        description='Brand blue — working range 500–700 for interactive elements.'
+        description='Brand accent — one visible blue (primary-base). Derivatives for hover and subtle fills only.'
       >
         <SwatchGrid>
-          <ColorSwatch name='100' cssVar='--primary-100' hex='#DBEAFE' />
-          <ColorSwatch name='300' cssVar='--primary-300' hex='#7BAAEF' />
-          <ColorSwatch name='500' cssVar='--primary-500' hex='#2E6AD6' />
-          <ColorSwatch name='600' cssVar='--primary-600' hex='#2558B8' />
-          <ColorSwatch name='700' cssVar='--primary-700' hex='#1D4A9E' />
-          <ColorSwatch name='900' cssVar='--primary-900' hex='#132F63' />
+          <ColorSwatch name='primary-base' cssVar='--primary-base' />
+          <ColorSwatch name='primary-darker' cssVar='--primary-darker' />
+          <ColorSwatch name='primary-dark' cssVar='--primary-dark' />
+          <ColorSwatch name='primary-alpha-24' cssVar='--primary-alpha-24' />
+          <ColorSwatch name='primary-alpha-16' cssVar='--primary-alpha-16' />
+          <ColorSwatch name='primary-alpha-10' cssVar='--primary-alpha-10' />
         </SwatchGrid>
       </Section>
 
       <Section
-        title='Cool neutrals'
-        description='Blue undertone grays for surfaces, borders, and secondary text.'
+        title='Neutral UI'
+        description='Background, text, and stroke roles from the AlignUI semantic stack.'
       >
         <SwatchGrid>
-          <ColorSwatch name='0' cssVar='--neutral-0' hex='#FFFFFF' />
-          <ColorSwatch name='50' cssVar='--neutral-50' hex='#F4F5F8' />
-          <ColorSwatch name='100' cssVar='--neutral-100' hex='#E4E6EC' />
-          <ColorSwatch name='200' cssVar='--neutral-200' hex='#CBCED8' />
-          <ColorSwatch name='400' cssVar='--neutral-400' hex='#868DA2' />
-          <ColorSwatch name='500' cssVar='--neutral-500' hex='#636A80' />
-          <ColorSwatch name='700' cssVar='--neutral-700' hex='#3C4155' />
-          <ColorSwatch name='900' cssVar='--neutral-900' hex='#252837' />
+          <ColorSwatch name='bg-white-0' cssVar='--bg-white-0' />
+          <ColorSwatch name='bg-weak-50' cssVar='--bg-weak-50' />
+          <ColorSwatch name='bg-soft-200' cssVar='--bg-soft-200' />
+          <ColorSwatch name='text-strong-950' cssVar='--text-strong-950' />
+          <ColorSwatch name='text-sub-600' cssVar='--text-sub-600' />
+          <ColorSwatch name='text-soft-400' cssVar='--text-soft-400' />
+          <ColorSwatch name='stroke-soft-200' cssVar='--stroke-soft-200' />
+          <ColorSwatch name='stroke-sub-300' cssVar='--stroke-sub-300' />
         </SwatchGrid>
       </Section>
 
       <Section
-        title='Ink'
-        description='Text colors — never pure black.'
+        title='Status'
+        description='Core feedback — warning, error, success.'
       >
         <SwatchGrid>
-          <ColorSwatch name='ink' cssVar='--ink' hex='#121520' />
-          <ColorSwatch name='ink-soft' cssVar='--ink-soft' hex='#1C1F2D' />
-        </SwatchGrid>
-      </Section>
-
-      <Section title='Semantic' description='Status and feedback colors.'>
-        <SwatchGrid>
-          <ColorSwatch name='success' cssVar='--success' hex='#248A48' />
-          <ColorSwatch name='warning' cssVar='--warning' hex='#B87A1A' />
-          <ColorSwatch name='error' cssVar='--error' hex='#C13A3A' />
+          <ColorSwatch name='warning-base' cssVar='--warning-base' />
+          <ColorSwatch name='error-base' cssVar='--error-base' />
+          <ColorSwatch name='success-base' cssVar='--success-base' />
         </SwatchGrid>
       </Section>
 
       <Section
-        title='Data viz / tags'
-        description='Distinct hues for categories, tags, and chart series.'
+        title='Special accents'
+        description='Feature (highlights) and Away (workflow neutrals).'
       >
         <SwatchGrid>
-          <ColorSwatch name='viz-blue' cssVar='--viz-blue' hex='#3A7AE6' />
-          <ColorSwatch name='viz-teal' cssVar='--viz-teal' hex='#1F9E9E' />
-          <ColorSwatch name='viz-amber' cssVar='--viz-amber' hex='#C08725' />
-          <ColorSwatch name='viz-rose' cssVar='--viz-rose' hex='#CC5070' />
-          <ColorSwatch name='viz-purple' cssVar='--viz-purple' hex='#7B5EA7' />
-          <ColorSwatch name='viz-green' cssVar='--viz-green' hex='#3A9E6B' />
+          <ColorSwatch name='feature-base' cssVar='--feature-base' />
+          <ColorSwatch name='away-base' cssVar='--away-base' />
+        </SwatchGrid>
+      </Section>
+
+      <Section
+        title='Utility'
+        description='Faded (inactive) and Information (tips and callouts).'
+      >
+        <SwatchGrid>
+          <ColorSwatch name='faded-base' cssVar='--faded-base' />
+          <ColorSwatch name='information-base' cssVar='--information-base' />
         </SwatchGrid>
       </Section>
     </>
