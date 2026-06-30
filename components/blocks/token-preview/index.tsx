@@ -2,6 +2,8 @@ import * as Divider from '@/components/ui/divider';
 import { ColorsSection } from './colors';
 import { ComponentShowcase } from './component-showcase';
 import { RadiusSection } from './radius';
+import { ShadowsSection } from './shadows';
+import { SpacingSection } from './spacing';
 import { TypographySection } from './typography';
 
 export function TokenPreview() {
@@ -15,8 +17,9 @@ export function TokenPreview() {
           Design token preview
         </h1>
         <p className='mt-2 max-w-2xl text-paragraph-sm text-text-sub-600'>
-          SpotGov tokens remapped into AlignUI semantic variables. Components
-          below are unmodified AlignUI primitives.
+          Locked SpotGov tokens synced from{' '}
+          <code className='text-label-xs'>docs/design-tokens.md</code>.
+          Components below use AlignUI primitives with SG overrides applied.
         </p>
       </header>
 
@@ -25,6 +28,10 @@ export function TokenPreview() {
       <ColorsSection />
       <Divider.Root />
       <RadiusSection />
+      <Divider.Root />
+      <ShadowsSection />
+      <Divider.Root />
+      <SpacingSection />
       <Divider.Root />
       <ComponentShowcase />
     </div>

@@ -48,13 +48,13 @@ export const alertVariants = tv({
     },
     size: {
       xsmall: {
-        root: 'rounded-lg p-2 text-paragraph-xs',
+        root: 'rounded-sg-lg p-2 text-paragraph-xs',
         wrapper: 'gap-2',
         icon: 'size-icon-inline',
         closeIcon: 'size-icon-inline',
       },
       small: {
-        root: 'rounded-lg px-2.5 py-2 text-paragraph-sm',
+        root: 'rounded-sg-lg px-2.5 py-2 text-paragraph-sm',
         wrapper: 'gap-2',
         icon: 'size-icon',
         closeIcon: 'size-icon',

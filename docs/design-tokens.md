@@ -1,6 +1,8 @@
 # SpotGov design tokens (Phase 2 — locked)
 
-Canonical decisions for SpotGov product UI, curated from AlignUI Design System 2.0. **This doc is the source of truth** for naming, values, and where each token applies. Code in `app/globals.css` and Figma variables will be synced in a later pass.
+Canonical decisions for SpotGov product UI, curated from AlignUI Design System 2.0. **This doc is the source of truth** for naming, values, and where each token applies. Code in `app/globals.css` is synced; Figma variables follow in a manual pass (code wins).
+
+**Agent entry point:** [`AGENTS.md`](../AGENTS.md) — non-negotiables and pointer to this doc.
 
 **Figma file:** [AlignUI Design System 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-)
 
@@ -315,39 +317,39 @@ Use **8px steps** for layout and containers:
 
 ## Phase 2 inventory
 
-What is locked in this doc vs still open.
+Phase 2 complete (30 Jun 2026). Token definition + code sync done; Figma variable push is manual follow-up.
 
 | Category | Status | Notes |
 |----------|--------|-------|
-| Color palette | **Locked** | Semantic stack + dropped tokens; code sync to `#335CFF` pending |
+| Color palette | **Locked + synced** | `globals.css` primary → `#335CFF` |
 | Typography | **Locked** | Six roles; preview updated |
-| Icons | **Locked** | Remix Line, sizes, allowlist; components migrated |
+| Icons | **Locked + synced** | Remix Line, sizes; components migrated |
 | Grid system | **Locked** | Four shells, desktop only |
-| Shadows | **Locked** | `regular-xs` + `regular-md` only |
-| Corner radius | **Locked** | 12/16/20 tier + full allowlist |
-| Spacing | **Locked** | Dual-density 4px grid; Tailwind scale as-is |
-| **Figma value sync** | Not started | Names match; values still differ in places |
-| **Figma variable code syntax** | Not started | Needed for MCP token output |
-| **Token preview site** | Partial | Typography, color, radius — add shadows section later |
-| **globals.css sync** | Partial | Doc ahead of code for primary + radius migration on components |
+| Shadows | **Locked + synced** | `regular-xs` + `regular-md`; preview added |
+| Corner radius | **Locked + synced** | 12px floor in components + `rounded-md` → 12px |
+| Spacing | **Locked** | Dual-density rules; preview added |
+| **Agent rules** | **Done (thin slice)** | `AGENTS.md` at repo root |
+| **Figma value sync** | Manual follow-up | Code + doc canonical; push to Figma when ready |
+| **Figma variable code syntax** | Manual follow-up | Set in Figma Dev Mode for MCP |
+| **Token preview site** | **Done** | Typography, color, radius, shadows, spacing, components |
 
 ### Notion Phase 2 checklist ([Full Build Plan](https://app.notion.com/p/38e382d615938192a2b4c9057e00c286))
 
 | Notion item | Our progress |
 |-------------|--------------|
-| Export/list Figma tokens | **Done** for color, type, icons, grid, shadow, radius, spacing |
-| Reconcile code ↔ Figma names | **Done** for naming; values partially reconciled |
-| Brand tokens verified | **Done** in doc; differs from old Notion brand hex — doc is canonical |
+| Export/list Figma tokens | **Done** — curated in `docs/design-tokens.md` |
+| Reconcile code ↔ Figma ↔ brand | **Done** — doc + code canonical |
+| Brand tokens verified | **Done** — AlignUI semantic + SG curation (supersedes old brand doc) |
 | Typography tokens | **Done** — Inter, six roles |
-| Token reference page | **Partial** — `/` token preview; expand with shadows |
-| Figma variable code syntax | **Not done** |
+| Token reference page | **Done** — `/` token preview |
+| Code sync (`globals.css`) | **Done** — primary, radius, components |
+| Figma variable code syntax | **Manual follow-up** |
 | Migrate to Tailwind v4 `@theme` | **N/A** — repo stays Tailwind v3.4 |
 
 ---
 
 ## Next steps
 
-1. **Usage descriptions in agent rules** — fold this doc into `AGENTS.md` / `.cursor/rules` (Phase 4).
-2. **Code sync** — align `globals.css` values + component radius (12px floor) to locked doc.
-3. **Figma sync** — push locked values and code syntax to variable collections.
-4. **Token preview** — add shadows and spacing sections; expand radius tier labels.
+1. **Phase 3** — component inventory, Pro Blocks, SpotGov surface patterns.
+2. **Phase 4 (expand)** — which-one-when guide, component manifest, Claude Skill.
+3. **Figma sync** — push locked values and code syntax to variable collections (manual).

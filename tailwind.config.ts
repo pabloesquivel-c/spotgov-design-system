@@ -308,6 +308,7 @@ export const shadows = {
 } as unknown as Record<string, string>;
 
 export const borderRadii = {
+  md: 'var(--radius)',
   lg: 'var(--radius-sm)',
   '10': 'var(--radius)',
   'sg-lg': 'var(--radius-lg)',

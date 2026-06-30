@@ -5,13 +5,18 @@
 @layer base {
   /*#region Colors */
   :root {
-    /*#region SpotGov Tokens */
-    --primary-100: #dbeafe;
-    --primary-300: #7baaef;
-    --primary-500: #2e6ad6;
-    --primary-600: #2558b8;
-    --primary-700: #1d4a9e;
-    --primary-900: #132f63;
+    /*#region SpotGov Tokens — AlignUI blue-500 primary scale (#335CFF) */
+    --primary-50: #ebf1ff;
+    --primary-100: #d5e2ff;
+    --primary-200: #c0d5ff;
+    --primary-300: #97b5ff;
+    --primary-400: #6895ff;
+    --primary-500: #335cff;
+    --primary-600: #2547d0;
+    --primary-700: #1f3bad;
+    --primary-800: #182f91;
+    --primary-900: #122368;
+    --primary-950: #0a1433;
 
     --neutral-0: #ffffff;
     --neutral-50: #f4f5f8;
@@ -84,21 +89,21 @@
     --slate-alpha-16: var(--neutral-alpha-16);
     --slate-alpha-10: var(--neutral-alpha-10);
 
-    --blue-950: var(--primary-900);
+    --blue-950: var(--primary-950);
     --blue-900: var(--primary-900);
-    --blue-800: var(--primary-700);
+    --blue-800: var(--primary-800);
     --blue-700: var(--primary-700);
     --blue-600: var(--primary-600);
-    --blue-500: var(--viz-blue);
-    --blue-400: var(--primary-300);
+    --blue-500: var(--primary-500);
+    --blue-400: var(--primary-400);
     --blue-300: var(--primary-300);
-    --blue-200: var(--primary-100);
+    --blue-200: var(--primary-200);
     --blue-100: var(--primary-100);
-    --blue-50: var(--primary-100);
+    --blue-50: var(--primary-50);
 
-    --blue-alpha-24: #2e6ad63d;
-    --blue-alpha-16: #2e6ad629;
-    --blue-alpha-10: #2e6ad61a;
+    --blue-alpha-24: #335cff3d;
+    --blue-alpha-16: #335cff29;
+    --blue-alpha-10: #335cff1a;
 
     --orange-950: #5c3d0a;
     --orange-900: #7a5010;
