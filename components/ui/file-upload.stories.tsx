@@ -1,21 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './file-upload';
+import { RiUploadCloud2Line } from '@remixicon/react';
+import * as FileUpload from './file-upload';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/FileUpload',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/FileUpload', component: FileUpload.Root } satisfies Meta<typeof FileUpload.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <FileUpload.Root className='max-w-md'>
+      <FileUpload.Icon as={RiUploadCloud2Line} />
+      <div>
+        <p className='text-label-sm text-text-strong-950'>Upload documents</p>
+        <p className='text-paragraph-sm text-text-sub-600'>PDF, DOCX up to 10MB</p>
+      </div>
+      <FileUpload.Button>Browse files</FileUpload.Button>
+    </FileUpload.Root>
+  ),
 };

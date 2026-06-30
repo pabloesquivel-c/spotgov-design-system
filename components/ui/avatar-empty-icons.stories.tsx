@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { IconEmptyUser } from './avatar-empty-icons';
 
-const meta = {
-  title: 'UI/AvatarEmptyIcons',
-  component: IconEmptyUser,
-} satisfies Meta<typeof IconEmptyUser>;
-
+const meta = { title: 'UI/AvatarEmptyIcons', component: IconEmptyUser } satisfies Meta<typeof IconEmptyUser>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

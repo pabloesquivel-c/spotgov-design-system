@@ -1,21 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './tag';
+import * as Tag from './tag';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/Tag',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/Tag', component: Tag.Root } satisfies Meta<typeof Tag.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => <Tag.Root>Procurement</Tag.Root>,
 };

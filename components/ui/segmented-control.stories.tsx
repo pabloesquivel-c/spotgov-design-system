@@ -1,21 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './segmented-control';
+import * as SegmentedControl from './segmented-control';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/SegmentedControl',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/SegmentedControl', component: SegmentedControl.Root } satisfies Meta<typeof SegmentedControl.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <SegmentedControl.Root defaultValue='list' className='w-64'>
+      <SegmentedControl.List>
+        <SegmentedControl.Trigger value='list'>List</SegmentedControl.Trigger>
+        <SegmentedControl.Trigger value='board'>Board</SegmentedControl.Trigger>
+      </SegmentedControl.List>
+    </SegmentedControl.Root>
+  ),
 };

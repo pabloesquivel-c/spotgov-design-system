@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as ProgressCircle from './progress-circle';
 
-const meta = {
-  title: 'UI/ProgressCircle',
-  component: ProgressCircle.Root,
-} satisfies Meta<typeof ProgressCircle.Root>;
-
+const meta = { title: 'UI/ProgressCircle', component: ProgressCircle.Root } satisfies Meta<typeof ProgressCircle.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

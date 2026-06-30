@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Alert from './alert';
 import { RiInformationLine } from '@remixicon/react';
+import * as Alert from './alert';
 
-const meta = {
-  title: 'UI/Alert',
-  component: Alert.Root,
-} satisfies Meta<typeof Alert.Root>;
-
+const meta = { title: 'UI/Alert', component: Alert.Root } satisfies Meta<typeof Alert.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

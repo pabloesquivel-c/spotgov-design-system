@@ -1,21 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './button-group';
+import * as ButtonGroup from './button-group';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/ButtonGroup',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/ButtonGroup', component: ButtonGroup.Root } satisfies Meta<typeof ButtonGroup.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <ButtonGroup.Root>
+      <ButtonGroup.Item>Left</ButtonGroup.Item>
+      <ButtonGroup.Item>Center</ButtonGroup.Item>
+      <ButtonGroup.Item>Right</ButtonGroup.Item>
+    </ButtonGroup.Root>
+  ),
 };

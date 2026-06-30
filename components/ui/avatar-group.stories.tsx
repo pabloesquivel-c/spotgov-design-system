@@ -1,21 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './avatar-group';
+import * as Avatar from './avatar';
+import * as AvatarGroup from './avatar-group';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/AvatarGroup',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/AvatarGroup', component: AvatarGroup.Root } satisfies Meta<typeof AvatarGroup.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <AvatarGroup.Root size='32'>
+      <Avatar.Root size='32' color='blue'><Avatar.Image src='https://i.pravatar.cc/80?img=1' alt='' /></Avatar.Root>
+      <Avatar.Root size='32' color='green'><Avatar.Image src='https://i.pravatar.cc/80?img=2' alt='' /></Avatar.Root>
+      <Avatar.Root size='32' color='orange'><Avatar.Image src='https://i.pravatar.cc/80?img=3' alt='' /></Avatar.Root>
+    </AvatarGroup.Root>
+  ),
 };

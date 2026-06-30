@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Radio from './radio';
 
-const meta = {
-  title: 'UI/Radio',
-  component: Radio.Group,
-} satisfies Meta<typeof Radio.Group>;
-
+const meta = { title: 'UI/Radio', component: Radio.Group } satisfies Meta<typeof Radio.Group>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

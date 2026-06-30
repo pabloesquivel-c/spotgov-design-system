@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Select from './select';
 
-const meta = {
-  title: 'UI/Select',
-  component: Select.Root,
-} satisfies Meta<typeof Select.Root>;
-
+const meta = { title: 'UI/Select', component: Select.Root } satisfies Meta<typeof Select.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

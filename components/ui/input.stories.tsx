@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Input from './input';
 
-const meta = {
-  title: 'UI/Input',
-  component: Input.Root,
-} satisfies Meta<typeof Input.Root>;
-
+const meta = { title: 'UI/Input', component: Input.Root } satisfies Meta<typeof Input.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

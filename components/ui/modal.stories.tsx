@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Modal from './modal';
 import * as Button from './button';
+import * as Modal from './modal';
 
-const meta = {
-  title: 'UI/Modal',
-  component: Modal.Root,
-} satisfies Meta<typeof Modal.Root>;
-
+const meta = { title: 'UI/Modal', component: Modal.Root } satisfies Meta<typeof Modal.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

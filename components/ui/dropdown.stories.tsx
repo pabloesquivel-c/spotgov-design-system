@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Dropdown from './dropdown';
 import * as Button from './button';
+import * as Dropdown from './dropdown';
 
-const meta = {
-  title: 'UI/Dropdown',
-  component: Dropdown.Root,
-} satisfies Meta<typeof Dropdown.Root>;
-
+const meta = { title: 'UI/Dropdown', component: Dropdown.Root } satisfies Meta<typeof Dropdown.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

@@ -1,21 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './breadcrumb';
+import * as Breadcrumb from './breadcrumb';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/Breadcrumb',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/Breadcrumb', component: Breadcrumb.Root } satisfies Meta<typeof Breadcrumb.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <Breadcrumb.Root>
+      <Breadcrumb.Item>Home</Breadcrumb.Item>
+      <Breadcrumb.ArrowIcon />
+      <Breadcrumb.Item active>Tenders</Breadcrumb.Item>
+    </Breadcrumb.Root>
+  ),
 };

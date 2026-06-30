@@ -1,21 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './dot-stepper';
+import * as DotStepper from './dot-stepper';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/DotStepper',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/DotStepper', component: DotStepper.Root } satisfies Meta<typeof DotStepper.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <DotStepper.Root>
+      <DotStepper.Item active />
+      <DotStepper.Item />
+      <DotStepper.Item />
+    </DotStepper.Root>
+  ),
 };

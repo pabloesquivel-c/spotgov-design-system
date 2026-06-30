@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Table from './table';
 
-const meta = {
-  title: 'UI/Table',
-  component: Table.Root,
-} satisfies Meta<typeof Table.Root>;
-
+const meta = { title: 'UI/Table', component: Table.Root } satisfies Meta<typeof Table.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

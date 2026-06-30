@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as CommandMenu from './command-menu';
 
-const meta = {
-  title: 'UI/CommandMenu',
-  component: CommandMenu.Dialog,
-} satisfies Meta<typeof CommandMenu.Dialog>;
-
+const meta = { title: 'UI/CommandMenu', component: CommandMenu.Dialog } satisfies Meta<typeof CommandMenu.Dialog>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

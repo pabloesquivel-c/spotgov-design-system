@@ -1,21 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './pagination';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
+import * as Pagination from './pagination';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/Pagination',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/Pagination', component: Pagination.Root } satisfies Meta<typeof Pagination.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <Pagination.Root variant='basic'>
+      <Pagination.NavButton>
+        <Pagination.NavIcon as={RiArrowLeftSLine} />
+      </Pagination.NavButton>
+      <Pagination.Item active>1</Pagination.Item>
+      <Pagination.Item>2</Pagination.Item>
+      <Pagination.Item>3</Pagination.Item>
+      <Pagination.NavButton>
+        <Pagination.NavIcon as={RiArrowRightSLine} />
+      </Pagination.NavButton>
+    </Pagination.Root>
+  ),
 };

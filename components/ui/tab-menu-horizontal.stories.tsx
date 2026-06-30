@@ -1,21 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './tab-menu-horizontal';
+import * as TabMenuHorizontal from './tab-menu-horizontal';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/TabMenuHorizontal',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/TabMenuHorizontal', component: TabMenuHorizontal.Root } satisfies Meta<typeof TabMenuHorizontal.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <TabMenuHorizontal.Root defaultValue='active'>
+      <TabMenuHorizontal.List>
+        <TabMenuHorizontal.Trigger value='active'>Active</TabMenuHorizontal.Trigger>
+        <TabMenuHorizontal.Trigger value='archived'>Archived</TabMenuHorizontal.Trigger>
+      </TabMenuHorizontal.List>
+    </TabMenuHorizontal.Root>
+  ),
 };

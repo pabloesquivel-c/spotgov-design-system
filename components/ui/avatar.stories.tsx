@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Avatar from './avatar';
 
-const meta = {
-  title: 'UI/Avatar',
-  component: Avatar.Root,
-} satisfies Meta<typeof Avatar.Root>;
-
+const meta = { title: 'UI/Avatar', component: Avatar.Root } satisfies Meta<typeof Avatar.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

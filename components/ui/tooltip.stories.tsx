@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Tooltip from './tooltip';
 import * as Button from './button';
+import * as Tooltip from './tooltip';
 
-const meta = {
-  title: 'UI/Tooltip',
-  component: Tooltip.Root,
-} satisfies Meta<typeof Tooltip.Root>;
-
+const meta = { title: 'UI/Tooltip', component: Tooltip.Root } satisfies Meta<typeof Tooltip.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

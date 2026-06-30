@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as Popover from './popover';
 import * as Button from './button';
+import * as Popover from './popover';
 
-const meta = {
-  title: 'UI/Popover',
-  component: Popover.Root,
-} satisfies Meta<typeof Popover.Root>;
-
+const meta = { title: 'UI/Popover', component: Popover.Root } satisfies Meta<typeof Popover.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

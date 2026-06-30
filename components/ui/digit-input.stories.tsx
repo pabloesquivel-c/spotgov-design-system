@@ -1,21 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './digit-input';
+import * as DigitInput from './digit-input';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/DigitInput',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/DigitInput', component: DigitInput.Root } satisfies Meta<typeof DigitInput.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => <DigitInput.Root numInputs={4} />,
 };

@@ -1,21 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './badge';
+import * as Badge from './badge';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/Badge',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/Badge', component: Badge.Root } satisfies Meta<typeof Badge.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => <Badge.Root variant='filled' color='blue'>Federal</Badge.Root>,
 };

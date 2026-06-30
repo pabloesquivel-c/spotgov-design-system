@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Slider from './slider';
 
-const meta = {
-  title: 'UI/Slider',
-  component: Slider.Root,
-} satisfies Meta<typeof Slider.Root>;
-
+const meta = { title: 'UI/Slider', component: Slider.Root } satisfies Meta<typeof Slider.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 

@@ -12,6 +12,15 @@ npm run lint
 npm run format:write
 ```
 
+If Storybook shows **“Failed to fetch dynamically imported module”**, clear the cache and restart:
+
+```bash
+rm -rf node_modules/.cache/storybook
+npm run storybook
+```
+
+**Note:** project paths with spaces (e.g. `SG Coding Workspace`) can occasionally confuse Vite. If issues persist, clone to a path without spaces.
+
 ## License
 
 AlignUI components follow the [AlignUI license](https://alignui.com). See `LICENSE` for starter template terms.

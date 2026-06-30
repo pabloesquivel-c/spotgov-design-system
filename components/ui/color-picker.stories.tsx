@@ -1,21 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import * as React from 'react';
-import * as Component from './color-picker';
+import * as ColorPicker from './color-picker';
 
-const Root = 'Root' in Component ? Component.Root : Object.values(Component).find((v) => typeof v === 'function');
-
-const meta = {
-  title: 'UI/ColorPicker',
-  component: Root,
-} satisfies Meta;
-
+const meta = { title: 'UI/ColorPicker', component: ColorPicker.Root } satisfies Meta<typeof ColorPicker.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
-    if (!Root) return <div>No renderable export</div>;
-    const C = Root as React.ComponentType<{ children?: React.ReactNode }>;
-    return <C>Example</C>;
-  },
+  render: () => (
+    <ColorPicker.Root defaultValue='#2e6ad6'>
+      <ColorPicker.Area colorSpace='hsb' xChannel='saturation' yChannel='brightness' />
+    </ColorPicker.Root>
+  ),
 };

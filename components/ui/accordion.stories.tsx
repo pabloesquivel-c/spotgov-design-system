@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import * as Accordion from './accordion';
 
-const meta = {
-  title: 'UI/Accordion',
-  component: Accordion.Root,
-} satisfies Meta<typeof Accordion.Root>;
-
+const meta = { title: 'UI/Accordion', component: Accordion.Root } satisfies Meta<typeof Accordion.Root>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
