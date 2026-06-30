@@ -124,3 +124,50 @@ Mirror text roles: `text-text-sub-600` (neutral actions), `text-text-strong-950`
 ### Figma
 
 One curated page referencing Remix Line instances. Ignore AlignUI Custom Icons frames.
+
+---
+
+## Grid system
+
+**Philosophy:** AlignUI dashboard grid as-is — desktop product UI only (no mobile grid for now). Four shell variants define how the 12-column content zone sits relative to navigation. Do not customize column math.
+
+**Figma reference:** [Grid System — AlignUI DS 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-?node-id=2762-1284)
+
+### Shared constants (all shells)
+
+| Token | Value | Use |
+|-------|-------|-----|
+| Content grid width | 1440px | Max column zone for dashboard content |
+| Page safe area | 170px each side | Outer margin to grid (1780px reference viewport) |
+| Columns | 12 | Always — widget spans are multiples of columns |
+| Column gutter | 24px | Space between columns |
+| Sidebar → content gap | 32px | When a sidebar is present |
+
+### Shell variants
+
+Pick the variant that matches navigation state. Column width adjusts per shell so the 12-column grid always fills the remaining space.
+
+| Shell | Sidebar | Submenu | Column width | When to use |
+|-------|---------|---------|--------------|-------------|
+| **Sidebar Expanded** | 272px (24px inner padding) | — | 70px | Default app shell — full nav labels |
+| **Sidebar Collapsed** | 80px | — | 86px | Icon rail — narrower desktop |
+| **Sidebar & Submenu** | 80px | 264px | 64px | Collapsed rail + secondary nav panel |
+| **Topbar** | — | — | 80px | No sidebar — top navigation only |
+
+**SpotGov default:** Sidebar Expanded for main product screens.
+
+### Layout instructions for AI
+
+When building dashboard layouts, specify:
+
+1. **Shell** — e.g. `Sidebar Expanded`
+2. **Column spans** — e.g. three KPI cards at 4 columns each, table at 12 columns
+3. **Gutter** — always 24px (implicit in the grid)
+
+Example: *“Dashboard, Sidebar Expanded. Row 1: three widgets × 4 cols. Row 2: data table × 12 cols.”*
+
+### Out of scope (for now)
+
+- Mobile / tablet breakpoints and responsive shell switching
+- Custom column widths or a fifth grid variant
+- Marketing or auth page layouts (use Topbar or no shell separately if needed)
