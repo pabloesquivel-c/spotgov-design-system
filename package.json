@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:deploy": "STORYBOOK_BASE_PATH=/storybook/ npm run build-storybook && rm -rf public/storybook && cp -r storybook-static public/storybook && next build",
     "start": "next start",
     "lint": "next lint",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",

@@ -21,6 +21,17 @@ npm run storybook
 
 **Note:** project paths with spaces (e.g. `SG Coding Workspace`) can occasionally confuse Vite. If issues persist, clone to a path without spaces.
 
+## Deploy (Vercel — single project)
+
+One Vercel project serves both surfaces:
+
+| URL | What |
+|---|---|
+| `/` | Token preview (Next.js) |
+| `/storybook/` | Component catalog (Storybook) |
+
+Connect the repo in Vercel (Next.js auto-detected). `vercel.json` runs `build:deploy`, which builds Storybook into `public/storybook/` then Next.js. Use your **SpotGov team** on Vercel if available; otherwise Personal is fine.
+
 ## License
 
 AlignUI components follow the [AlignUI license](https://alignui.com). See `LICENSE` for starter template terms.

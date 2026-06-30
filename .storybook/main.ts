@@ -41,7 +41,10 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen-typescript',
   },
   async viteFinal(config) {
+    const storybookBase = process.env.STORYBOOK_BASE_PATH ?? '/';
+
     return mergeConfig(config, {
+      base: storybookBase,
       plugins: [tsconfigPaths()],
       resolve: {
         alias: {
