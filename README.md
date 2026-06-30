@@ -28,7 +28,7 @@ One Vercel project serves both surfaces:
 | URL | What |
 |---|---|
 | `/` | Token preview (Next.js) |
-| `/storybook/` | Component catalog (Storybook) |
+| `/storybook` | Component catalog (Storybook) |
 
 Connect the repo in Vercel (Next.js auto-detected). `vercel.json` runs `build:deploy`, which builds Storybook into `public/storybook/` then Next.js. Use your **SpotGov team** on Vercel if available; otherwise Personal is fine.
 
