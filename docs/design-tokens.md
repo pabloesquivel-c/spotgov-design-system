@@ -220,6 +220,99 @@ Documented in repo — chrome, actions, objects, status, and domain icons (`RiBu
 
 ---
 
+## Spacing
+
+**Philosophy:** Dual-density on a **4px base grid**. Dense where data and controls compete for space; breathable where users orient and flow between tasks. Same grid as AlignUI/Tailwind — no custom spacing variables. Document **when to use which steps**, not a parallel token system.
+
+**Visual goal:** Round and pad the container; keep the data flat and tight inside. Not Excel-dense, not marketing-site airy.
+
+### Base grid
+
+All spacing values are **multiples of 4px**. Use Tailwind's default spacing scale (`1` = 4px, `2` = 8px, etc.).
+
+### Two density modes
+
+| Mode | Step by | Allowed values | Tailwind utilities |
+|------|---------|----------------|-------------------|
+| **Dense** | 4px | 4, 8, 12, 16 | `1`, `2`, `3`, `4` |
+| **Breathable** | 8px | 8, 16, 24, 32, 40, 48 | `2`, `4`, `6`, `8`, `10`, `12` |
+
+Dense and breathable overlap at **8px and 16px** — that is intentional. The choice is which steps are allowed in each context, not two unrelated systems.
+
+### Bridge to grid tokens
+
+| Locked grid token | Spacing role |
+|-------------------|--------------|
+| 24px column gutter | Default **breathable** gap between widgets in a row |
+| 32px sidebar → content gap | **Breathable** shell break — major layout, not component internals |
+
+### Dense (4px rhythm)
+
+Use **4px steps, cap at 16px** inside these surfaces:
+
+| Surface | Spacing | Tailwind |
+|---------|---------|----------|
+| Table rows / cells | 8–12px vertical, 12–16px horizontal | `py-2`–`py-3`, `px-3`–`px-4` |
+| Toolbars / filter bars | 8px between controls | `gap-2` |
+| Tags, badges, status chips | 4–8px internal | `gap-1`–`gap-2`, `px-2` |
+| Dropdown / menu items | 8px padding | `p-2` |
+| Label → field | 8px gap | `gap-2` |
+| Button icon gap | 12px | `gap-3` (AlignUI default — keep) |
+| Inline metadata rows | 8px | `gap-2` |
+
+### Breathable (8px rhythm)
+
+Use **8px steps** for layout and containers:
+
+| Surface | Spacing | Tailwind |
+|---------|---------|----------|
+| Card / panel padding | 20–24px | `p-5`–`p-6` |
+| Between form fields | 16px | `gap-4` |
+| Between dashboard widgets | 24px | `gap-6` (matches column gutter) |
+| Page header → content | 24–32px | `gap-6`–`gap-8` |
+| Modal header / body / footer | AlignUI defaults | `p-5`, internal `gap-3.5` — keep |
+| AI / agent panels | 24px internal | `p-6` |
+| Section breaks on a page | 32–40px | `gap-8`–`gap-10` |
+
+### Nesting rule
+
+**One density per nesting level:** page = breathable → card = breathable → table = dense. Do not skip levels (e.g. dense table directly on page canvas without a padded container).
+
+```
+┌─ Card (16px radius, 24px padding) ────────────────┐
+│  Section heading                                 │
+│  gap-4 (16px)                                    │
+│  ┌─ Table (dense: 8–12px rows) ───────────────┐ │
+│  │  flat rows, no row radius                     │ │
+│  └──────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────┘
+         ↕ gap-6 (24px) to next widget
+```
+
+### Defaults (lock these)
+
+| Context | Value | Tailwind |
+|---------|-------|----------|
+| Widget-to-widget | 24px | `gap-6` |
+| Section-to-section | 32px | `gap-8` |
+| Card interior padding | 24px | `p-6` |
+| Form field stack | 16px | `gap-4` |
+
+### Usage rules
+
+- **Trust AlignUI component defaults** for buttons, inputs, modals — override only at page/block level with the rules above.
+- **Avoid in new layout code:** odd steps `1.5` (6px), `2.5` (10px), `5` (20px) at page level. AlignUI components may still use them internally; do not spread them across page layout.
+- **Spacing and radius must agree:** 16px surface radius wants **24px card padding** — 8px padding on a 16px-radius card feels tight and cheap.
+- **Do not add custom CSS spacing variables** unless semantic aliases are needed later (e.g. `space-section` = 24px).
+
+### Do not use in product UI
+
+- Single global density — every screen must pick dense or breathable **per surface**, not per product.
+- `gap-5` (20px) between dashboard widgets — falls between the two modes; use 24px (`gap-6`) instead.
+- Generous padding inside table rows — wastes viewport on tender lists and procurement data.
+
+---
+
 ## Phase 2 inventory
 
 What is locked in this doc vs still open.
@@ -232,7 +325,7 @@ What is locked in this doc vs still open.
 | Grid system | **Locked** | Four shells, desktop only |
 | Shadows | **Locked** | `regular-xs` + `regular-md` only |
 | Corner radius | **Locked** | 12/16/20 tier + full allowlist |
-| **Spacing** | Not started | AlignUI spacing scale — next curation pass |
+| Spacing | **Locked** | Dual-density 4px grid; Tailwind scale as-is |
 | **Figma value sync** | Not started | Names match; values still differ in places |
 | **Figma variable code syntax** | Not started | Needed for MCP token output |
 | **Token preview site** | Partial | Typography, color, radius — add shadows section later |
@@ -242,7 +335,7 @@ What is locked in this doc vs still open.
 
 | Notion item | Our progress |
 |-------------|--------------|
-| Export/list Figma tokens | **Done** for color, type, icons, grid, shadow, radius |
+| Export/list Figma tokens | **Done** for color, type, icons, grid, shadow, radius, spacing |
 | Reconcile code ↔ Figma names | **Done** for naming; values partially reconciled |
 | Brand tokens verified | **Done** in doc; differs from old Notion brand hex — doc is canonical |
 | Typography tokens | **Done** — Inter, six roles |
@@ -254,8 +347,7 @@ What is locked in this doc vs still open.
 
 ## Next steps
 
-1. **Spacing** — curate AlignUI spacing tokens (same pass as above).
-2. **Usage descriptions in agent rules** — fold this doc into `AGENTS.md` / `.cursor/rules` (Phase 4).
-3. **Code sync** — align `globals.css` values + component radius (12px floor) to locked doc.
-4. **Figma sync** — push locked values and code syntax to variable collections.
-5. **Token preview** — add shadows section; expand radius tier labels.
+1. **Usage descriptions in agent rules** — fold this doc into `AGENTS.md` / `.cursor/rules` (Phase 4).
+2. **Code sync** — align `globals.css` values + component radius (12px floor) to locked doc.
+3. **Figma sync** — push locked values and code syntax to variable collections.
+4. **Token preview** — add shadows and spacing sections; expand radius tier labels.
