@@ -5,11 +5,11 @@ import * as Alert from '@/components/ui/alert';
 import { cn } from '@/utils/cn';
 import * as NotificationPrimitives from '@radix-ui/react-toast';
 import {
-  RiAlertFill,
-  RiCheckboxCircleFill,
-  RiErrorWarningFill,
-  RiInformationFill,
-  RiMagicFill,
+  RiAlertLine,
+  RiCheckboxCircleLine,
+  RiErrorWarningLine,
+  RiInformationLine,
+  RiSparklingLine,
 } from '@remixicon/react';
 
 const NotificationProvider = NotificationPrimitives.Provider;
@@ -64,22 +64,22 @@ const Notification = React.forwardRef<
 
     switch (status) {
       case 'success':
-        Icon = RiCheckboxCircleFill;
+        Icon = RiCheckboxCircleLine;
         break;
       case 'warning':
-        Icon = RiAlertFill;
+        Icon = RiAlertLine;
         break;
       case 'error':
-        Icon = RiErrorWarningFill;
+        Icon = RiErrorWarningLine;
         break;
       case 'information':
-        Icon = RiInformationFill;
+        Icon = RiInformationLine;
         break;
       case 'feature':
-        Icon = RiMagicFill;
+        Icon = RiSparklingLine;
         break;
       default:
-        Icon = RiErrorWarningFill;
+        Icon = RiErrorWarningLine;
         break;
     }
 

@@ -18,7 +18,7 @@ const paginationVariants = tv({
     item: 'flex items-center justify-center text-center text-label-sm text-text-sub-600 transition duration-200 ease-out',
     navButton:
       'flex items-center justify-center text-text-sub-600 transition duration-200 ease-out',
-    navIcon: 'size-5',
+    navIcon: 'size-icon',
   },
   variants: {
     variant: {

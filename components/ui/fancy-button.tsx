@@ -21,7 +21,7 @@ export const fancyButtonVariants = tv({
       'disabled:pointer-events-none disabled:text-text-disabled-300',
       'disabled:bg-bg-weak-50 disabled:bg-none disabled:shadow-none disabled:before:hidden disabled:after:hidden',
     ],
-    icon: 'relative z-10 size-5 shrink-0',
+    icon: 'relative z-10 size-icon shrink-0',
   },
   variants: {
     variant: {

@@ -42,7 +42,7 @@ export const buttonGroupVariants = tv({
         ],
         icon: [
           // base
-          '-mx-2 size-5',
+          '-mx-2 size-icon',
         ],
       },
       xsmall: {
@@ -54,7 +54,7 @@ export const buttonGroupVariants = tv({
         ],
         icon: [
           // base
-          '-mx-2 size-5',
+          '-mx-2 size-icon',
         ],
       },
       xxsmall: {
@@ -66,7 +66,7 @@ export const buttonGroupVariants = tv({
         ],
         icon: [
           // base
-          '-mx-2 size-4',
+          '-mx-2 size-icon-inline',
         ],
       },
     },

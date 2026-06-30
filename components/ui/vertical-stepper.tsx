@@ -39,7 +39,7 @@ function VerticalStepperArrow<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-5 shrink-0 text-text-sub-600', className)}
+      className={cn('size-icon shrink-0 text-text-sub-600', className)}
       {...rest}
     />
   );

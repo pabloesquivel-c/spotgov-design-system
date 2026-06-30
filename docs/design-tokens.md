@@ -78,3 +78,49 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals):
 ### Product-only — do not use
 
 `text-title-h1`–`h5`, `text-paragraph-xl/lg/md`, `text-label-xl/lg`, `text-subheading-*`, `text-doc-*`, marketing hero styles.
+
+---
+
+## Icons
+
+**Philosophy:** Remix Icon Line style only — sleek, lightweight, consistent with restrained typography. Do not use AlignUI Figma Custom Icons in product UI. Curate an allowlist; avoid browsing hundreds of one-offs.
+
+**Library:** `@remixicon/react` — always prefer the `*Line` variant over `*Fill`.
+
+### Size scale
+
+Smaller icons keep chrome subordinate to 14px body text. Icon size is independent of tap target — buttons and controls maintain padding for accessibility.
+
+| Token | Utility | Size | Use |
+|-------|---------|------|-----|
+| Inline | `size-icon-inline` | 14px | Table row actions, tags, dense metadata, compact buttons |
+| Default | `size-icon` | 16px | Buttons, inputs, nav, dropdowns, alerts, toasts |
+| Emphasis | `size-icon-emphasis` | 20px | Empty states, onboarding — rare |
+
+**Do not shrink:** checkbox, radio, and switch control boxes stay at their component size (~20px); only decorative glyphs follow this scale.
+
+### Color
+
+Mirror text roles: `text-text-sub-600` (neutral actions), `text-text-strong-950` (emphasis), semantic `*-base` for status icons.
+
+### Allowlist (essential set)
+
+**Chrome:** `RiArrowDownSLine`, `RiArrowUpSLine`, `RiArrowLeftSLine`, `RiArrowRightSLine`, `RiCloseLine`, `RiCheckLine`, `RiAddLine`, `RiSubtractLine`, `RiSearchLine`, `RiMenuLine`, `RiMore2Line`
+
+**Actions:** `RiPencilLine`, `RiDeleteBinLine`, `RiFileCopyLine`, `RiDownloadLine`, `RiUploadLine`, `RiExternalLinkLine`, `RiFilter3Line`, `RiArrowUpDownLine`, `RiRefreshLine`, `RiSettings3Line`, `RiShareForwardLine`, `RiLink`, `RiBookmarkLine`
+
+**Objects:** `RiFileTextLine`, `RiFolderLine`, `RiFileList3Line`, `RiCalendarLine`, `RiTimeLine`, `RiMailLine`, `RiNotification3Line`, `RiUserLine`, `RiTeamLine`, `RiHomeLine`
+
+**Status:** `RiCheckboxCircleLine`, `RiErrorWarningLine`, `RiAlertLine`, `RiInformationLine`
+
+**Domain (sparingly):** `RiBuildingLine`, `RiSparklingLine`, `RiBarChartLine`, `RiPriceTag3Line`
+
+### Exceptions (outside allowlist)
+
+- `FileFormatIcon` — document badge with format label
+- Avatar empty-state SVGs
+- OAuth brand marks in social buttons
+
+### Figma
+
+One curated page referencing Remix Line instances. Ignore AlignUI Custom Icons frames.

@@ -18,7 +18,7 @@ export const socialButtonVariants = tv({
       // focus
       'focus:outline-none',
     ],
-    icon: 'relative z-10 -mx-1.5 size-5 shrink-0',
+    icon: 'relative z-10 -mx-1.5 size-icon shrink-0',
   },
   variants: {
     brand: {

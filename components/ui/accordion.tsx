@@ -76,7 +76,7 @@ function AccordionIcon<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-5 text-text-sub-600', className)}
+      className={cn('size-icon text-text-sub-600', className)}
       {...rest}
     />
   );
@@ -99,7 +99,7 @@ function AccordionArrow({
     <>
       <OpenIcon
         className={cn(
-          'size-5 text-text-soft-400',
+          'size-icon text-text-soft-400',
           'transition duration-200 ease-out',
           // hover
           'group-hover/accordion:text-text-sub-600',
@@ -111,7 +111,7 @@ function AccordionArrow({
       />
       <CloseIcon
         className={cn(
-          'size-5 text-text-sub-600',
+          'size-icon text-text-sub-600',
           // close
           'hidden group-data-[state=open]/accordion:block',
           className,

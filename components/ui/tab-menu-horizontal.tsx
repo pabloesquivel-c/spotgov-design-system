@@ -129,7 +129,7 @@ function TabMenuHorizontalIcon<T extends React.ElementType>({
     <Component
       className={cn(
         // base
-        'size-5 text-text-sub-600',
+        'size-icon text-text-sub-600',
         'transition duration-200 ease-out',
         // active
         'group-data-[state=active]/tab-item:text-primary-base',
@@ -150,7 +150,7 @@ function TabMenuHorizontalArrowIcon<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-5 text-text-sub-600', className)}
+      className={cn('size-icon text-text-sub-600', className)}
       {...rest}
     />
   );

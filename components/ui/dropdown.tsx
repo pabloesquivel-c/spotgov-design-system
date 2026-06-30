@@ -82,7 +82,7 @@ function DropdownItemIcon<T extends React.ElementType>({
     <Component
       className={cn(
         // base
-        'size-5 text-text-sub-600',
+        'size-icon text-text-sub-600',
         // disabled
         'group-has-[[data-disabled]]:text-text-disabled-300',
         className,

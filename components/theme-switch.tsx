@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import { RiEqualizer3Fill, RiMoonLine, RiSunLine } from '@remixicon/react';
+import { RiEqualizer3Line, RiMoonLine, RiSunLine } from '@remixicon/react';
 
 export default function ThemeSwitch() {
   const { theme, setTheme } = useTheme();
@@ -15,13 +15,13 @@ export default function ThemeSwitch() {
     >
       <SegmentedControl.List>
         <SegmentedControl.Trigger value='light' className='aspect-square'>
-          <RiSunLine className='size-4' />
+          <RiSunLine className='size-icon' />
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='dark' className='aspect-square'>
-          <RiMoonLine className='size-4' />
+          <RiMoonLine className='size-icon' />
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='system' className='aspect-square'>
-          <RiEqualizer3Fill className='size-4' />
+          <RiEqualizer3Line className='size-icon' />
         </SegmentedControl.Trigger>
       </SegmentedControl.List>
     </SegmentedControl.Root>

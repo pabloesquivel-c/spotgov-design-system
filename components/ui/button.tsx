@@ -22,7 +22,7 @@ export const buttonVariants = tv({
     ],
     icon: [
       // base
-      'flex size-5 shrink-0 items-center justify-center',
+      'flex size-icon shrink-0 items-center justify-center',
     ],
   },
   variants: {

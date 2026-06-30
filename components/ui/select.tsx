@@ -31,7 +31,7 @@ export const selectVariants = tv({
     ],
     triggerArrow: [
       // base
-      'ml-auto size-5 shrink-0',
+      'ml-auto size-icon shrink-0',
       'transition duration-200 ease-out',
       // placeholder state
       'group-data-[placeholder]/trigger:text-text-soft-400',
@@ -59,7 +59,7 @@ export const selectVariants = tv({
       'group-disabled/trigger:[&:not(.remixicon)]:opacity-[.48]',
     ],
     selectItemIcon: [
-      'size-5 shrink-0 bg-[length:1.25rem] text-text-sub-600',
+      'size-icon shrink-0 bg-[length:1.25rem] text-text-sub-600',
       // 'group-has-[&]-ml-0.5',
       // disabled
       '[[data-disabled]_&:not(.remixicon)]:opacity-[.48] [[data-disabled]_&]:text-text-disabled-300',
@@ -404,7 +404,7 @@ const SelectItem = React.forwardRef<
         </span>
       </SelectPrimitives.ItemText>
       <SelectPrimitives.ItemIndicator asChild>
-        <RiCheckLine className='absolute right-2 top-1/2 size-5 shrink-0 -translate-y-1/2 text-text-sub-600' />
+        <RiCheckLine className='absolute right-2 top-1/2 size-icon shrink-0 -translate-y-1/2 text-text-sub-600' />
       </SelectPrimitives.ItemIndicator>
     </SelectPrimitives.Item>
   );

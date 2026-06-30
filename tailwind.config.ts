@@ -652,6 +652,11 @@ const config = {
         sans: ['var(--font-sans)'],
         mono: ['var(--font-geist-mono)'],
       },
+      size: {
+        'icon-inline': '0.875rem',
+        icon: '1rem',
+        'icon-emphasis': '1.25rem',
+      },
       borderRadius: {
         ...borderRadii,
       },
