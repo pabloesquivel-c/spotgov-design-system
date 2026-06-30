@@ -1,6 +1,10 @@
 # SpotGov design tokens (Phase 2 — locked)
 
-Canonical decisions for color palette and typography, curated from AlignUI Design System 2.0 for SpotGov product UI. Values in `app/globals.css` will be synced to Figma in a later pass; this doc is the source of truth for naming and usage.
+Canonical decisions for SpotGov product UI, curated from AlignUI Design System 2.0. **This doc is the source of truth** for naming, values, and where each token applies. Code in `app/globals.css` and Figma variables will be synced in a later pass.
+
+**Figma file:** [AlignUI Design System 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-)
+
+---
 
 ## Color palette
 
@@ -8,45 +12,37 @@ Canonical decisions for color palette and typography, curated from AlignUI Desig
 
 ### Primary
 
-| Token | Use |
-|-------|-----|
-| `primary-base` | Brand blue — buttons, links, focus rings. Target: AlignUI `blue-500` (`#335CFF`) |
-| `primary-darker` / `primary-dark` | Hover and pressed interactive states |
-| `primary-alpha-24` / `-16` / `-10` | Subtle fills and selection backgrounds |
+| Token | Value (target) | Where to use |
+|-------|----------------|--------------|
+| `primary-base` | AlignUI `blue-500` (`#335CFF`) | Primary buttons, text links, active nav, focus rings, selected states |
+| `primary-darker` / `primary-dark` | Hover / pressed steps | Button hover, link hover, pressed interactive states |
+| `primary-alpha-24` / `-16` / `-10` | Tinted fills | Selected row backgrounds, subtle highlights, ghost button hover |
 
 **Rule:** One visible brand blue in UI chrome. System tints (darker steps, alphas, `information-light`) are the same hue — not separate accents. Avoid raw `blue-*`, `sky-*`, or viz blues as standalone UI chrome.
 
 ### Neutral semantic stack
 
-Keep AlignUI Token System roles as-is (no SG re-theming of neutrals):
+Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 
-- **Static:** `static-black`, `static-white`
-- **Background:** `bg-strong-950`, `bg-surface-800`, `bg-sub-300`, `bg-soft-200`, `bg-weak-50`, `bg-white-0`
-- **Text:** `text-strong-950`, `text-sub-600`, `text-soft-400`, `text-disabled-300`, `text-white-0`
-- **Stroke:** `stroke-strong-950`, `stroke-sub-300`, `stroke-soft-200`, `stroke-white-0`
-- **Icon:** mirror text roles (`icon-strong-950`, `icon-sub-600`, etc.)
+| Role | Tokens | Where to use |
+|------|--------|--------------|
+| **Static** | `static-black`, `static-white` | Absolute black/white — text on filled buttons, inverse surfaces |
+| **Background** | `bg-strong-950`, `bg-surface-800`, `bg-sub-300`, `bg-soft-200`, `bg-weak-50`, `bg-white-0` | Page canvas (`bg-white-0`), section fills (`bg-weak-50`), disabled fields, subtle panels |
+| **Text** | `text-strong-950`, `text-sub-600`, `text-soft-400`, `text-disabled-300`, `text-white-0` | Headings and primary copy; secondary copy and descriptions; timestamps and metadata; disabled labels; text on dark/filled surfaces |
+| **Stroke** | `stroke-strong-950`, `stroke-sub-300`, `stroke-soft-200`, `stroke-white-0` | Input borders (`stroke-soft-200`), dividers, card rings, table borders |
+| **Icon** | Mirror text roles | Same pairing as text — `icon-sub-600` for neutral actions, semantic `*-base` for status |
 
 ### Status (core)
 
-| Token | Use |
-|-------|-----|
-| `warning-*` | Needs attention, not urgent |
-| `error-*` | Issues, missing requirements, urgent deadlines, destructive actions |
-| `success-*` | Healthy or complete states |
-
-### Special accents (2 only)
-
-| Token | Use |
-|-------|-----|
-| `feature-*` | New capabilities, AI features, beta, premium highlights |
-| `away-*` | Pipeline/workflow neutrals — Draft, Pending review, On hold, In progress |
-
-### Utility
-
-| Token | Use |
-|-------|-----|
-| `faded-*` | Inactive, archived, disabled UI |
-| `information-*` | Neutral tips and callouts (blue-500 family, lighter tints for backgrounds) |
+| Token | Where to use |
+|-------|--------------|
+| `warning-*` | Deadlines approaching, incomplete profiles, non-blocking validation |
+| `error-*` | Form errors, failed actions, destructive confirm, urgent deadlines |
+| `success-*` | Completed steps, healthy sync, awarded/confirmed states |
+| `feature-*` | AI capabilities, beta badges, premium highlights, agent panels |
+| `away-*` | Draft, pending review, on hold, in progress — workflow neutrals |
+| `faded-*` | Archived, inactive, disabled records |
+| `information-*` | Tips, help callouts, neutral informational banners |
 
 ### Dropped (do not use in product UI)
 
@@ -60,22 +56,24 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals):
 
 ### Six product roles
 
-| SG role | AlignUI utility | Spec |
-|---------|-----------------|------|
-| Page title | `text-title-h6` | 20px / 500 |
-| Section heading | `text-label-md` | 16px / 500 |
-| Body | `text-paragraph-sm` | 14px / 400 / `-0.006em` |
-| Label | `text-label-sm` | 14px / 500 |
-| Caption | `text-paragraph-xs` | 12px / 400 |
-| Micro label | `text-label-xs` | 12px / 500 |
+| SG role | Utility | Spec | Where to use |
+|---------|---------|------|--------------|
+| Page title | `text-title-h6` | 20px / 500 | Top of page — dashboard title, detail view title |
+| Section heading | `text-label-md` | 16px / 500 | Card headers, modal titles, settings group labels |
+| Body | `text-paragraph-sm` | 14px / 400 | Descriptions, table cell text, form helper copy, nav labels |
+| Label | `text-label-sm` | 14px / 500 | Field labels, column headers, button text, emphasized inline text |
+| Caption | `text-paragraph-xs` | 12px / 400 | Timestamps, footnotes, secondary metadata |
+| Micro label | `text-label-xs` | 12px / 500 | Badges, tags, compact table headers, filter chips |
 
 ### Color pairing
 
-- Primary copy: `text-strong-950`
-- Secondary copy: `text-sub-600`
-- Metadata: `text-soft-400`
+| Copy type | Token |
+|-----------|-------|
+| Primary | `text-strong-950` |
+| Secondary | `text-sub-600` |
+| Metadata | `text-soft-400` |
 
-### Product-only — do not use
+### Do not use in product UI
 
 `text-title-h1`–`h5`, `text-paragraph-xl/lg/md`, `text-label-xl/lg`, `text-subheading-*`, `text-doc-*`, marketing hero styles.
 
@@ -83,91 +81,181 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals):
 
 ## Icons
 
-**Philosophy:** Remix Icon Line style only — sleek, lightweight, consistent with restrained typography. Do not use AlignUI Figma Custom Icons in product UI. Curate an allowlist; avoid browsing hundreds of one-offs.
+**Philosophy:** Remix Icon Line only — sleek, lightweight. Do not use AlignUI Figma Custom Icons. Curated allowlist only.
 
-**Library:** `@remixicon/react` — always prefer the `*Line` variant over `*Fill`.
+**Library:** `@remixicon/react` — always `*Line`, never `*Fill` in product UI.
 
 ### Size scale
 
-Smaller icons keep chrome subordinate to 14px body text. Icon size is independent of tap target — buttons and controls maintain padding for accessibility.
+| Token | Utility | Size | Where to use |
+|-------|---------|------|--------------|
+| Inline | `size-icon-inline` | 14px | Table row actions, tags, hints, compact buttons |
+| Default | `size-icon` | 16px | Buttons, inputs, nav items, dropdowns, toasts |
+| Emphasis | `size-icon-emphasis` | 20px | Empty states, onboarding illustrations — rare |
 
-| Token | Utility | Size | Use |
-|-------|---------|------|-----|
-| Inline | `size-icon-inline` | 14px | Table row actions, tags, dense metadata, compact buttons |
-| Default | `size-icon` | 16px | Buttons, inputs, nav, dropdowns, alerts, toasts |
-| Emphasis | `size-icon-emphasis` | 20px | Empty states, onboarding — rare |
-
-**Do not shrink:** checkbox, radio, and switch control boxes stay at their component size (~20px); only decorative glyphs follow this scale.
+**Do not shrink:** checkbox, radio, switch control boxes (~20px) — only decorative glyphs follow this scale.
 
 ### Color
 
-Mirror text roles: `text-text-sub-600` (neutral actions), `text-text-strong-950` (emphasis), semantic `*-base` for status icons.
+Mirror text roles: `text-text-sub-600` (neutral), `text-text-strong-950` (emphasis), semantic `*-base` for status.
 
-### Allowlist (essential set)
+### Allowlist
 
-**Chrome:** `RiArrowDownSLine`, `RiArrowUpSLine`, `RiArrowLeftSLine`, `RiArrowRightSLine`, `RiCloseLine`, `RiCheckLine`, `RiAddLine`, `RiSubtractLine`, `RiSearchLine`, `RiMenuLine`, `RiMore2Line`
+Documented in repo — chrome, actions, objects, status, and domain icons (`RiBuildingLine`, `RiSparklingLine`, etc.). New icons require allowlist addition.
 
-**Actions:** `RiPencilLine`, `RiDeleteBinLine`, `RiFileCopyLine`, `RiDownloadLine`, `RiUploadLine`, `RiExternalLinkLine`, `RiFilter3Line`, `RiArrowUpDownLine`, `RiRefreshLine`, `RiSettings3Line`, `RiShareForwardLine`, `RiLink`, `RiBookmarkLine`
+### Exceptions
 
-**Objects:** `RiFileTextLine`, `RiFolderLine`, `RiFileList3Line`, `RiCalendarLine`, `RiTimeLine`, `RiMailLine`, `RiNotification3Line`, `RiUserLine`, `RiTeamLine`, `RiHomeLine`
-
-**Status:** `RiCheckboxCircleLine`, `RiErrorWarningLine`, `RiAlertLine`, `RiInformationLine`
-
-**Domain (sparingly):** `RiBuildingLine`, `RiSparklingLine`, `RiBarChartLine`, `RiPriceTag3Line`
-
-### Exceptions (outside allowlist)
-
-- `FileFormatIcon` — document badge with format label
-- Avatar empty-state SVGs
-- OAuth brand marks in social buttons
-
-### Figma
-
-One curated page referencing Remix Line instances. Ignore AlignUI Custom Icons frames.
+`FileFormatIcon`, avatar empty-state SVGs, OAuth brand marks.
 
 ---
 
 ## Grid system
 
-**Philosophy:** AlignUI dashboard grid as-is — desktop product UI only (no mobile grid for now). Four shell variants define how the 12-column content zone sits relative to navigation. Do not customize column math.
+**Philosophy:** AlignUI dashboard grid as-is — desktop only (no mobile grid for now).
 
-**Figma reference:** [Grid System — AlignUI DS 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-?node-id=2762-1284)
+**Figma:** [Grid System](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-?node-id=2762-1284)
 
-### Shared constants (all shells)
+### Shared constants
 
-| Token | Value | Use |
-|-------|-------|-----|
-| Content grid width | 1440px | Max column zone for dashboard content |
-| Page safe area | 170px each side | Outer margin to grid (1780px reference viewport) |
-| Columns | 12 | Always — widget spans are multiples of columns |
-| Column gutter | 24px | Space between columns |
-| Sidebar → content gap | 32px | When a sidebar is present |
+| Token | Value | Where to use |
+|-------|-------|--------------|
+| Content grid width | 1440px | Max width of dashboard column zone |
+| Page safe area | 170px each side | Desktop page margins to grid |
+| Columns | 12 | All dashboard/widget layout |
+| Column gutter | 24px | Between columns in widget rows |
+| Sidebar → content gap | 32px | Space between nav and main content |
 
 ### Shell variants
 
-Pick the variant that matches navigation state. Column width adjusts per shell so the 12-column grid always fills the remaining space.
+| Shell | Sidebar | Submenu | Col width | Where to use |
+|-------|---------|---------|-----------|--------------|
+| **Sidebar Expanded** | 272px | — | 70px | **Default** — main app, full nav |
+| **Sidebar Collapsed** | 80px | — | 86px | Narrow desktop, icon rail |
+| **Sidebar & Submenu** | 80px | 264px | 64px | Deep nav + secondary panel |
+| **Topbar** | — | — | 80px | No sidebar layouts |
 
-| Shell | Sidebar | Submenu | Column width | When to use |
-|-------|---------|---------|--------------|-------------|
-| **Sidebar Expanded** | 272px (24px inner padding) | — | 70px | Default app shell — full nav labels |
-| **Sidebar Collapsed** | 80px | — | 86px | Icon rail — narrower desktop |
-| **Sidebar & Submenu** | 80px | 264px | 64px | Collapsed rail + secondary nav panel |
-| **Topbar** | — | — | 80px | No sidebar — top navigation only |
+**AI layout pattern:** Specify shell + column spans — e.g. *“Sidebar Expanded. Row 1: three KPI widgets × 4 cols. Row 2: table × 12 cols.”*
 
-**SpotGov default:** Sidebar Expanded for main product screens.
+---
 
-### Layout instructions for AI
+## Shadows
 
-When building dashboard layouts, specify:
+**Philosophy:** Minimal elevation — two regular shadows only. Ring-first for resting surfaces; shadow for float. No custom stacks or colored shadows in product UI.
 
-1. **Shell** — e.g. `Sidebar Expanded`
-2. **Column spans** — e.g. three KPI cards at 4 columns each, table at 12 columns
-3. **Gutter** — always 24px (implicit in the grid)
+**Figma:** [Shadow](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-?node-id=2767-1801)
 
-Example: *“Dashboard, Sidebar Expanded. Row 1: three widgets × 4 cols. Row 2: data table × 12 cols.”*
+### Product shadows (lock these)
 
-### Out of scope (for now)
+| Token | AlignUI name | Value | Where to use |
+|-------|--------------|-------|--------------|
+| `shadow-regular-xs` | X-Small | `0 1px 2px 0 #0a0d1408` | Resting elevation — inputs, selects, cards at rest, steppers, compact buttons |
+| `shadow-regular-md` | Medium | `0 16px 32px -12px #0e121b1a` | Floating layers — dropdowns, modals, popovers, command menu |
 
-- Mobile / tablet breakpoints and responsive shell switching
-- Custom column widths or a fifth grid variant
-- Marketing or auth page layouts (use Topbar or no shell separately if needed)
+### Usage rules
+
+- **Default pattern:** `ring-1 ring-stroke-soft-200` + `shadow-regular-xs` on bordered controls (AlignUI select/input pattern).
+- **One shadow per element** — do not stack `regular-xs` and `regular-md`.
+- **Prefer ring over shadow** when a 1px border already defines the edge (dense tables, inline panels).
+
+### Reference only (component internals — do not pick manually)
+
+`shadow-button-*-focus`, `shadow-tooltip`, `shadow-fancy-buttons-*`
+
+### Do not use in product UI
+
+`shadow-custom-*` (xs/lg stacks), colored shadows (Primary/Purple/Orange), `shadow-fancy-buttons-*`, `shadow-regular-sm` (redundant between xs and md).
+
+---
+
+## Corner radius
+
+**Philosophy:** Modern and friendly, not Excel-dense and not iOS-consumer. **12–16px is the product band.** Soft containers, precise data — round the workspace, not every cell.
+
+**Visual goal:** Flowing B2B SaaS — agentic where it matters (AI panels), restrained elsewhere.
+
+### Scale
+
+| Tier | Token / utility | Value | Where to use |
+|------|-----------------|-------|--------------|
+| **Micro** | `--radius-sm` / `rounded-lg`* | 8px | Tags, status badges, micro chips **only** — elements ≤28px tall |
+| **Default** | `--radius` / `rounded-10` | **12px** | **Primary interactive** — buttons, inputs, selects, nav items, dropdown rows, accordion |
+| **Surface** | `--radius-lg` / `rounded-sg-lg` | **16px** | **Content containers** — cards, KPI widgets, alert bodies, AI message blocks, empty states |
+| **Overlay** | `rounded-20` | 20px | Modals, popovers, command menu, drawer panels |
+| **Full** | `--radius-full` / `rounded-full` | 9999px | Circular affordances only — see below |
+
+\*AlignUI maps `rounded-lg` → 8px in `tailwind.config.ts` — this is the micro tier, not Tailwind default.
+
+### SG floor rule
+
+**No user-facing surface below 12px** except micro chips (tags/badges). Migrate legacy `rounded-md` (6px) on interactive elements to `rounded-10`.
+
+**Ceiling:** Do not use 24–28px on product chrome — reads consumer/iOS. Overlays cap at 20px (`rounded-20`).
+
+### Where each tier lives
+
+| Surface | Radius | Rationale |
+|---------|--------|-----------|
+| Buttons, inputs, selects | 12px | Consistent interactive rhythm |
+| Sidebar nav items, tabs, dropdown items | 12px | Same language as buttons |
+| Cards, panels, KPI widgets | 16px | Soft workspace — content floats |
+| Modals, popovers | 20px | Elevated layer, AlignUI default |
+| Data tables | **0px on rows** | Scan lines stay flat; round the **card wrapper** at 16px |
+| Tags, status badges | 8px micro or 12px if taller | Density vs readability |
+| AI / agent panels | 16px | Conversational block — not a pill |
+
+### Full radius — when and why
+
+**Use `rounded-full` for:**
+
+| Element | Why |
+|---------|-----|
+| Avatars | Universal person metaphor |
+| Switch thumbs | Toggle affordance |
+| Icon-only circular buttons | Clear hit target (compact button + `fullRadius`) |
+| Pagination dots | Page indicator convention |
+| Status dots in badges | Indicator light |
+| Segmented control pills | Sliding capsule (theme switch) |
+
+**Do not use full radius on:** cards, modals, primary CTA buttons, table rows, AI text blocks, list items. Full on rectangles reads chat-app / consumer, hurts scanability in dense data UI.
+
+---
+
+## Phase 2 inventory
+
+What is locked in this doc vs still open.
+
+| Category | Status | Notes |
+|----------|--------|-------|
+| Color palette | **Locked** | Semantic stack + dropped tokens; code sync to `#335CFF` pending |
+| Typography | **Locked** | Six roles; preview updated |
+| Icons | **Locked** | Remix Line, sizes, allowlist; components migrated |
+| Grid system | **Locked** | Four shells, desktop only |
+| Shadows | **Locked** | `regular-xs` + `regular-md` only |
+| Corner radius | **Locked** | 12/16/20 tier + full allowlist |
+| **Spacing** | Not started | AlignUI spacing scale — next curation pass |
+| **Figma value sync** | Not started | Names match; values still differ in places |
+| **Figma variable code syntax** | Not started | Needed for MCP token output |
+| **Token preview site** | Partial | Typography, color, radius — add shadows section later |
+| **globals.css sync** | Partial | Doc ahead of code for primary + radius migration on components |
+
+### Notion Phase 2 checklist ([Full Build Plan](https://app.notion.com/p/38e382d615938192a2b4c9057e00c286))
+
+| Notion item | Our progress |
+|-------------|--------------|
+| Export/list Figma tokens | **Done** for color, type, icons, grid, shadow, radius |
+| Reconcile code ↔ Figma names | **Done** for naming; values partially reconciled |
+| Brand tokens verified | **Done** in doc; differs from old Notion brand hex — doc is canonical |
+| Typography tokens | **Done** — Inter, six roles |
+| Token reference page | **Partial** — `/` token preview; expand with shadows |
+| Figma variable code syntax | **Not done** |
+| Migrate to Tailwind v4 `@theme` | **N/A** — repo stays Tailwind v3.4 |
+
+---
+
+## Next steps
+
+1. **Spacing** — curate AlignUI spacing tokens (same pass as above).
+2. **Usage descriptions in agent rules** — fold this doc into `AGENTS.md` / `.cursor/rules` (Phase 4).
+3. **Code sync** — align `globals.css` values + component radius (12px floor) to locked doc.
+4. **Figma sync** — push locked values and code syntax to variable collections.
+5. **Token preview** — add shadows section; expand radius tier labels.
