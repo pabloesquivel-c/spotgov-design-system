@@ -30,7 +30,11 @@ One Vercel project serves both surfaces:
 | `/` | Token preview (Next.js) |
 | `/storybook` | Component catalog (Storybook) |
 
-Connect the repo in Vercel (Next.js auto-detected). `vercel.json` runs `build:deploy`, which builds Storybook into `public/storybook/` then Next.js. Use your **SpotGov team** on Vercel if available; otherwise Personal is fine.
+Connect the repo in Vercel (Next.js auto-detected). The `vercel-build` script runs `build:deploy`, which builds Storybook into `public/storybook/` then Next.js. Use your **SpotGov team** on Vercel if available; otherwise Personal is fine.
+
+**Vercel settings check:** In Project → Settings → Build & Development, leave **Build Command** empty (or delete any custom override) so Vercel uses `vercel-build` / `vercel.json`. If Build Command is set to `next build` or `pnpm build`, Storybook will not be built and `/storybook` will be blank.
+
+If `/storybook` is blank, try `/storybook/index.html` directly. If that also fails, open the latest deployment build log and confirm `build-storybook` ran successfully.
 
 ## License
 

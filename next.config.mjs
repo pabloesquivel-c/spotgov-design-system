@@ -1,18 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/storybook',
-          destination: '/storybook/index.html',
-        },
-        {
-          source: '/storybook/',
-          destination: '/storybook/index.html',
-        },
-      ],
-    };
+  async redirects() {
+    return [
+      {
+        source: '/storybook',
+        destination: '/storybook/index.html',
+        permanent: false,
+      },
+      {
+        source: '/storybook/',
+        destination: '/storybook/index.html',
+        permanent: false,
+      },
+    ];
   },
 };
 
