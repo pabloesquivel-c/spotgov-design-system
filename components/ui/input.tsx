@@ -92,17 +92,17 @@ export const inputVariants = tv({
   variants: {
     size: {
       medium: {
-        root: 'rounded-10',
+        root: 'rounded-12',
         wrapper: 'gap-2 px-3',
         input: 'h-10',
       },
       small: {
-        root: 'rounded-10',
+        root: 'rounded-12',
         wrapper: 'gap-2 px-2.5',
         input: 'h-9',
       },
       xsmall: {
-        root: 'rounded-10',
+        root: 'rounded-12',
         wrapper: 'gap-1.5 px-2',
         input: 'h-8',
       },

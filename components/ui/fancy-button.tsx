@@ -45,15 +45,15 @@ export const fancyButtonVariants = tv({
     },
     size: {
       medium: {
-        root: 'h-10 gap-3 rounded-10 px-3.5',
+        root: 'h-10 gap-3 rounded-12 px-3.5',
         icon: '-mx-1',
       },
       small: {
-        root: 'h-9 gap-3 rounded-10 px-3',
+        root: 'h-9 gap-3 rounded-12 px-3',
         icon: '-mx-1',
       },
       xsmall: {
-        root: 'h-8 gap-3 rounded-10 px-2.5',
+        root: 'h-8 gap-3 rounded-12 px-2.5',
         icon: '-mx-1',
       },
     },

@@ -54,7 +54,7 @@ const DropdownMenuItem = React.forwardRef<
     ref={forwardedRef}
     className={cn(
       // base
-      'group/item relative cursor-pointer select-none rounded-10 p-2 text-paragraph-sm text-text-strong-950 outline-none',
+      'group/item relative cursor-pointer select-none rounded-12 p-2 text-paragraph-sm text-text-strong-950 outline-none',
       'flex items-center gap-2',
       'transition duration-200 ease-out',
       // hover
@@ -130,7 +130,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     ref={forwardedRef}
     className={cn(
       // base
-      'group/item relative cursor-pointer select-none rounded-10 p-2 text-paragraph-sm text-text-strong-950 outline-0',
+      'group/item relative cursor-pointer select-none rounded-12 p-2 text-paragraph-sm text-text-strong-950 outline-0',
       'flex items-center gap-2',
       'transition duration-200 ease-out',
       // hover

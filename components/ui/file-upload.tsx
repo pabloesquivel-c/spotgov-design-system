@@ -41,7 +41,7 @@ const FileUploadButton = React.forwardRef<
     <Component
       ref={forwardedRef}
       className={cn(
-        'inline-flex h-8 items-center justify-center gap-2.5 whitespace-nowrap rounded-10 bg-bg-white-0 px-2.5 text-label-sm text-text-sub-600',
+        'inline-flex h-8 items-center justify-center gap-2.5 whitespace-nowrap rounded-12 bg-bg-white-0 px-2.5 text-label-sm text-text-sub-600',
         'pointer-events-none ring-1 ring-inset ring-stroke-soft-200',
         className,
       )}

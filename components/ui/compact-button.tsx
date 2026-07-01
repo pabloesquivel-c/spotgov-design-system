@@ -71,7 +71,7 @@ export const compactButtonVariants = tv({
         root: 'rounded-full',
       },
       false: {
-        root: 'rounded-10',
+        root: 'rounded-12',
       },
     },
   },

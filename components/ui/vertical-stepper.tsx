@@ -50,7 +50,7 @@ const verticalStepperItemVariants = tv({
   slots: {
     root: [
       // base
-      'grid w-full auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5 rounded-10 p-2 text-left text-paragraph-sm',
+      'grid w-full auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5 rounded-12 p-2 text-left text-paragraph-sm',
     ],
     indicator: [
       // base

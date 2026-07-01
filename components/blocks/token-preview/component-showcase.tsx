@@ -1,6 +1,12 @@
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Hint from '@/components/ui/hint';
+import * as StatusBadge from '@/components/ui/status-badge';
+import {
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiTimeLine,
+} from '@remixicon/react';
 import {
   Input as InputField,
   Root as InputRoot,
@@ -28,6 +34,8 @@ export function ComponentShowcase() {
           Primary buttons use filled blue for the main action on a screen.
           Stroke and lighter variants step back for secondary choices. Ghost
           works for toolbar actions. Neutral and error variants cover the rest.
+          Buttons include hover, pressed, focus-visible, disabled, and loading
+          states.
         </ArticleParagraph>
         <ArticleGallery className='space-y-4'>
           <div className='flex flex-wrap gap-3'>
@@ -64,14 +72,26 @@ export function ComponentShowcase() {
               XXSmall
             </Button.Root>
           </div>
+          <div className='flex flex-wrap items-center gap-3'>
+            <Button.Root variant='primary' disabled>
+              Disabled
+            </Button.Root>
+            <Button.Root variant='primary' loading>
+              Loading
+            </Button.Root>
+            <Button.Root variant='neutral' mode='stroke' loading>
+              Syncing
+            </Button.Root>
+          </div>
         </ArticleGallery>
       </ArticleSubsection>
 
       <ArticleSubsection title='Badges'>
         <ArticleParagraph>
           Filled badges use data visualization colors for categories like agency
-          type. Light badges carry semantic status: awarded, pending review,
-          rejected.
+          type. Workflow state uses StatusBadge with text plus an icon or shape,
+          so awarded, pending review, and rejected are not communicated by color
+          alone.
         </ArticleParagraph>
         <ArticleGallery className='space-y-3'>
           <div className='flex flex-wrap gap-2'>
@@ -95,15 +115,18 @@ export function ComponentShowcase() {
             </Badge.Root>
           </div>
           <div className='flex flex-wrap gap-2'>
-            <Badge.Root variant='light' color='green'>
+            <StatusBadge.Root variant='light' status='completed'>
+              <StatusBadge.Icon as={RiCheckboxCircleLine} />
               Awarded
-            </Badge.Root>
-            <Badge.Root variant='light' color='orange'>
+            </StatusBadge.Root>
+            <StatusBadge.Root variant='light' status='pending'>
+              <StatusBadge.Icon as={RiTimeLine} />
               Pending review
-            </Badge.Root>
-            <Badge.Root variant='light' color='red'>
+            </StatusBadge.Root>
+            <StatusBadge.Root variant='light' status='failed'>
+              <StatusBadge.Icon as={RiCloseCircleLine} />
               Rejected
-            </Badge.Root>
+            </StatusBadge.Root>
           </div>
         </ArticleGallery>
       </ArticleSubsection>

@@ -33,7 +33,7 @@ export function ShadowsSection() {
           {shadowSamples.map((item) => (
             <div key={item.name} className='flex flex-col items-center gap-3'>
               <div
-                className={`flex h-24 w-full items-center justify-center rounded-sg-lg bg-bg-white-0 ring-1 ring-stroke-soft-200 ${item.utility}`}
+                className={`flex h-24 w-full items-center justify-center rounded-16 bg-bg-white-0 ring-1 ring-stroke-soft-200 ${item.utility}`}
               >
                 <span className='text-[14px] font-medium text-[var(--article-heading)]'>
                   Preview

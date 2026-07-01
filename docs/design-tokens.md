@@ -2,6 +2,8 @@
 
 Canonical decisions for SpotGov product UI, curated from AlignUI Design System 2.0. **This doc is the source of truth** for naming, values, and where each token applies. Code in `app/globals.css` is synced; Figma variables follow in a manual pass (code wins).
 
+**Accessibility companion:** [`docs/accessibility.md`](./accessibility.md) — WCAG baseline, contrast pairings, keyboard focus, status, and component state rules.
+
 **Agent entry point:** [`AGENTS.md`](../AGENTS.md) — non-negotiables and pointer to this doc.
 
 **Figma file:** [AlignUI Design System 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-)
@@ -30,7 +32,7 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 |------|--------|--------------|
 | **Static** | `static-black`, `static-white` | Absolute black/white — text on filled buttons, inverse surfaces |
 | **Background** | `bg-strong-950`, `bg-surface-800`, `bg-sub-300`, `bg-soft-200`, `bg-weak-50`, `bg-white-0` | Page canvas (`bg-white-0`), section fills (`bg-weak-50`), disabled fields, subtle panels |
-| **Text** | `text-strong-950`, `text-sub-600`, `text-soft-400`, `text-disabled-300`, `text-white-0` | Headings and primary copy; secondary copy and descriptions; timestamps and metadata; disabled labels; text on dark/filled surfaces |
+| **Text** | `text-strong-950`, `text-sub-600`, `text-soft-400`, `text-disabled-300`, `text-white-0` | Headings and primary copy; secondary copy, metadata, and descriptions; decorative low-emphasis text only; disabled labels; text on dark/filled surfaces |
 | **Stroke** | `stroke-strong-950`, `stroke-sub-300`, `stroke-soft-200`, `stroke-white-0` | Input borders (`stroke-soft-200`), dividers, card rings, table borders |
 | **Icon** | Mirror text roles | Same pairing as text — `icon-sub-600` for neutral actions, semantic `*-base` for status |
 
@@ -46,9 +48,43 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 | `faded-*` | Archived, inactive, disabled records |
 | `information-*` | Tips, help callouts, neutral informational banners |
 
+**Status accessibility:** Status components must include a text label and a redundant non-color cue. Use `StatusBadge.Icon` or `StatusBadge.Dot`; do not present Awarded / Pending / Rejected states through green/yellow/red color alone.
+
 ### Dropped (do not use in product UI)
 
 `verified-*`, `highlighted-*`, `stable-*`
+
+---
+
+## Accessibility baseline
+
+**Standard:** SpotGov product UI targets WCAG 2.1 AA.
+
+### Contrast
+
+| Use | Required pairing |
+|-----|------------------|
+| 12–14px body, captions, labels, metadata | `text-text-sub-600` or stronger on `bg-bg-white-0` |
+| Primary copy and headings | `text-text-strong-950` |
+| Disabled controls | `text-text-disabled-300` only when the control is actually disabled |
+| Decorative / non-essential text | `text-text-soft-400` allowed only when the information is not required to complete a task |
+
+`text-text-soft-400` is below AA for normal 12–14px text on `bg-bg-white-0`; do not use it for timestamps, table metadata, helper text, or other user-facing task information.
+
+### Focus
+
+Every interactive element must have a visible `focus-visible` state. Use the existing focus shadows for buttons (`shadow-button-primary-focus`, `shadow-button-important-focus`, `shadow-button-error-focus`) and pair focus rings with `primary-base` or `stroke-strong-950` depending on variant. Never remove outlines without replacing them.
+
+### Status
+
+Do not rely on hue alone. Pair semantic color with clear text and either an icon or a shape:
+
+| Status | Token | Redundant cue |
+|--------|-------|---------------|
+| Awarded / completed | `success-*` | check icon |
+| Pending / in review | `away-*` or `warning-*` | clock icon or dot |
+| Rejected / failed | `error-*` | close/error icon |
+| Disabled / inactive | `faded-*` | muted icon or disabled affordance |
 
 ---
 
@@ -58,14 +94,16 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 
 ### Six product roles
 
-| SG role | Utility | Spec | Where to use |
-|---------|---------|------|--------------|
-| Page title | `text-title-h6` | 20px / 500 | Top of page — dashboard title, detail view title |
-| Section heading | `text-label-md` | 16px / 500 | Card headers, modal titles, settings group labels |
-| Body | `text-paragraph-sm` | 14px / 400 | Descriptions, table cell text, form helper copy, nav labels |
-| Label | `text-label-sm` | 14px / 500 | Field labels, column headers, button text, emphasized inline text |
-| Caption | `text-paragraph-xs` | 12px / 400 | Timestamps, footnotes, secondary metadata |
-| Micro label | `text-label-xs` | 12px / 500 | Badges, tags, compact table headers, filter chips |
+| SG role | Preferred utility | Legacy AlignUI utility | Spec | Where to use |
+|---------|-------------------|------------------------|------|--------------|
+| Page title | `text-sg-page-title` | `text-title-h6` | 20px / 28px / 500 | Top of page — dashboard title, detail view title |
+| Section heading | `text-sg-section` | `text-label-md` | 16px / 24px / 500 | Card headers, modal titles, settings group labels |
+| Body | `text-sg-body` | `text-paragraph-sm` | 14px / 20px / 400 | Descriptions, table cell text, form helper copy, nav labels |
+| Label | `text-sg-label` | `text-label-sm` | 14px / 20px / 500 | Field labels, column headers, button text, emphasized inline text |
+| Caption | `text-sg-metadata` | `text-paragraph-xs` | 12px / 16px / 400 | Timestamps, footnotes, secondary metadata |
+| Micro label | `text-sg-small-label` | `text-label-xs` | 12px / 16px / 500 | Badges, tags, compact table headers, filter chips |
+
+**Naming rule:** Use SG semantic aliases in new product UI and docs. Legacy AlignUI utility names remain available inside imported primitives and compatibility layers, but avoid heading-level names (`h1`–`h6`) for product roles.
 
 ### Color pairing
 
@@ -73,11 +111,12 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 |-----------|-------|
 | Primary | `text-strong-950` |
 | Secondary | `text-sub-600` |
-| Metadata | `text-soft-400` |
+| Metadata | `text-sub-600` |
+| Decorative low emphasis | `text-soft-400` |
 
 ### Do not use in product UI
 
-`text-title-h1`–`h5`, `text-paragraph-xl/lg/md`, `text-label-xl/lg`, `text-subheading-*`, `text-doc-*`, marketing hero styles.
+`text-title-h1`–`h5`, `text-paragraph-xl/lg/md`, `text-label-xl/lg`, `text-subheading-*`, `text-doc-*`, marketing hero styles. `text-title-h6` is compatibility-only; prefer `text-sg-page-title`.
 
 ---
 
@@ -138,6 +177,19 @@ Documented in repo — chrome, actions, objects, status, and domain icons (`RiBu
 
 **AI layout pattern:** Specify shell + column spans — e.g. *“Sidebar Expanded. Row 1: three KPI widgets × 4 cols. Row 2: table × 12 cols.”*
 
+### Responsive contract
+
+The 12-column dashboard grid applies at desktop widths. Use Tailwind's default breakpoints for responsive behavior:
+
+| Range | Layout rule |
+|-------|-------------|
+| `< md` | Single-column content. Avoid dense side-by-side data widgets. Navigation collapses to topbar or drawer. |
+| `md`–`lg` | Two-column opportunities only when both panels remain readable; otherwise stack. |
+| `lg+` | Use the documented 12-column shell/grid variants. |
+| `2xl` | Keep content within the 1440px grid; do not stretch tables or cards indefinitely. |
+
+For AI-generated screens, always specify both the desktop shell and the collapse behavior for smaller breakpoints.
+
 ---
 
 ## Shadows
@@ -177,19 +229,19 @@ Documented in repo — chrome, actions, objects, status, and domain icons (`RiBu
 
 ### Scale
 
-| Tier | Token / utility | Value | Where to use |
-|------|-----------------|-------|--------------|
-| **Micro** | `--radius-sm` / `rounded-lg`* | 8px | Tags, status badges, micro chips **only** — elements ≤28px tall |
-| **Default** | `--radius` / `rounded-10` | **12px** | **Primary interactive** — buttons, inputs, selects, nav items, dropdown rows, accordion |
-| **Surface** | `--radius-lg` / `rounded-sg-lg` | **16px** | **Content containers** — cards, KPI widgets, alert bodies, AI message blocks, empty states |
-| **Overlay** | `rounded-20` | 20px | Modals, popovers, command menu, drawer panels |
+| Tier | Preferred utility | Compatibility aliases | Value | Where to use |
+|------|-------------------|-----------------------|-------|--------------|
+| **Micro** | `rounded-8` | `rounded-lg`, `rounded-sg-micro` | 8px | Tags, badges, micro chips **only** — elements ≤28px tall |
+| **Default** | `rounded-12` | `rounded-10`, `rounded-md`, `rounded-sg-default` | **12px** | **Primary interactive** — buttons, inputs, selects, nav items, dropdown rows, accordion |
+| **Surface** | `rounded-16` | `rounded-sg-lg`, `rounded-sg-surface` | **16px** | **Content containers** — cards, KPI widgets, alert bodies, AI message blocks, empty states |
+| **Overlay** | `rounded-20` | `rounded-sg-overlay` | 20px | Modals, popovers, command menu, drawer panels |
 | **Full** | `--radius-full` / `rounded-full` | 9999px | Circular affordances only — see below |
 
-\*AlignUI maps `rounded-lg` → 8px in `tailwind.config.ts` — this is the micro tier, not Tailwind default.
+**Naming rule:** Prefer the numeric utilities in new product UI. Compatibility aliases exist because AlignUI defaults and older code used misleading names (`rounded-lg` = 8px, `rounded-10` = 12px).
 
 ### SG floor rule
 
-**No user-facing surface below 12px** except micro chips (tags/badges). Migrate legacy `rounded-md` (6px) on interactive elements to `rounded-10`.
+**No user-facing surface below 12px** except micro chips (tags/badges). Migrate legacy interactive radii to `rounded-12`.
 
 **Ceiling:** Do not use 24–28px on product chrome — reads consumer/iOS. Overlays cap at 20px (`rounded-20`).
 
@@ -312,6 +364,27 @@ Use **8px steps** for layout and containers:
 - Single global density — every screen must pick dense or breathable **per surface**, not per product.
 - `gap-5` (20px) between dashboard widgets — falls between the two modes; use 24px (`gap-6`) instead.
 - Generous padding inside table rows — wastes viewport on tender lists and procurement data.
+
+---
+
+## Component states
+
+### Buttons
+
+All button variants must document and support these states:
+
+| State | Requirement |
+|-------|-------------|
+| Default | Uses semantic variant/mode tokens only |
+| Hover | Uses existing darker/tinted token step |
+| Pressed / active | Slightly stronger than hover; use the pressed token step (`primary-dark`, darker neutral, or error dark) |
+| Focus-visible | Visible focus shadow/ring; keyboard-only when possible |
+| Disabled | Non-interactive, `disabled` attribute, `text-text-disabled-300` |
+| Loading | Keeps button width stable, sets `aria-busy`, disables repeated submission, and shows a non-color loading indicator |
+
+### Badges and status
+
+Use status badges for workflow state and regular badges for category labels. Status badges require label text plus an icon or dot. Category badges may use color as decoration, but category meaning must still be present in the text.
 
 ---
 

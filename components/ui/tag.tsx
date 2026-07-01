@@ -15,7 +15,7 @@ const TAG_DISMISS_ICON_NAME = 'TagDismissIcon';
 export const tagVariants = tv({
   slots: {
     root: [
-      'group/tag inline-flex h-6 items-center gap-2 rounded-md px-2 text-label-xs text-text-sub-600',
+      'group/tag inline-flex h-6 items-center gap-2 rounded-8 px-2 text-label-xs text-text-sub-600',
       'transition duration-200 ease-out',
       'ring-1 ring-inset',
     ],
