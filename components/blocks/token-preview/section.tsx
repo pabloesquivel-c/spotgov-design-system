@@ -1,24 +1,55 @@
 import { cn } from '@/utils/cn';
+import {
+  ArticleParagraph,
+  ArticleSection,
+  articleSubheading,
+} from './article';
 
 type SectionProps = {
   title: string;
   description?: string;
   children: React.ReactNode;
   className?: string;
+  id?: string;
 };
 
-export function Section({ title, description, children, className }: SectionProps) {
+/** @deprecated Use ArticleSection directly in new article-style sections. */
+export function Section({ title, description, children, className, id }: SectionProps) {
   return (
-    <section className={cn('py-10', className)}>
-      <div className='mb-6'>
-        <h2 className='text-label-md text-text-strong-950'>{title}</h2>
-        {description ? (
-          <p className='mt-1 text-paragraph-sm text-text-sub-600'>
-            {description}
-          </p>
-        ) : null}
-      </div>
+    <ArticleSection id={id} title={title} className={className}>
+      {description ? <ArticleParagraph>{description}</ArticleParagraph> : null}
       {children}
-    </section>
+    </ArticleSection>
+  );
+}
+
+export function Subsection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className='space-y-4'>
+      <h3 className={articleSubheading}>{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+export function TokenMeta({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
+  return (
+    <p className={cn('text-[14px] leading-5 text-text-soft-400', className)}>
+      <span className='text-text-sub-600'>{label}</span> {value}
+    </p>
   );
 }

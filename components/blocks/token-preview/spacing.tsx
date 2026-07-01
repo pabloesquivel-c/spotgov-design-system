@@ -1,4 +1,12 @@
-import { Section } from './section';
+import {
+  ArticleGallery,
+  ArticleGalleryRow,
+  ArticleParagraph,
+  ArticleSection,
+  ArticleSubsection,
+  articleTag,
+  articleToken,
+} from './article';
 
 const denseSteps = [
   { label: '4px', utility: 'gap-1 / p-1', className: 'gap-1' },
@@ -24,44 +32,56 @@ function SpacingRow({
   className: string;
 }) {
   return (
-    <div className='flex items-center gap-4'>
+    <ArticleGalleryRow>
       <div className={`flex ${className}`}>
-        <div className='size-6 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
-        <div className='size-6 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
-        <div className='size-6 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
+        <div className='size-5 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
+        <div className='size-5 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
+        <div className='size-5 rounded bg-primary-alpha-16 ring-1 ring-primary-alpha-24' />
       </div>
-      <div>
-        <p className='text-label-sm text-text-strong-950'>{label}</p>
-        <p className='text-paragraph-xs text-text-soft-400'>{utility}</p>
+      <div className='flex items-baseline gap-3'>
+        <p className='text-[14px] font-medium text-[var(--article-heading)]'>
+          {label}
+        </p>
+        <code className={articleTag}>{utility}</code>
       </div>
-    </div>
+    </ArticleGalleryRow>
   );
 }
 
 export function SpacingSection() {
   return (
-    <>
-      <Section
-        title='Spacing — dense (4px rhythm)'
-        description='Tables, toolbars, menus, inline controls. Step by 4px, cap at 16px.'
-      >
-        <div className='flex flex-col gap-4'>
+    <ArticleSection title='Spacing'>
+      <ArticleParagraph>
+        Spacing follows a dual-density rhythm on a 4px grid. Dense spacing keeps
+        data views compact. Breathable spacing gives cards and sections room to
+        breathe. Both live in the same system; the context decides which to use.
+      </ArticleParagraph>
+
+      <ArticleSubsection title='Dense rhythm'>
+        <ArticleParagraph>
+          Use inside tables, toolbars, menus, and inline controls. Step by 4px
+          and cap at 16px. Tight gaps keep related items visually grouped.
+        </ArticleParagraph>
+        <ArticleGallery>
           {denseSteps.map((step) => (
             <SpacingRow key={step.label} {...step} />
           ))}
-        </div>
-      </Section>
+        </ArticleGallery>
+      </ArticleSubsection>
 
-      <Section
-        title='Spacing — breathable (8px rhythm)'
-        description='Cards, sections, widgets. Defaults: gap-6 (24px) between widgets, gap-8 (32px) between sections, p-6 (24px) card padding.'
-      >
-        <div className='flex flex-col gap-4'>
+      <ArticleSubsection title='Breathable rhythm'>
+        <ArticleParagraph>
+          Use between cards, widgets, and page sections. Default to{' '}
+          <code className={articleToken}>gap-6</code> (24px) between widgets,{' '}
+          <code className={articleToken}>gap-8</code> (32px) between sections,
+          and <code className={articleToken}>p-6</code> (24px) for card padding.
+        </ArticleParagraph>
+        <ArticleGallery>
           {breathableSteps.map((step) => (
             <SpacingRow key={`b-${step.label}`} {...step} />
           ))}
-        </div>
-      </Section>
-    </>
+        </ArticleGallery>
+      </ArticleSubsection>
+    </ArticleSection>
   );
 }

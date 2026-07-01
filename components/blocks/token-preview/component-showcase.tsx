@@ -7,17 +7,29 @@ import {
   Wrapper as InputWrapper,
 } from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
-import { Section } from './section';
+import {
+  ArticleGallery,
+  ArticleParagraph,
+  ArticleSection,
+  ArticleSubsection,
+} from './article';
 
 export function ComponentShowcase() {
   return (
-    <Section
-      title='Components'
-      description='AlignUI Button, Badge, Input, Label, and Hint with SpotGov token overrides.'
-    >
-      <div className='flex flex-col gap-10'>
-        <div className='flex flex-col gap-4'>
-          <h3 className='text-label-sm text-text-strong-950'>Button</h3>
+    <ArticleSection title='Components'>
+      <ArticleParagraph>
+        These are the AlignUI primitives we use daily, with SpotGov token
+        overrides applied. They inherit the colors, radius, and shadows above.
+        Start here when building forms, actions, and status indicators.
+      </ArticleParagraph>
+
+      <ArticleSubsection title='Buttons'>
+        <ArticleParagraph>
+          Primary buttons use filled blue for the main action on a screen.
+          Stroke and lighter variants step back for secondary choices. Ghost
+          works for toolbar actions. Neutral and error variants cover the rest.
+        </ArticleParagraph>
+        <ArticleGallery className='space-y-4'>
           <div className='flex flex-wrap gap-3'>
             <Button.Root variant='primary' mode='filled'>
               Primary filled
@@ -31,8 +43,6 @@ export function ComponentShowcase() {
             <Button.Root variant='primary' mode='ghost'>
               Primary ghost
             </Button.Root>
-          </div>
-          <div className='flex flex-wrap gap-3'>
             <Button.Root variant='neutral' mode='stroke'>
               Neutral stroke
             </Button.Root>
@@ -54,13 +64,16 @@ export function ComponentShowcase() {
               XXSmall
             </Button.Root>
           </div>
-        </div>
+        </ArticleGallery>
+      </ArticleSubsection>
 
-        <div className='flex flex-col gap-4'>
-          <h3 className='text-label-sm text-text-strong-950'>Badge</h3>
-          <p className='text-paragraph-xs text-text-sub-600'>
-            Data viz colors · filled
-          </p>
+      <ArticleSubsection title='Badges'>
+        <ArticleParagraph>
+          Filled badges use data visualization colors for categories like agency
+          type. Light badges carry semantic status: awarded, pending review,
+          rejected.
+        </ArticleParagraph>
+        <ArticleGallery className='space-y-3'>
           <div className='flex flex-wrap gap-2'>
             <Badge.Root variant='filled' color='blue'>
               Federal
@@ -81,9 +94,6 @@ export function ComponentShowcase() {
               Healthcare
             </Badge.Root>
           </div>
-          <p className='text-paragraph-xs text-text-sub-600'>
-            Semantic status · light
-          </p>
           <div className='flex flex-wrap gap-2'>
             <Badge.Root variant='light' color='green'>
               Awarded
@@ -95,12 +105,15 @@ export function ComponentShowcase() {
               Rejected
             </Badge.Root>
           </div>
-        </div>
+        </ArticleGallery>
+      </ArticleSubsection>
 
-        <div className='flex flex-col gap-4'>
-          <h3 className='text-label-sm text-text-strong-950'>
-            Input + Label + Hint
-          </h3>
+      <ArticleSubsection title='Inputs'>
+        <ArticleParagraph>
+          Labels sit above fields. Hints below explain format or constraints.
+          Disabled states fade both the field and its helper text.
+        </ArticleParagraph>
+        <ArticleGallery className='space-y-6'>
           <div className='max-w-sm space-y-1.5'>
             <Label.Root htmlFor='agency-input'>
               Agency name
@@ -131,8 +144,8 @@ export function ComponentShowcase() {
             </InputRoot>
             <Hint.Root disabled>Assigned after submission.</Hint.Root>
           </div>
-        </div>
-      </div>
-    </Section>
+        </ArticleGallery>
+      </ArticleSubsection>
+    </ArticleSection>
   );
 }
