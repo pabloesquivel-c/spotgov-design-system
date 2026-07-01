@@ -42,8 +42,10 @@ export function ColorsSection() {
           Page canvas is <code className={articleToken}>bg-white-0</code>.
           Subtle panels use <code className={articleToken}>bg-weak-50</code>.
           Headings read in <code className={articleToken}>text-strong-950</code>,
-          descriptions in <code className={articleToken}>text-sub-600</code>,
+          descriptions and metadata in <code className={articleToken}>text-sub-600</code>,
           and dividers in <code className={articleToken}>stroke-soft-200</code>.
+          Use <code className={articleToken}>text-soft-400</code> only for
+          decorative low-emphasis text on white surfaces.
         </ArticleParagraph>
         <ArticleGallery>
           <SwatchRow>
@@ -64,7 +66,8 @@ export function ColorsSection() {
           Three core feedback colors cover most product states. Warning for
           approaching deadlines and non-blocking issues. Error for failures and
           destructive actions. Success for completed steps and confirmed
-          outcomes.
+          outcomes. Status UI must pair color with label text plus an icon or
+          shape.
         </ArticleParagraph>
         <ArticleGallery>
           <SwatchRow>

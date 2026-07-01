@@ -27,7 +27,7 @@ const AccordionItem = React.forwardRef<
       className={cn(
         // base
         'group/accordion',
-        'rounded-10 bg-bg-white-0 p-3.5 ring-1 ring-inset ring-stroke-soft-200',
+        'rounded-12 bg-bg-white-0 p-3.5 ring-1 ring-inset ring-stroke-soft-200',
         'transition duration-200 ease-out',
         // hover
         'hover:bg-bg-weak-50 hover:ring-transparent',

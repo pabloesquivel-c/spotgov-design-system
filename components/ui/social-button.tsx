@@ -13,7 +13,7 @@ export const socialButtonVariants = tv({
   slots: {
     root: [
       // base
-      'relative inline-flex h-10 items-center justify-center gap-3.5 whitespace-nowrap rounded-10 px-4 text-label-sm outline-none',
+      'relative inline-flex h-10 items-center justify-center gap-3.5 whitespace-nowrap rounded-12 px-4 text-label-sm outline-none',
       'transition duration-200 ease-out',
       // focus
       'focus:outline-none',
@@ -36,7 +36,7 @@ export const socialButtonVariants = tv({
           // base
           'text-static-white',
           // before
-          'before:pointer-events-none before:absolute before:inset-0 before:rounded-10 before:opacity-0 before:transition before:duration-200 before:ease-out',
+          'before:pointer-events-none before:absolute before:inset-0 before:rounded-12 before:opacity-0 before:transition before:duration-200 before:ease-out',
           // hover
           'hover:before:opacity-100',
           // focus

@@ -19,43 +19,49 @@ import {
 const typeSamples = [
   {
     token: 'Page title',
-    utility: 'text-title-h6',
-    spec: '20/500',
+    utility: 'text-sg-page-title',
+    legacyUtility: 'text-title-h6',
+    spec: '20/28/500',
     sample: 'Procurement dashboard',
     note: 'Top of a page or detail view, one per screen',
   },
   {
     token: 'Section heading',
-    utility: 'text-label-md',
-    spec: '16/500',
+    utility: 'text-sg-section',
+    legacyUtility: 'text-label-md',
+    spec: '16/24/500',
     sample: 'Active opportunities',
     note: 'Card headers, modal titles, settings groups',
   },
   {
     token: 'Body',
-    utility: 'text-paragraph-sm',
-    spec: '14/400',
+    utility: 'text-sg-body',
+    legacyUtility: 'text-paragraph-sm',
+    spec: '14/20/400',
     sample: 'Find, track, and win government contracts.',
     note: 'Descriptions, table cells, form helpers',
   },
   {
     token: 'Label',
-    utility: 'text-label-sm',
-    spec: '14/500',
+    utility: 'text-sg-label',
+    legacyUtility: 'text-label-sm',
+    spec: '14/20/500',
     sample: 'Contract status',
     note: 'Field labels, column headers, button text',
   },
   {
     token: 'Caption',
-    utility: 'text-paragraph-xs',
-    spec: '12/400',
+    utility: 'text-sg-metadata',
+    legacyUtility: 'text-paragraph-xs',
+    spec: '12/16/400',
     sample: 'Updated 2 hours ago',
     note: 'Timestamps, footnotes, secondary metadata',
   },
   {
     token: 'Micro label',
-    utility: 'text-label-xs',
-    spec: '12/500',
+    utility: 'text-sg-small-label',
+    legacyUtility: 'text-label-xs',
+    spec: '12/16/500',
     sample: 'Filter by agency',
     note: 'Badges, tags, compact table headers',
   },
@@ -68,9 +74,9 @@ export function TypographySection() {
   return (
     <ArticleSection title='Typography'>
       <ArticleParagraph>
-        SpotGov uses six text roles. Two weights only: 400 for reading copy and
-        500 for emphasis. Hierarchy comes from size and color, not from a large
-        type scale. Inter is the sole typeface.
+        SpotGov uses six semantic text roles. Two weights only: 400 for reading
+        copy and 500 for emphasis. Hierarchy comes from size, line-height, and
+        color, not from heading-level utility names. Inter is the sole typeface.
       </ArticleParagraph>
 
       <ArticleGallery>
@@ -93,7 +99,7 @@ export function TypographySection() {
               type='button'
               onClick={() => setPreview('')}
               aria-label='Reset preview text'
-              className='flex size-9 shrink-0 items-center justify-center rounded-10 text-[var(--article-meta)] transition-colors hover:bg-black/5 hover:text-[var(--article-heading)]'
+              className='flex size-9 shrink-0 items-center justify-center rounded-12 text-[var(--article-meta)] transition-colors hover:bg-black/5 hover:text-[var(--article-heading)]'
             >
               <RiRefreshLine className='size-4' />
             </button>
@@ -106,8 +112,11 @@ export function TypographySection() {
               <p className={`${item.utility} text-[var(--article-heading)]`}>
                 {isPreviewing ? preview : item.sample}
               </p>
-              <p className='mt-1.5 text-[13px] leading-[18px] text-[var(--article-meta)]'>
+              <p className='mt-1.5 text-[13px] leading-[18px] text-[var(--article-text)]'>
                 {item.token} · {item.spec} — {item.note}
+              </p>
+              <p className='mt-1 text-[12px] leading-4 text-[var(--article-meta)]'>
+                Legacy primitive utility: {item.legacyUtility}
               </p>
             </div>
             <code className={`${articleTag} shrink-0`}>{item.utility}</code>
@@ -118,8 +127,9 @@ export function TypographySection() {
       <ArticleParagraph>
         Pair text color with intent. Primary copy uses{' '}
         <code className={articleToken}>text-strong-950</code>. Supporting copy
-        uses <code className={articleToken}>text-sub-600</code>. Metadata and
-        timestamps use <code className={articleToken}>text-soft-400</code>.
+        and readable metadata use <code className={articleToken}>text-sub-600</code>.
+        Reserve <code className={articleToken}>text-soft-400</code> for
+        decorative, non-essential text only.
       </ArticleParagraph>
     </ArticleSection>
   );

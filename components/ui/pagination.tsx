@@ -26,13 +26,13 @@ const paginationVariants = tv({
         root: 'gap-2',
         item: [
           // base
-          'h-8 min-w-8 rounded-10 px-1.5 ring-1 ring-inset ring-stroke-soft-200',
+          'h-8 min-w-8 rounded-12 px-1.5 ring-1 ring-inset ring-stroke-soft-200',
           // hover
           'hover:bg-bg-weak-50 hover:ring-transparent',
         ],
         navButton: [
           // base
-          'size-8 rounded-10',
+          'size-8 rounded-12',
           // hover
           'hover:bg-bg-weak-50',
         ],

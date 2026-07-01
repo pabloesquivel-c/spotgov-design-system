@@ -1,4 +1,5 @@
 import { ArticleHeader, ArticleLayout, ArticleParagraph } from './article';
+import { AccessibilitySection } from './accessibility';
 import { ColorsSection } from './colors';
 import { ComponentShowcase } from './component-showcase';
 import { RadiusSection } from './radius';
@@ -28,6 +29,7 @@ export function TokenPreview() {
       <RadiusSection />
       <ShadowsSection />
       <SpacingSection />
+      <AccessibilitySection />
       <ComponentShowcase />
     </ArticleLayout>
   );

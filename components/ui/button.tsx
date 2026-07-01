@@ -1,6 +1,7 @@
 // AlignUI Button v0.0.0
 
 import * as React from 'react';
+import { RiLoader4Line } from '@remixicon/react';
 import { tv, type VariantProps } from '@/utils/tv';
 import { recursiveCloneChildren } from '@/utils/recursive-clone-children';
 import type { PolymorphicComponentProps } from '@/utils/polymorphic';
@@ -45,19 +46,19 @@ export const buttonVariants = tv({
     },
     size: {
       medium: {
-        root: 'h-10 gap-3 rounded-10 px-3.5 text-label-sm',
+        root: 'h-10 gap-3 rounded-12 px-3.5 text-label-sm',
         icon: '-mx-1',
       },
       small: {
-        root: 'h-9 gap-3 rounded-10 px-3 text-label-sm',
+        root: 'h-9 gap-3 rounded-12 px-3 text-label-sm',
         icon: '-mx-1',
       },
       xsmall: {
-        root: 'h-8 gap-2.5 rounded-10 px-2.5 text-label-sm',
+        root: 'h-8 gap-2.5 rounded-12 px-2.5 text-label-sm',
         icon: '-mx-1',
       },
       xxsmall: {
-        root: 'h-7 gap-2.5 rounded-10 px-2 text-label-sm',
+        root: 'h-7 gap-2.5 rounded-12 px-2 text-label-sm',
         icon: '-mx-1',
       },
     },
@@ -73,6 +74,8 @@ export const buttonVariants = tv({
           'bg-primary-base text-static-white',
           // hover
           'hover:bg-primary-darker',
+          // pressed
+          'active:bg-primary-dark',
           // focus
           'focus-visible:shadow-button-primary-focus',
         ],
@@ -87,6 +90,8 @@ export const buttonVariants = tv({
           'bg-bg-white-0 text-primary-base ring-primary-base',
           // hover
           'hover:bg-primary-alpha-10 hover:ring-transparent',
+          // pressed
+          'active:bg-primary-alpha-16 active:ring-transparent',
           // focus
           'focus-visible:shadow-button-primary-focus',
         ],
@@ -101,6 +106,8 @@ export const buttonVariants = tv({
           'bg-primary-alpha-10 text-primary-base ring-transparent',
           // hover
           'hover:bg-bg-white-0 hover:ring-primary-base',
+          // pressed
+          'active:bg-primary-alpha-16 active:ring-primary-base',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
         ],
@@ -115,6 +122,8 @@ export const buttonVariants = tv({
           'bg-transparent text-primary-base ring-transparent',
           // hover
           'hover:bg-primary-alpha-10',
+          // pressed
+          'active:bg-primary-alpha-16',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
         ],
@@ -132,6 +141,8 @@ export const buttonVariants = tv({
           'bg-bg-strong-950 text-text-white-0',
           // hover
           'hover:bg-bg-surface-800',
+          // pressed
+          'active:bg-bg-strong-950',
           // focus
           'focus-visible:shadow-button-important-focus',
         ],
@@ -146,6 +157,8 @@ export const buttonVariants = tv({
           'bg-bg-white-0 text-text-sub-600 shadow-regular-xs ring-stroke-soft-200',
           // hover
           'hover:bg-bg-weak-50 hover:text-text-strong-950 hover:shadow-none hover:ring-transparent',
+          // pressed
+          'active:bg-bg-soft-200 active:text-text-strong-950 active:shadow-none active:ring-transparent',
           // focus
           'focus-visible:text-text-strong-950 focus-visible:shadow-button-important-focus focus-visible:ring-stroke-strong-950',
         ],
@@ -160,6 +173,8 @@ export const buttonVariants = tv({
           'bg-bg-weak-50 text-text-sub-600 ring-transparent',
           // hover
           'hover:bg-bg-white-0 hover:text-text-strong-950 hover:shadow-regular-xs hover:ring-stroke-soft-200',
+          // pressed
+          'active:bg-bg-soft-200 active:text-text-strong-950 active:shadow-none active:ring-transparent',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:text-text-strong-950 focus-visible:shadow-button-important-focus focus-visible:ring-stroke-strong-950',
         ],
@@ -174,6 +189,8 @@ export const buttonVariants = tv({
           'bg-transparent text-text-sub-600 ring-transparent',
           // hover
           'hover:bg-bg-weak-50 hover:text-text-strong-950',
+          // pressed
+          'active:bg-bg-soft-200 active:text-text-strong-950',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:text-text-strong-950 focus-visible:shadow-button-important-focus focus-visible:ring-stroke-strong-950',
         ],
@@ -191,6 +208,8 @@ export const buttonVariants = tv({
           'bg-error-base text-static-white',
           // hover
           'hover:bg-red-700',
+          // pressed
+          'active:bg-red-800',
           // focus
           'focus-visible:shadow-button-error-focus',
         ],
@@ -205,6 +224,8 @@ export const buttonVariants = tv({
           'bg-bg-white-0 text-error-base ring-error-base',
           // hover
           'hover:bg-red-alpha-10 hover:ring-transparent',
+          // pressed
+          'active:bg-red-alpha-16 active:ring-transparent',
           // focus
           'focus-visible:shadow-button-error-focus',
         ],
@@ -219,6 +240,8 @@ export const buttonVariants = tv({
           'bg-red-alpha-10 text-error-base ring-transparent',
           // hover
           'hover:bg-bg-white-0 hover:ring-error-base',
+          // pressed
+          'active:bg-red-alpha-16 active:ring-error-base',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-error-focus focus-visible:ring-error-base',
         ],
@@ -233,6 +256,8 @@ export const buttonVariants = tv({
           'bg-transparent text-error-base ring-transparent',
           // hover
           'hover:bg-red-alpha-10',
+          // pressed
+          'active:bg-red-alpha-16',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-error-focus focus-visible:ring-error-base',
         ],
@@ -252,16 +277,28 @@ type ButtonSharedProps = VariantProps<typeof buttonVariants>;
 type ButtonRootProps = VariantProps<typeof buttonVariants> &
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     asChild?: boolean;
+    loading?: boolean;
   };
 
 const ButtonRoot = React.forwardRef<HTMLButtonElement, ButtonRootProps>(
   (
-    { children, variant, mode, size, asChild, className, ...rest },
+    {
+      children,
+      variant,
+      mode,
+      size,
+      asChild,
+      className,
+      disabled,
+      loading,
+      ...rest
+    },
     forwardedRef,
   ) => {
     const uniqueId = React.useId();
     const Component = asChild ? Slot : 'button';
-    const { root } = buttonVariants({ variant, mode, size });
+    const { root, icon } = buttonVariants({ variant, mode, size });
+    const isDisabled = disabled || loading;
 
     const sharedProps: ButtonSharedProps = {
       variant,
@@ -282,7 +319,15 @@ const ButtonRoot = React.forwardRef<HTMLButtonElement, ButtonRootProps>(
         ref={forwardedRef}
         className={root({ class: className })}
         {...rest}
+        aria-busy={loading || undefined}
+        aria-disabled={asChild && isDisabled ? true : undefined}
+        disabled={asChild ? undefined : isDisabled}
       >
+        {loading ? (
+          <span className={icon({ class: 'animate-spin' })} aria-hidden>
+            <RiLoader4Line className='size-icon' />
+          </span>
+        ) : null}
         {extendedChildren}
       </Component>
     );

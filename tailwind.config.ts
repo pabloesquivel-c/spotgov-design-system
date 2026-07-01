@@ -308,11 +308,18 @@ export const shadows = {
 } as unknown as Record<string, string>;
 
 export const borderRadii = {
+  '8': 'var(--radius-sm)',
+  '12': 'var(--radius)',
+  '16': 'var(--radius-lg)',
   md: 'var(--radius)',
   lg: 'var(--radius-sm)',
   '10': 'var(--radius)',
+  'sg-micro': 'var(--radius-sm)',
+  'sg-default': 'var(--radius)',
   'sg-lg': 'var(--radius-lg)',
+  'sg-surface': 'var(--radius-lg)',
   '20': '1.25rem',
+  'sg-overlay': '1.25rem',
 } as unknown as Record<string, string>;
 
 const config = {

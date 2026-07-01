@@ -9,21 +9,24 @@ import {
 const radiusSamples = [
   {
     name: 'Micro',
-    utility: 'rounded-lg',
+    utility: 'rounded-8',
+    legacyUtility: 'rounded-lg',
     cssVar: '--radius-sm',
     value: '8px',
     usage: 'Tags, badges',
   },
   {
     name: 'Default',
-    utility: 'rounded-10',
+    utility: 'rounded-12',
+    legacyUtility: 'rounded-10',
     cssVar: '--radius',
     value: '12px',
     usage: 'Buttons, inputs, nav',
   },
   {
     name: 'Surface',
-    utility: 'rounded-sg-lg',
+    utility: 'rounded-16',
+    legacyUtility: 'rounded-sg-lg',
     cssVar: '--radius-lg',
     value: '16px',
     usage: 'Cards, widgets',
@@ -31,6 +34,7 @@ const radiusSamples = [
   {
     name: 'Overlay',
     utility: 'rounded-20',
+    legacyUtility: 'rounded-sg-overlay',
     cssVar: null,
     value: '20px',
     usage: 'Modals, popovers',
@@ -41,9 +45,9 @@ export function RadiusSection() {
   return (
     <ArticleSection title='Radius'>
       <ArticleParagraph>
-        Corners in SpotGov sit in a 12 to 16px band. Interactives get at least
-        12px. Containers feel soft without becoming pill-shaped. Data tables
-        stay flat inside; round the wrapper, not every cell.
+        Corners in SpotGov sit in a 12 to 16px band. New UI uses readable
+        numeric aliases: 8, 12, 16, and 20px. Interactives get at least 12px.
+        Data tables stay flat inside; round the wrapper, not every cell.
       </ArticleParagraph>
 
       <ArticleGallery>
@@ -72,6 +76,9 @@ export function RadiusSection() {
                 <code className={`${articleTag} mt-1 block`}>
                   {item.utility}
                 </code>
+                <p className='mt-1 text-[11px] leading-4 text-[var(--article-meta)]'>
+                  Alias: {item.legacyUtility}
+                </p>
               </div>
             </div>
           ))}
