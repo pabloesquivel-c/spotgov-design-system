@@ -1,4 +1,10 @@
-import { Section } from './section';
+import {
+  ArticleGallery,
+  ArticleGalleryGrid,
+  ArticleParagraph,
+  ArticleSection,
+  articleTag,
+} from './article';
 
 const radiusSamples = [
   {
@@ -6,63 +12,71 @@ const radiusSamples = [
     utility: 'rounded-lg',
     cssVar: '--radius-sm',
     value: '8px',
-    usage: 'Tags, badges, micro chips only',
+    usage: 'Tags, badges',
   },
   {
     name: 'Default',
     utility: 'rounded-10',
     cssVar: '--radius',
     value: '12px',
-    usage: 'Buttons, inputs, selects, nav, dropdown rows',
+    usage: 'Buttons, inputs, nav',
   },
   {
     name: 'Surface',
     utility: 'rounded-sg-lg',
     cssVar: '--radius-lg',
     value: '16px',
-    usage: 'Cards, KPI widgets, alert bodies, AI blocks',
+    usage: 'Cards, widgets',
   },
   {
     name: 'Overlay',
     utility: 'rounded-20',
-    cssVar: '—',
+    cssVar: null,
     value: '20px',
-    usage: 'Modals, popovers, command menu',
+    usage: 'Modals, popovers',
   },
 ] as const;
 
 export function RadiusSection() {
   return (
-    <Section
-      title='Radius'
-      description='12–16px product band. Soft containers, flat data — round the workspace, not every cell.'
-    >
-      <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
-        {radiusSamples.map((item) => (
-          <div key={item.name} className='flex flex-col gap-2'>
-            <div
-              className='flex h-20 w-full items-center justify-center bg-bg-weak-50 ring-1 ring-inset ring-stroke-soft-200'
-              style={{
-                borderRadius:
-                  item.cssVar === '—' ? '1.25rem' : `var(${item.cssVar})`,
-              }}
-            >
-              <span className='text-label-xs text-text-sub-600'>
-                {item.value}
-              </span>
+    <ArticleSection title='Radius'>
+      <ArticleParagraph>
+        Corners in SpotGov sit in a 12 to 16px band. Interactives get at least
+        12px. Containers feel soft without becoming pill-shaped. Data tables
+        stay flat inside; round the wrapper, not every cell.
+      </ArticleParagraph>
+
+      <ArticleGallery>
+        <ArticleGalleryGrid columns={4}>
+          {radiusSamples.map((item) => (
+            <div key={item.name} className='flex flex-col items-center gap-3'>
+              <div
+                className='flex h-20 w-full items-center justify-center bg-[var(--article-gallery-bg)] ring-1 ring-inset ring-black/10'
+                style={{
+                  borderRadius:
+                    item.cssVar === null ? '1.25rem' : `var(${item.cssVar})`,
+                  backgroundColor: 'var(--color-stone-50)',
+                }}
+              >
+                <span className='text-[14px] font-medium text-[var(--article-heading)]'>
+                  {item.value}
+                </span>
+              </div>
+              <div className='text-center'>
+                <p className='text-[14px] font-medium text-[var(--article-heading)]'>
+                  {item.name}
+                </p>
+                <p className='mt-0.5 text-[12px] leading-4 text-[var(--article-meta)]'>
+                  {item.usage}
+                </p>
+                <code className={`${articleTag} mt-1 block`}>
+                  {item.utility}
+                </code>
+              </div>
             </div>
-            <div>
-              <p className='text-label-xs text-text-strong-950'>{item.name}</p>
-              <p className='text-paragraph-xs text-text-soft-400'>
-                {item.utility}
-              </p>
-              <p className='mt-0.5 text-paragraph-xs text-text-sub-600'>
-                {item.usage}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Section>
+          ))}
+        </ArticleGalleryGrid>
+      </ArticleGallery>
+    </ArticleSection>
   );
 }
