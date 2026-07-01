@@ -1,0 +1,32 @@
+'use client';
+
+import * as React from 'react';
+import { RiEyeLine, RiEyeOffLine, RiLock2Line } from '@remixicon/react';
+
+import * as Input from '@/components/ui/input';
+
+export function PasswordField(
+  props: React.ComponentPropsWithoutRef<typeof Input.Input>,
+) {
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  return (
+    <Input.Root>
+      <Input.Wrapper>
+        <Input.Icon as={RiLock2Line} />
+        <Input.Input
+          type={showPassword ? 'text' : 'password'}
+          placeholder='••••••••••'
+          {...props}
+        />
+        <button type='button' onClick={() => setShowPassword((s) => !s)}>
+          {showPassword ? (
+            <RiEyeOffLine className='size-icon text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
+          ) : (
+            <RiEyeLine className='size-icon text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
+          )}
+        </button>
+      </Input.Wrapper>
+    </Input.Root>
+  );
+}
