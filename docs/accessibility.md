@@ -2,6 +2,21 @@
 
 SpotGov product UI targets **WCAG 2.1 AA**. This guide turns the token rules in [`design-tokens.md`](./design-tokens.md) into implementation checks for agents and humans.
 
+## WCAG checks we apply
+
+These are the WCAG criteria most relevant to SpotGov's design system. They should show up in token decisions, component APIs, Storybook examples, and screen reviews.
+
+| WCAG criterion | SG meaning | Where it applies |
+|----------------|------------|------------------|
+| **1.4.3 Contrast (Minimum)** | Normal 12-14px text must meet AA contrast. | Text tokens, metadata, helper text, table cells, form labels |
+| **1.4.1 Use of Color** | Color cannot be the only status cue. | Status badges, alerts, validation, charts, tender states |
+| **2.4.7 Focus Visible** | Keyboard focus must be visible and consistent. | Buttons, links, inputs, selects, menus, tabs, table actions |
+| **2.1.1 Keyboard** | Core flows must work without a mouse. | Navigation, command menu, dropdowns, dialogs, forms |
+| **3.3.1 / 3.3.2 / 3.3.3 Forms and Errors** | Inputs need labels; errors need text and recovery guidance. | Form fields, filters, onboarding, submission flows |
+| **4.1.2 Name, Role, Value** | Assistive tech needs correct semantics and accessible names. | Icon-only buttons, custom controls, loading states, status components |
+
+When reviewing a new component, check it against the row that matches its job. For example: a status badge must satisfy 1.4.1 and 4.1.2; a button must satisfy 2.4.7, 2.1.1, and 4.1.2.
+
 ## Text contrast
 
 | Context | Use | Avoid |

@@ -60,6 +60,17 @@ Keep AlignUI Token System roles as-is (no SG re-theming of neutrals).
 
 **Standard:** SpotGov product UI targets WCAG 2.1 AA.
 
+### WCAG criteria map
+
+| Criterion | Design-system rule |
+|-----------|--------------------|
+| **1.4.3 Contrast (Minimum)** | 12–14px readable text uses `text-text-sub-600` or stronger on `bg-bg-white-0`. |
+| **1.4.1 Use of Color** | Status, validation, and alerts pair semantic color with text plus an icon or shape. |
+| **2.4.7 Focus Visible** | Interactive primitives keep a visible `focus-visible` ring or shadow. |
+| **2.1.1 Keyboard** | Menus, dialogs, dropdowns, form controls, and primary flows remain keyboard operable. |
+| **3.3.x Forms and Errors** | Labels, helper text, error text, and recovery guidance are part of form patterns. |
+| **4.1.2 Name, Role, Value** | Icon-only actions, custom controls, loading buttons, and status components expose names and states. |
+
 ### Contrast
 
 | Use | Required pairing |

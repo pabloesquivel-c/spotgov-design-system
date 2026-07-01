@@ -8,20 +8,34 @@ import {
 
 const checks = [
   {
+    criterion: '1.4.3',
     title: 'Contrast',
     body: 'Use text-sub-600 or stronger for 12-14px readable text on bg-white-0. text-soft-400 is decorative only.',
   },
   {
+    criterion: '2.4.7',
     title: 'Focus',
     body: 'Every interactive element needs a visible focus-visible state using the existing focus shadows or a strong ring.',
   },
   {
+    criterion: '1.4.1',
     title: 'Status',
     body: 'Awarded, pending, rejected, and disabled states need text plus a redundant icon or shape, not color alone.',
   },
   {
+    criterion: '4.1.2',
     title: 'States',
-    body: 'Buttons document default, hover, pressed, focus-visible, disabled, and loading states.',
+    body: 'Buttons and custom controls expose names, roles, disabled/loading values, and visible state changes.',
+  },
+  {
+    criterion: '2.1.1',
+    title: 'Keyboard',
+    body: 'Menus, dialogs, dropdowns, form controls, and primary flows must work without a mouse.',
+  },
+  {
+    criterion: '3.3.x',
+    title: 'Forms',
+    body: 'Inputs need labels, readable helper text, explicit error text, and recovery guidance.',
   },
 ] as const;
 
@@ -40,7 +54,12 @@ export function AccessibilitySection() {
             key={item.title}
             className='rounded-16 bg-bg-white-0 p-4 ring-1 ring-inset ring-stroke-soft-200'
           >
-            <p className='text-sg-label text-text-strong-950'>{item.title}</p>
+            <p className='text-sg-small-label text-primary-base'>
+              WCAG {item.criterion}
+            </p>
+            <p className='mt-1 text-sg-label text-text-strong-950'>
+              {item.title}
+            </p>
             <p className='mt-2 text-sg-body text-text-sub-600'>{item.body}</p>
           </div>
         ))}
