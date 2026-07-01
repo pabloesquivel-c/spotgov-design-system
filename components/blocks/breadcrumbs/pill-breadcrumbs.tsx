@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 
 import type { BreadcrumbItem } from './types';
 
@@ -31,13 +32,13 @@ export function PillBreadcrumbs({
     <nav className='flex items-center gap-2'>
       {breadcrumbs.map((item, index) => (
         <React.Fragment key={item.href}>
-          <a
+          <Link
             href={item.href}
             onClick={handleClick}
             className='rounded-full bg-bg-weak-50 px-2.5 py-1 text-label-xs text-text-sub-600 transition-colors hover:bg-primary-alpha-10 hover:text-primary-base'
           >
             {item.label}
-          </a>
+          </Link>
           {index < breadcrumbs.length - 1 && <PillSeparator />}
         </React.Fragment>
       ))}

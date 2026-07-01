@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { RiHomeSmile2Line } from '@remixicon/react';
 
 import type { BreadcrumbItem } from './types';
@@ -24,9 +25,9 @@ export function SlashBreadcrumbs({
     <nav className='flex items-center justify-center gap-2'>
       {breadcrumbs.length > 0 && (
         <>
-          <a href='/' onClick={handleClick}>
+          <Link href='/' onClick={handleClick}>
             <RiHomeSmile2Line className='size-icon-inline text-text-soft-400 hover:text-text-sub-600' />
-          </a>
+          </Link>
           <span className='cursor-default text-label-xs text-text-soft-400'>
             /
           </span>
@@ -40,13 +41,13 @@ export function SlashBreadcrumbs({
               /
             </span>
           )}
-          <a
+          <Link
             href={item.href}
             className='text-label-xs text-text-soft-400 hover:text-text-sub-600'
             onClick={handleClick}
           >
             {item.label}
-          </a>
+          </Link>
         </React.Fragment>
       ))}
     </nav>

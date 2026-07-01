@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { RiArrowRightSLine, RiHomeSmile2Line } from '@remixicon/react';
 
 import * as LinkButton from '@/components/ui/link-button';
@@ -23,9 +24,9 @@ export function BarBreadcrumbs({
 
   return (
     <nav className='flex items-center gap-1.5 rounded-lg bg-bg-weak-50 px-2.5 py-2'>
-      <a href='/' onClick={handleClick}>
+      <Link href='/' onClick={handleClick}>
         <RiHomeSmile2Line className='size-icon-inline text-text-sub-600 hover:text-text-strong-950' />
-      </a>
+      </Link>
       {breadcrumbs.length > 0 && (
         <RiArrowRightSLine className='size-icon-inline cursor-default text-text-soft-400' />
       )}
@@ -39,7 +40,7 @@ export function BarBreadcrumbs({
             className='hover:text-text-strong-950'
             onClick={handleClick}
           >
-            <a href={item.href}>{item.label}</a>
+            <Link href={item.href}>{item.label}</Link>
           </LinkButton.Root>
           {index < breadcrumbs.length - 1 && (
             <RiArrowRightSLine className='size-icon-inline cursor-default text-text-soft-400' />

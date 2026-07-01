@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import {
   RiArrowDownSLine,
   RiArrowRightSLine,
@@ -42,13 +43,13 @@ export function DropdownBreadcrumbs({
 
   return (
     <nav className='flex items-center justify-center gap-2'>
-      <a
+      <Link
         href='/'
         className='text-text-soft-400 hover:text-text-sub-600'
         onClick={handleClick}
       >
         <RiHomeSmile2Line className='size-icon-inline' />
-      </a>
+      </Link>
 
       {breadcrumbs.map((item) => (
         <React.Fragment key={item.href}>
