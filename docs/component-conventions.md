@@ -1,5 +1,7 @@
 # Component directory conventions
 
+File layout and imports for `components/`. For UX patterns and when to compose blocks, see [`component-patterns.md`](./component-patterns.md).
+
 - `components/ui/` — AlignUI primitives (buttons, inputs, badges, etc.). One component per file; compound APIs use named exports (`Root`, `Icon`, etc.).
 - `components/blocks/` — Composed Pro Blocks and playground sections (e.g. token preview, screen-level patterns).
 - `components/` (root) — App shell only (`header.tsx`, `theme-switch.tsx`). Do not add new primitives here.

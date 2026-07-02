@@ -1,6 +1,6 @@
 # SpotGov Design System
 
-SpotGov's shared design system built on AlignUI — the source of truth for UI components, design tokens, and AI agent rules. Run `npm install`, then `npm run dev` for the token playground or `npm run storybook` for the full component catalog. Primitives live in `components/ui/`; composed patterns live in `components/blocks/` (see `docs/component-conventions.md`).
+SpotGov's shared design system built on AlignUI — the source of truth for UI components, design tokens, and AI agent rules. Run `npm install`, then `npm run dev` for the token playground or `npm run storybook` for the full component catalog. Primitives live in `components/ui/`; composed patterns live in `components/blocks/`. Agent docs start at [`AGENTS.md`](AGENTS.md); patterns at [`docs/component-patterns.md`](docs/component-patterns.md); imports at [`docs/component-conventions.md`](docs/component-conventions.md).
 
 ## Commands
 

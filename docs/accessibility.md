@@ -1,6 +1,6 @@
 # SpotGov accessibility baseline
 
-SpotGov product UI targets **WCAG 2.1 AA**. This guide turns the token rules in [`design-tokens.md`](./design-tokens.md) into implementation checks for agents and humans.
+SpotGov product UI targets **WCAG 2.1 AA**. This guide turns the token rules in [`design-tokens.md`](./design-tokens.md) into implementation checks for agents and humans. Agent read order: [`AGENTS.md`](../AGENTS.md).
 
 ## WCAG checks we apply
 

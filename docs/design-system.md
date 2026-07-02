@@ -5,10 +5,13 @@ Agent-facing guide for building product UI from this repo. **Existing system onl
 | Read order | Doc |
 |------------|-----|
 | 1 | [`AGENTS.md`](../AGENTS.md) |
-| 2 | **This doc** |
-| 3 | [`design-tokens.md`](./design-tokens.md) (token values) |
-| 4 | [`accessibility.md`](./accessibility.md) |
-| 5 | [`component-conventions.md`](./component-conventions.md) |
+| 2 | [`product-principles.md`](./product-principles.md) |
+| 3 | **This doc** |
+| 4 | [`design-tokens.md`](./design-tokens.md) (token values) |
+| 5 | [`component-patterns.md`](./component-patterns.md) |
+| 6 | [`copy.md`](./copy.md) |
+| 7 | [`accessibility.md`](./accessibility.md) |
+| — | [`component-conventions.md`](./component-conventions.md) (imports and file layout) |
 
 **Live:** `/` token preview · `/storybook` catalog  
 **Stack:** Next.js 14 · React 18 · Tailwind 3.4 · Radix · `tailwind-variants` · `@remixicon/react` Line  
@@ -685,21 +688,22 @@ Target **WCAG 2.1 AA**. Details: [`accessibility.md`](./accessibility.md).
 
 ---
 
-## 11. Copy (US English, conversational B2B)
+## 11. Copy
 
-Friendly and accessible; use tender/gov terms (tender, contract, agency, bid, award, solicitation) without jargon walls. Patterns from repo blocks:
+**Canonical:** [`copy.md`](./copy.md) — voice, principles, buttons, empty/error/loading/confirmation structure, banned words.
 
-| Element | Rule | Repo example |
-|---------|------|--------------|
-| Labels | Sentence case + `Label.Asterisk` if required | `Email Address`, `Full Name` — `create-account-card.tsx` |
+**Locale:** US English, conversational B2B. Use tender/gov terms (tender, contract, agency, bid, award, solicitation) when they match user vocabulary.
+
+**Typography classes for copy roles:**
+
+| Element | Classes | Repo example |
+|---------|---------|--------------|
 | Section title | `text-sg-section` or `text-label-sm text-text-strong-950` | `Authentication Settings` |
-| Description | `text-paragraph-sm text-text-sub-600` | *"Enter your details to register."* |
-| Helper | `text-paragraph-xs text-text-sub-600`; icon may be `text-text-soft-400` | password hint — `create-account-card.tsx` |
-| Placeholder | Short example values | `Search...`, `0.00` — `table-shared.tsx`, `amount-filter.tsx` |
-| Buttons | Verb-first: `Register`, `Apply`, `Clear`, `Cancel` | `filter-panel-shell.tsx` |
-| Empty | What's missing + next action | *(product screens — not in blocks yet)* |
-| Error | What failed + how to fix | Use `Hint hasError` copy, not codes alone |
-| Status label | `Completed`, `Pending`, `Failed` — always visible | `status-badge.stories.tsx` |
+| Description | `text-paragraph-sm text-text-sub-600` | *"Enter your details to register."* — `create-account-card.tsx` |
+| Helper | `text-paragraph-xs text-text-sub-600`; icon may be `text-text-soft-400` | `change-password-form.tsx` |
+| Label | Sentence case + `Label.Asterisk` if required | `Email Address` — `create-account-card.tsx` |
+| Placeholder | Short example values | `Search...` — `table-shared.tsx` |
+| Status label | Always visible text | `Completed`, `Pending`, `Failed` — `status-badge.stories.tsx` |
 
 Replace AlignUI demo strings (`hello@alignui.com`, `James Brown`) with SpotGov-realistic values in product work.
 
@@ -728,7 +732,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 
 ### Do
 
-- Read `AGENTS.md` → this doc → `design-tokens.md`.
+- Read `AGENTS.md` → `product-principles.md` → this doc → `design-tokens.md` → `component-patterns.md` → `copy.md` → `accessibility.md`.
 - Use full token classes: `bg-bg-white-0`, `text-text-sub-600`, `ring-stroke-soft-200`.
 - Copy structure from canonical files (§7), not from scratch.
 - Specify grid shell + column spans for dashboards.
@@ -792,7 +796,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 - [ ] Forms capped; tables use `overflow-x-auto`
 - [ ] Primitives imported from `@/components/ui/*`
 - [ ] Remix Line icons only
-- [ ] Copy: US English, verb-first buttons, gov terms where natural
+- [ ] Copy: follow [`copy.md`](./copy.md); gov terms where natural
 - [ ] No dropped tokens, dark mode, or Framer styles
 - [ ] Settings: card shell matches `checkbox-card-shell.tsx`; footer is Discard/Cancel + Apply Changes
 - [ ] Settings: correct control (`Switch` vs `Checkbox` vs `Select`); no theme/dark mode controls
@@ -827,8 +831,13 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 
 | Doc | Owns |
 |-----|------|
+| `AGENTS.md` | Agent entry point — workflow, non-negotiables, links |
+| `product-principles.md` | Product promise, users, jobs, quality bar, non-goals |
 | `design-tokens.md` | Token **values** |
-| **This doc** | **How to build** UI (components, patterns, layout, copy, AI rules) |
-| `AGENTS.md` | Non-negotiables + links |
+| **This doc** | **How to build** UI (components, layout, canonical blocks, AI rules) |
+| `component-patterns.md` | UX patterns, selection guide, when to use each composition |
+| `copy.md` | Voice, wording, state copy, banned words |
+| `accessibility.md` | WCAG baseline and component checks |
+| `component-conventions.md` | `ui/` vs `blocks/` file layout and imports |
 
-Add app shell spec, domain status glossary, and SpotGov AI screens here when they exist.
+Add app shell spec, domain status glossary, and SpotGov AI screens in this doc when they exist.

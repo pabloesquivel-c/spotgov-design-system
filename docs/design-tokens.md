@@ -4,7 +4,7 @@ Canonical decisions for SpotGov product UI, curated from AlignUI Design System 2
 
 **Accessibility companion:** [`docs/accessibility.md`](./accessibility.md) — WCAG baseline, contrast pairings, keyboard focus, status, and component state rules.
 
-**Agent entry point:** [`AGENTS.md`](../AGENTS.md) — non-negotiables and pointer to this doc.
+**Agent entry point:** [`AGENTS.md`](../AGENTS.md) — workflow, non-negotiables, and full doc read order.
 
 **Figma file:** [AlignUI Design System 2.0](https://www.figma.com/design/zTiVrKUV6Isp2fdWjl2dg3/AlignUI---Design-System-2.0--Current-)
 
@@ -412,7 +412,7 @@ Phase 2 complete (30 Jun 2026). Token definition + code sync done; Figma variabl
 | Shadows | **Locked + synced** | `regular-xs` + `regular-md`; preview added |
 | Corner radius | **Locked + synced** | 12px floor in components + `rounded-md` → 12px |
 | Spacing | **Locked** | Dual-density rules; preview added |
-| **Agent rules** | **Done (thin slice)** | `AGENTS.md` at repo root |
+| **Agent docs** | **Done** | `AGENTS.md` + `product-principles`, `component-patterns`, `copy` |
 | **Figma value sync** | Manual follow-up | Code + doc canonical; push to Figma when ready |
 | **Figma variable code syntax** | Manual follow-up | Set in Figma Dev Mode for MCP |
 | **Token preview site** | **Done** | Typography, color, radius, shadows, spacing, components |
