@@ -1,0 +1,26 @@
+---
+description: SpotGov design system — read AGENTS.md and component manifest before UI work
+globs:
+  - components/**
+  - app/**
+  - docs/**
+alwaysApply: true
+---
+
+# SpotGov Design System
+
+**Source of truth:** [`AGENTS.md`](../../AGENTS.md) — read it before building or editing UI.
+
+**Fast inventory:** [`docs/component-manifest.md`](../../docs/component-manifest.md) (`npm run generate:manifest` after adding components).
+
+**Which-one-when:** [`docs/design-system.md`](../../docs/design-system.md) §8 · [`docs/component-patterns.md`](../../docs/component-patterns.md)
+
+## Non-negotiables (summary)
+
+- Semantic tokens only — `bg-bg-*`, `text-text-*`, `primary-base`; no raw hex
+- Import primitives from `@/components/ui/*`; prefer **canonical blocks** from the manifest
+- `@remixicon/react` Line icons; six SG type roles (`text-sg-*`)
+- Light-only product UI; WCAG 2.1 AA; status = text + icon/shape
+- Copy from [`docs/copy.md`](../../docs/copy.md); no em dashes in product UI
+
+Do not duplicate the full rulebook in this file.

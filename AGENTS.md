@@ -108,6 +108,7 @@ When asked to refactor:
 
 Read these before UI work:
 
+- [`docs/component-manifest.md`](docs/component-manifest.md) — live component inventory (run `npm run generate:manifest` after adding components)
 - [`docs/product-principles.md`](docs/product-principles.md)
 - [`docs/design-system.md`](docs/design-system.md)
 - [`docs/design-tokens.md`](docs/design-tokens.md)
@@ -145,7 +146,7 @@ If these conflict with code, prefer existing production code and mention the mis
 
 | Job | Use |
 |-----|-----|
-| Primitives | `components/ui/` — 51 AlignUI components |
+| Primitives | `components/ui/` — 52+ AlignUI components · inventory in `docs/component-manifest.md` |
 | Composed patterns | `components/blocks/` |
 | Token preview | `/` (Next.js dev) |
 | Full catalog | Storybook at `/storybook` |

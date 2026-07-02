@@ -1,6 +1,6 @@
 # SpotGov Design System
 
-SpotGov's shared design system built on AlignUI — the source of truth for UI components, design tokens, and AI agent rules. Run `npm install`, then `npm run dev` for the token playground or `npm run storybook` for the full component catalog. Primitives live in `components/ui/`; composed patterns live in `components/blocks/`. Agent docs start at [`AGENTS.md`](AGENTS.md); patterns at [`docs/component-patterns.md`](docs/component-patterns.md); imports at [`docs/component-conventions.md`](docs/component-conventions.md).
+SpotGov's shared design system built on AlignUI — the source of truth for UI components, design tokens, and AI agent rules. Run `npm install`, then `npm run dev` for the token playground or `npm run storybook` for the full component catalog. Primitives live in `components/ui/`; composed patterns live in `components/blocks/`. Agent docs start at [`AGENTS.md`](AGENTS.md); component inventory at [`docs/component-manifest.md`](docs/component-manifest.md) (`npm run generate:manifest`); patterns at [`docs/component-patterns.md`](docs/component-patterns.md); imports at [`docs/component-conventions.md`](docs/component-conventions.md). AI tool setup (Cursor, Claude, Figma MCP): [`docs/ai-tool-setup.md`](docs/ai-tool-setup.md); Code Connect: [`docs/code-connect.md`](docs/code-connect.md).
 
 ## Commands
 
@@ -10,6 +10,7 @@ npm run dev          # http://localhost:3000 — token preview
 npm run storybook    # http://localhost:6006 — component catalog
 npm run lint
 npm run format:write
+npm run generate:manifest   # refresh docs/component-manifest.md after adding components
 ```
 
 If Storybook shows **“Failed to fetch dynamically imported module”**, clear the cache and restart:

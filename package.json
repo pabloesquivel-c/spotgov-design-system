@@ -10,6 +10,11 @@
     "start": "next start",
     "lint": "next lint",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "generate:manifest": "node scripts/generate-manifest.mjs",
+    "verify:agent-context": "node scripts/verify-agent-context.mjs",
+    "code-connect:preview": "figma connect preview components/ui/*.figma.tsx",
+    "code-connect:publish": "figma connect publish",
+    "code-connect:publish:dry-run": "figma connect publish --dry-run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -50,6 +55,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@figma/code-connect": "^1.3.12",
     "@chromatic-com/storybook": "^4.1.3",
     "@storybook/addon-a11y": "^10.4.6",
     "@storybook/addon-docs": "^10.4.6",

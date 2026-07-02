@@ -1,0 +1,19 @@
+{
+  "codeConnect": {
+    "parser": "react",
+    "include": ["components/**/*.figma.tsx"],
+    "exclude": [
+      "**/*.stories.tsx",
+      "**/node_modules/**",
+      ".next/**",
+      "storybook-static/**"
+    ],
+    "importPaths": {
+      "components/ui/*": "@/components/ui"
+    },
+    "paths": {
+      "@/components/ui/*": ["components/ui/*"]
+    },
+    "label": "React"
+  }
+}

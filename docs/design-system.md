@@ -7,10 +7,11 @@ Agent-facing guide for building product UI from this repo. **Existing system onl
 | 1 | [`AGENTS.md`](../AGENTS.md) |
 | 2 | [`product-principles.md`](./product-principles.md) |
 | 3 | **This doc** |
-| 4 | [`design-tokens.md`](./design-tokens.md) (token values) |
-| 5 | [`component-patterns.md`](./component-patterns.md) |
-| 6 | [`copy.md`](./copy.md) |
-| 7 | [`accessibility.md`](./accessibility.md) |
+| 4 | [`component-manifest.md`](./component-manifest.md) (live inventory) |
+| 5 | [`design-tokens.md`](./design-tokens.md) (token values) |
+| 6 | [`component-patterns.md`](./component-patterns.md) |
+| 7 | [`copy.md`](./copy.md) |
+| 8 | [`accessibility.md`](./accessibility.md) |
 | — | [`component-conventions.md`](./component-conventions.md) (imports and file layout) |
 
 **Live:** `/` token preview · `/storybook` catalog  
@@ -839,6 +840,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | Doc | Owns |
 |-----|------|
 | `AGENTS.md` | Agent entry point — workflow, non-negotiables, links |
+| `component-manifest.md` | **Live inventory** — auto-generated from repo (`npm run generate:manifest`) |
 | `product-principles.md` | Product promise, users, jobs, quality bar, non-goals |
 | `design-tokens.md` | Token **values** |
 | **This doc** | **How to build** UI (components, layout, canonical blocks, AI rules) |
@@ -846,5 +848,6 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | `copy.md` | Voice, wording, state copy, banned words |
 | `accessibility.md` | WCAG baseline and component checks |
 | `component-conventions.md` | `ui/` vs `blocks/` file layout and imports |
+| `figma-agent-rules.md` | Figma MCP supplement (draft) — not canonical |
 
-Add app shell spec, domain status glossary, and SpotGov AI screens in this doc when they exist.
+Add app shell spec, domain status glossary, and SpotGov AI screens in this doc when they exist. Primitive deep specs stay in §5–6; **live inventory** is [`component-manifest.md`](./component-manifest.md).

@@ -435,5 +435,7 @@ Phase 2 complete (30 Jun 2026). Token definition + code sync done; Figma variabl
 ## Next steps
 
 1. **Phase 3** — component library complete (54 primitives + Pro Blocks). Figma parity spot-checked on top primitives (2 Jul 2026).
-2. **Phase 4 (expand)** — which-one-when guide, component manifest, Claude Skill.
-3. **Figma sync** — push locked values and code syntax to variable collections (manual).
+2. **Phase 4** — complete: manifest, skills, pointers, figma-agent-rules.
+3. **Phase 5** — complete: `docs/ai-tool-setup.md`, `verify:agent-context`, MCP verified on Pro.
+4. **Phase 6** — draft mappings only; publish deferred (Pro plan, not required).
+5. **Figma sync** — push locked values and code syntax to variable collections (manual).

@@ -1,0 +1,327 @@
+{
+  "primitivesSkip": [
+    "notification-provider",
+    "toast-alert",
+    "svg-rating-icons"
+  ],
+  "primitives": {
+    "accordion": {
+      "purpose": "Collapsible sections",
+      "avoid": "Primary nav"
+    },
+    "alert": {
+      "purpose": "Inline page/message banners",
+      "avoid": "Field-level errors (use hint)"
+    },
+    "avatar": {
+      "purpose": "User/org identity",
+      "avoid": "Decorative-only without name"
+    },
+    "avatar-group": {
+      "purpose": "Stacked people",
+      "avoid": "Single user"
+    },
+    "avatar-group-compact": {
+      "purpose": "Dense avatar stack",
+      "avoid": "—"
+    },
+    "avatar-empty-icons": {
+      "purpose": "Empty avatar placeholders",
+      "avoid": "Custom SVG people"
+    },
+    "badge": {
+      "purpose": "Category, count, tag label",
+      "avoid": "Workflow state"
+    },
+    "banner": {
+      "purpose": "Full-width persistent announcement bar",
+      "avoid": "Inline alerts (use alert)"
+    },
+    "breadcrumb": {
+      "purpose": "Hierarchy",
+      "avoid": "Deep primary nav"
+    },
+    "button": {
+      "purpose": "Actions",
+      "avoid": "Links, icon-only rows"
+    },
+    "button-group": {
+      "purpose": "Segmented actions",
+      "avoid": "Single CTA"
+    },
+    "checkbox": {
+      "purpose": "Multi-select, table select",
+      "avoid": "Mutually exclusive choices"
+    },
+    "color-picker": {
+      "purpose": "Color input",
+      "avoid": "Simple hex field"
+    },
+    "command-menu": {
+      "purpose": "Cmd+K palette",
+      "avoid": "Simple search input"
+    },
+    "compact-button": {
+      "purpose": "Icon-only row/toolbar actions",
+      "avoid": "Primary CTA"
+    },
+    "datepicker": {
+      "purpose": "Date/range pick",
+      "avoid": "Free-text dates"
+    },
+    "digit-input": {
+      "purpose": "OTP codes",
+      "avoid": "Long numbers"
+    },
+    "divider": {
+      "purpose": "In-card separators",
+      "avoid": "Page sections"
+    },
+    "dot-stepper": {
+      "purpose": "Step indicator dots",
+      "avoid": "Labeled steps"
+    },
+    "drawer": {
+      "purpose": "Side panel shell",
+      "avoid": "Quick confirm"
+    },
+    "dropdown": {
+      "purpose": "Action menus",
+      "avoid": "Main nav"
+    },
+    "fancy-button": {
+      "purpose": "Auth primary submit",
+      "avoid": "Toolbar actions"
+    },
+    "file-format-icon": {
+      "purpose": "File type glyph",
+      "avoid": "Generic file icon"
+    },
+    "file-upload": {
+      "purpose": "Upload control",
+      "avoid": "Custom dropzone div"
+    },
+    "hint": {
+      "purpose": "Helper/error under field",
+      "avoid": "Page-level alert"
+    },
+    "horizontal-stepper": {
+      "purpose": "Wizard steps",
+      "avoid": "Vertical flows"
+    },
+    "input": {
+      "purpose": "Text fields",
+      "avoid": "Multi-line text"
+    },
+    "kbd": {
+      "purpose": "Shortcut display",
+      "avoid": "Body copy"
+    },
+    "label": {
+      "purpose": "Field labels",
+      "avoid": "Headings"
+    },
+    "link-button": {
+      "purpose": "Inline tertiary action",
+      "avoid": "Submit actions"
+    },
+    "modal": {
+      "purpose": "Dialog, confirm, form modal",
+      "avoid": "Full-height panel"
+    },
+    "notification": {
+      "purpose": "Radix toast (stacked)",
+      "avoid": "Compact sonner toast"
+    },
+    "toast": {
+      "purpose": "Sonner host + toast.custom() API",
+      "avoid": "Radix notification stack",
+      "subExports": ["toast-alert"]
+    },
+    "pagination": {
+      "purpose": "Table pages",
+      "avoid": "Infinite scroll only"
+    },
+    "popover": {
+      "purpose": "Anchored content",
+      "avoid": "Modal task"
+    },
+    "progress-bar": {
+      "purpose": "Linear progress",
+      "avoid": "Indeterminate without label"
+    },
+    "progress-circle": {
+      "purpose": "Circular progress",
+      "avoid": "—"
+    },
+    "radio": {
+      "purpose": "Single-select",
+      "avoid": "Multi-select"
+    },
+    "rating": {
+      "purpose": "Star display + interactive input",
+      "avoid": "Custom star markup",
+      "subExports": ["svg-rating-icons"]
+    },
+    "segmented-control": {
+      "purpose": "Mode toggle",
+      "avoid": "Main nav tabs"
+    },
+    "select": {
+      "purpose": "Native-style select",
+      "avoid": "2-option toggle"
+    },
+    "slider": {
+      "purpose": "Range input",
+      "avoid": "—"
+    },
+    "social-button": {
+      "purpose": "OAuth",
+      "avoid": "Regular actions"
+    },
+    "status-badge": {
+      "purpose": "Workflow state",
+      "avoid": "Categories"
+    },
+    "switch": {
+      "purpose": "On/off setting",
+      "avoid": "Immediate action button"
+    },
+    "tab-menu-horizontal": {
+      "purpose": "Section tabs",
+      "avoid": "Vertical lists"
+    },
+    "tab-menu-vertical": {
+      "purpose": "Side tab list",
+      "avoid": "—"
+    },
+    "table": {
+      "purpose": "Data grid",
+      "avoid": "Card list for 20+ columns"
+    },
+    "tag": {
+      "purpose": "Removable label",
+      "avoid": "Status"
+    },
+    "textarea": {
+      "purpose": "Multi-line text",
+      "avoid": "Single-line input"
+    },
+    "tooltip": {
+      "purpose": "Hover/focus supplement",
+      "avoid": "Required instructions"
+    },
+    "vertical-stepper": {
+      "purpose": "Vertical wizard",
+      "avoid": "—"
+    }
+  },
+  "blocks": {
+    "empty-state": {
+      "purpose": "Missing data / zero-results surfaces",
+      "canonicalExports": ["EmptyState"]
+    },
+    "banner": {
+      "purpose": "Product announcement bars",
+      "canonicalExports": ["ProductAnnouncementBanner"]
+    },
+    "modal": {
+      "purpose": "Dialogs and confirmations",
+      "canonicalExports": ["DestructiveConfirmModal"]
+    },
+    "filter": {
+      "purpose": "Filter panels and settings nav",
+      "canonicalExports": [
+        "FilterPanelShell",
+        "FilterPanelHeader",
+        "FilterSearchField",
+        "FilterPanelFooter",
+        "FilterNavItem"
+      ]
+    },
+    "table": {
+      "purpose": "Data tables and table chrome",
+      "canonicalExports": [
+        "TableBlock",
+        "TableBlockTabs",
+        "TableBlockToolbar",
+        "TableBlockFooter",
+        "BlockDataTable",
+        "ContractsTable",
+        "DocumentsTable"
+      ]
+    },
+    "checkbox": {
+      "purpose": "Settings cards and preference groups",
+      "canonicalExports": ["CheckboxCardShell", "CheckboxCardHeader"]
+    },
+    "drawer": {
+      "purpose": "Side panels",
+      "canonicalExports": ["SupportDrawer"],
+      "referenceOnlyExports": ["GeneralSettingsDrawer"]
+    },
+    "file-upload": {
+      "purpose": "Upload flows and file status",
+      "canonicalExports": ["FileUploadStatusCards"]
+    },
+    "auth": {
+      "purpose": "Auth card patterns",
+      "canonicalExports": ["CreateAccountAuthCard", "LoginAuthCard"]
+    },
+    "command-menu": {
+      "purpose": "Command palette patterns",
+      "canonicalExports": ["FinanceCommandMenu"]
+    },
+    "switch": {
+      "purpose": "Switch preference demos",
+      "canonicalExports": ["NotificationPreferencesSwitch"]
+    },
+    "text-input": {
+      "purpose": "Form input demos",
+      "canonicalExports": ["ChangePasswordForm"]
+    },
+    "token-preview": {
+      "purpose": "Design token preview playground — not product UI",
+      "referenceOnly": true
+    },
+    "breadcrumbs": {
+      "purpose": "Breadcrumb variants (reference demos)"
+    },
+    "color-picker": {
+      "purpose": "Color picker demos (reference)"
+    },
+    "datepicker": {
+      "purpose": "Date picker demos (reference)"
+    },
+    "dropdown": {
+      "purpose": "Dropdown menus (reference demos)"
+    },
+    "notification": {
+      "purpose": "Notification popover demos (reference)"
+    },
+    "profile-card": {
+      "purpose": "Profile card demos (reference)"
+    },
+    "radio": {
+      "purpose": "Radio card demos (reference)"
+    },
+    "slider": {
+      "purpose": "Slider demos (reference)"
+    },
+    "tooltip": {
+      "purpose": "Tooltip demos (reference)"
+    }
+  },
+  "exportSkipPatterns": [
+    "ClassName$",
+    "Icon$",
+    "FILTER_NAV_ITEMS",
+    "FilterNavLabel",
+    "getSortingIcon",
+    "SortableHeader",
+    "createSelectColumn",
+    "createActionsColumn",
+    "HorizontalDivider",
+    "DashedDivider"
+  ]
+}
