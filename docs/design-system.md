@@ -451,7 +451,7 @@ Storybook: `Blocks/<Category>`.
 |---------|-----|
 | Drawer panel | `drawer-panel.tsx` — `drawerPanelClassName` |
 | Drawer content | `support-drawer.tsx` |
-| Modal | `feature-announcement-modal.tsx`, `payment-received-modal.tsx` |
+| Modal | `feature-announcement-modal.tsx`, `payment-received-modal.tsx`, `destructive-confirm-modal.tsx` |
 | Multi-section form | `account-setup-modal.tsx` |
 | File upload states | `file-upload-status-cards.tsx` (loading/success/error) |
 | Profile card | `profile-card/profile-card.tsx` |
@@ -648,7 +648,7 @@ Import paths and child patterns: copy remaining markup from the canonical block 
 | Disabled | Native `disabled`; `text-text-disabled-300`; `pointer-events-none` |
 | Loading | `aria-busy`; spinner; stable width; block double submit |
 | Error | `Hint hasError` or `Alert status="error"` + readable text |
-| Empty | Not in blocks yet — use `text-sg-body text-text-sub-600` + action button |
+| Empty | `EmptyState` in `components/blocks/empty-state/empty-state.tsx` |
 
 **Upload file states:** `file-upload-status-cards.tsx` — `RiLoader2Line animate-spin`, `RiCheckboxCircleLine`, `RiErrorWarningLine`.
 
@@ -817,6 +817,8 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | Command menu | `components/blocks/command-menu/finance-command-menu.tsx`, `hr-sidebar-command-menu.tsx` |
 | Auth | `components/blocks/auth/create-account-card.tsx` |
 | Drawer | `components/blocks/drawer/drawer-panel.tsx`, `support-drawer.tsx` |
+| Empty state | `components/blocks/empty-state/empty-state.tsx`, `empty-state-demos.tsx` |
+| Destructive confirm | `components/blocks/modal/destructive-confirm-modal.tsx` |
 | Feature notification | `components/ui/notification.tsx` |
 | Upload states | `components/blocks/file-upload/file-upload-status-cards.tsx` |
 | Component showcase | `components/blocks/token-preview/component-showcase.tsx` |

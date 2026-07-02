@@ -209,9 +209,9 @@ For each pattern document:
 - Example shape: *"No contracts match these filters."* + **Clear filters**
 
 **Good examples in repo**
-- *(Product empty states not in blocks yet — use tokens above.)*
-- Related: zero-row table behavior in `contracts-table.tsx`, `documents-table.tsx` (add empty body when shipping product screens)
-- Upload/status metaphor: `components/blocks/file-upload/file-upload-status-cards.tsx`
+- `components/blocks/empty-state/empty-state.tsx`
+- `components/blocks/empty-state/empty-state-demos.tsx` (`FilteredTendersEmptyState`, `NoSavedTendersEmptyState`)
+- Storybook: `Blocks/Empty State`
 
 **Anti-patterns**
 - Blank white area with no copy
@@ -431,7 +431,7 @@ For each pattern document:
 - No vague *"Are you sure?"* without specifics
 
 **Good examples in repo**
-- *(Dedicated destructive confirm block not shipped — compose from `Modal` + `Button` error variant.)*
+- `components/blocks/modal/destructive-confirm-modal.tsx` (`DestructiveConfirmModal`, `DeleteSavedSearchModal`)
 - Acknowledgment pattern: `payment-received-modal.tsx` (non-destructive)
 - Status/error language: `components/ui/hint.tsx`, `Alert status='error'`
 

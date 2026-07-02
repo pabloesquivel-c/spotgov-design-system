@@ -1,4 +1,5 @@
 export { CustomizationModal } from './customization-modal';
+export { DeleteSavedSearchModal, DestructiveConfirmModal } from './destructive-confirm-modal';
 export { EmailVerificationModal } from './email-verification-modal';
 export { ExploreSmartphonesModal } from './explore-smartphones-modal';
 export { FeatureAnnouncementModal } from './feature-announcement-modal';

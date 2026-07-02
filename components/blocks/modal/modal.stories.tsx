@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   CustomizationModal,
+  DeleteSavedSearchModal,
   EmailVerificationModal,
   ExploreSmartphonesModal,
   FeatureAnnouncementModal,
@@ -45,4 +46,8 @@ export const ServerMaintenance: Story = {
 
 export const FeatureAnnouncement: Story = {
   render: () => <FeatureAnnouncementModal />,
+};
+
+export const DeleteSavedSearch: Story = {
+  render: () => <DeleteSavedSearchModal />,
 };
