@@ -1,6 +1,6 @@
 # SpotGov Design System — agent rules
 
-**Canonical token reference:** [`docs/design-tokens.md`](docs/design-tokens.md) — read before any UI work.
+**Canonical references:** [`docs/design-system.md`](docs/design-system.md) (components, patterns, AI rules) · [`docs/design-tokens.md`](docs/design-tokens.md) (token values) — read before any UI work.
 
 ## Non-negotiables
 
