@@ -434,6 +434,6 @@ Phase 2 complete (30 Jun 2026). Token definition + code sync done; Figma variabl
 
 ## Next steps
 
-1. **Phase 3** — component inventory, Pro Blocks, SpotGov surface patterns.
+1. **Phase 3** — component library complete (54 primitives + Pro Blocks). Figma parity spot-checked on top primitives (2 Jul 2026).
 2. **Phase 4 (expand)** — which-one-when guide, component manifest, Claude Skill.
 3. **Figma sync** — push locked values and code syntax to variable collections (manual).

@@ -257,6 +257,7 @@ Storybook: `UI/<Name>`. Import: `@/components/ui/<file>`.
 | `avatar-group-compact` | Dense avatar stack | — | stories |
 | `avatar-empty-icons` | Empty avatar placeholders | Custom SVG people | stories |
 | `badge` | Category, count, tag label | Workflow state | `finance-command-menu.tsx` |
+| `banner` | Full-width persistent announcement bar | Inline alerts (`alert`) | `banner.stories.tsx`, `blocks/banner/*` |
 | `breadcrumb` | Hierarchy | Deep primary nav | `blocks/breadcrumbs/*` |
 | `button` | Actions | Links, icon-only rows | `button.tsx`, `button.stories.tsx` |
 | `button-group` | Segmented actions | Single CTA | stories |
@@ -280,13 +281,16 @@ Storybook: `UI/<Name>`. Import: `@/components/ui/<file>`.
 | `label` | Field labels | Headings | all form blocks |
 | `link-button` | Inline tertiary action | Submit | `feature-announcement-modal.tsx` |
 | `modal` | Dialog, confirm, form modal | Full-height panel | `blocks/modal/*` |
-| `notification` | Toast | Persistent banner | `notification.tsx` |
+| `notification` | Radix toast (stacked) | Compact sonner toast | `notification.tsx` |
 | `notification-provider` | App toast host | Per-toast | `app/layout.tsx` |
+| `toast` | Sonner host + `toast.custom()` API | Radix notification stack | `toast.tsx`, `toast.stories.tsx` |
+| `toast-alert` | Styled sonner toast body | Raw sonner markup | `toast-alert.tsx` |
 | `pagination` | Table pages | Infinite scroll only | `TableBlockFooter` |
 | `popover` | Anchored content | Modal task | stories |
 | `progress-bar` | Linear progress | Indeterminate without label | stories |
 | `progress-circle` | Circular progress | — | stories |
 | `radio` | Single-select | Multi-select | `blocks/radio/*` |
+| `rating` | Star display + interactive input | Custom star markup | `rating.tsx`, `svg-rating-icons.tsx` |
 | `segmented-control` | Mode toggle | Main nav tabs | `theme-switch.tsx` |
 | `select` | Native-style select | 2-option toggle | stories |
 | `slider` | Range input | — | `blocks/slider/*` |
@@ -818,6 +822,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | Auth | `components/blocks/auth/create-account-card.tsx` |
 | Drawer | `components/blocks/drawer/drawer-panel.tsx`, `support-drawer.tsx` |
 | Empty state | `components/blocks/empty-state/empty-state.tsx`, `empty-state-demos.tsx` |
+| Product banner | `components/blocks/banner/product-announcement-banner.tsx` |
 | Destructive confirm | `components/blocks/modal/destructive-confirm-modal.tsx` |
 | Feature notification | `components/ui/notification.tsx` |
 | Upload states | `components/blocks/file-upload/file-upload-status-cards.tsx` |

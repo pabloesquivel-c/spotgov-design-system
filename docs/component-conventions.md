@@ -8,6 +8,17 @@ File layout and imports for `components/`. For UX patterns and when to compose b
 
 Import primitives from `@/components/ui/<name>`. Use `cn` from `@/utils/cn` and `tv` from `@/utils/tv` for styling.
 
+## Reference-only blocks (do not ship as-is)
+
+Most Pro Blocks under `components/blocks/` are **AlignUI catalog demos** — useful for Storybook and AI reference, not drop-in production screens. Before using a block in SpotGov product UI:
+
+- Replace demo copy (`hello@alignui.com`, HR/finance placeholders) with procurement-native strings.
+- Replace placeholder `<img>` avatars with `Avatar` primitives or real assets.
+- Prefer canonical SpotGov patterns: `EmptyState`, `DestructiveConfirmModal`, `ProductAnnouncementBanner`, `contracts-table.tsx`, `filter-panel-shell.tsx`.
+- Treat `general-settings-drawer.tsx` as a drawer shell demo only (includes dark/system theme controls — omit in product).
+
+Agents should reach for **primitives + canonical blocks** above, not arbitrary demo blocks.
+
 ## State and accessibility coverage
 
 - Interactive primitives must define default, hover, pressed/active, focus-visible, disabled, and loading states when those states apply.

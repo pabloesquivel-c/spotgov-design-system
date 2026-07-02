@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { cn } from '@/utils/cn';
 import { Provider as TooltipProvider } from '@/components/ui/tooltip';
 import { NotificationProvider } from '@/components/ui/notification-provider';
+import { Toaster } from '@/components/ui/toast';
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({
           </TooltipProvider>
         </ThemeProvider>
         <NotificationProvider />
+        <Toaster />
       </body>
     </html>
   );
