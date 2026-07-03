@@ -43,7 +43,7 @@ function HorizontalStepperSeparatorIcon<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-icon shrink-0 text-text-soft-400', className)}
+      className={cn('size-5 shrink-0 text-text-soft-400', className)}
       {...rest}
     />
   );

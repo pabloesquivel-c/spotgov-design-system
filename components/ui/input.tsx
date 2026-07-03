@@ -57,7 +57,7 @@ export const inputVariants = tv({
     ],
     icon: [
       // base
-      'flex size-icon shrink-0 select-none items-center justify-center',
+      'flex size-5 shrink-0 select-none items-center justify-center',
       'transition duration-200 ease-out',
       // placeholder state
       'group-has-[:placeholder-shown]:text-text-soft-400',
@@ -92,17 +92,17 @@ export const inputVariants = tv({
   variants: {
     size: {
       medium: {
-        root: 'rounded-12',
+        root: 'rounded-10',
         wrapper: 'gap-2 px-3',
         input: 'h-10',
       },
       small: {
-        root: 'rounded-12',
+        root: 'rounded-lg',
         wrapper: 'gap-2 px-2.5',
         input: 'h-9',
       },
       xsmall: {
-        root: 'rounded-12',
+        root: 'rounded-lg',
         wrapper: 'gap-1.5 px-2',
         input: 'h-8',
       },

@@ -40,7 +40,7 @@ export function PasswordRequirementsTooltip() {
           </div>
           {passwordRequirements.map((requirement) => (
             <div key={requirement} className='flex items-center gap-1'>
-              <RiCheckboxCircleLine className='size-icon-inline text-success-base' />
+              <RiCheckboxCircleLine className='size-4 text-success-base' />
               <span className='text-label-xs text-text-sub-600'>
                 {requirement}
               </span>

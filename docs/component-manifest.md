@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit by hand. Run `npm run generate:manifest` after adding primitives or blocks.
 >
-> Generated: 2026-07-02 · 52 primitives · 22 block categories · 24 canonical block exports
+> Generated: 2026-07-03 · 58 primitives · 21 block categories · 24 canonical block exports
 
 Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md) §8 (which-one-when), and [`component-patterns.md`](./component-patterns.md).
 
@@ -20,10 +20,13 @@ Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS
 | `avatar-group-compact` | `@/components/ui/avatar-group-compact` | Dense avatar stack | — | `UI/AvatarGroupCompact` |
 | `avatar-group` | `@/components/ui/avatar-group` | Stacked people | Single user | `UI/AvatarGroup` |
 | `avatar` | `@/components/ui/avatar` | User/org identity | Decorative-only without name | `UI/Avatar` |
+| `badge.figma` | `@/components/ui/badge.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/Badge.figma` |
 | `badge` | `@/components/ui/badge` | Category, count, tag label | Workflow state | `UI/Badge` |
+| `banner.figma` | `@/components/ui/banner.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/Banner.figma` |
 | `banner` | `@/components/ui/banner` | Full-width persistent announcement bar | Inline alerts (use alert) | `UI/Banner` |
 | `breadcrumb` | `@/components/ui/breadcrumb` | Hierarchy | Deep primary nav | `UI/Breadcrumb` |
 | `button-group` | `@/components/ui/button-group` | Segmented actions | Single CTA | `UI/ButtonGroup` |
+| `button.figma` | `@/components/ui/button.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/Button.figma` |
 | `button` | `@/components/ui/button` | Actions | Links, icon-only rows | `UI/Button` |
 | `checkbox` | `@/components/ui/checkbox` | Multi-select, table select | Mutually exclusive choices | `UI/Checkbox` |
 | `color-picker` | `@/components/ui/color-picker` | Color input | Simple hex field | `UI/ColorPicker` |
@@ -40,10 +43,12 @@ Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS
 | `file-upload` | `@/components/ui/file-upload` | Upload control | Custom dropzone div | `UI/FileUpload` |
 | `hint` | `@/components/ui/hint` | Helper/error under field | Page-level alert | `UI/Hint` |
 | `horizontal-stepper` | `@/components/ui/horizontal-stepper` | Wizard steps | Vertical flows | `UI/HorizontalStepper` |
+| `input.figma` | `@/components/ui/input.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/Input.figma` |
 | `input` | `@/components/ui/input` | Text fields | Multi-line text | `UI/Input` |
 | `kbd` | `@/components/ui/kbd` | Shortcut display | Body copy | `UI/Kbd` |
 | `label` | `@/components/ui/label` | Field labels | Headings | `UI/Label` |
 | `link-button` | `@/components/ui/link-button` | Inline tertiary action | Submit actions | `UI/LinkButton` |
+| `modal.figma` | `@/components/ui/modal.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/Modal.figma` |
 | `modal` | `@/components/ui/modal` | Dialog, confirm, form modal | Full-height panel | `UI/Modal` |
 | `notification` | `@/components/ui/notification` | Radix toast (stacked) | Compact sonner toast | `UI/Notification` |
 | `pagination` | `@/components/ui/pagination` | Table pages | Infinite scroll only | `UI/Pagination` |
@@ -56,6 +61,7 @@ Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS
 | `select` | `@/components/ui/select` | Native-style select | 2-option toggle | `UI/Select` |
 | `slider` | `@/components/ui/slider` | Range input | — | `UI/Slider` |
 | `social-button` | `@/components/ui/social-button` | OAuth | Regular actions | `UI/SocialButton` |
+| `status-badge.figma` | `@/components/ui/status-badge.figma` | AlignUI primitive — see design-system.md §5 | — | `UI/StatusBadge.figma` |
 | `status-badge` | `@/components/ui/status-badge` | Workflow state | Categories | `UI/StatusBadge` |
 | `switch` | `@/components/ui/switch` | On/off setting | Immediate action button | `UI/Switch` |
 | `tab-menu-horizontal` | `@/components/ui/tab-menu-horizontal` | Section tabs | Vertical lists | `UI/TabMenuHorizontal` |
@@ -210,28 +216,6 @@ AlignUI catalog demos. Replace placeholder copy and prefer **canonical blocks** 
 | `InlineEditInput` | `text-input` | `@/components/blocks/text-input` | Form input demos |
 | `SocialLinksForm` | `text-input` | `@/components/blocks/text-input` | Form input demos |
 | `TextInputPanelHeader` | `text-input` | `@/components/blocks/text-input` | Form input demos |
-| `AccessibilitySection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleGallery` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleGalleryGrid` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleGalleryRow` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleHeader` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleLayout` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleParagraph` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleRule` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleSection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ArticleSubsection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ColorSwatch` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ColorsSection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ComponentShowcase` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `RadiusSection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `Section` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `ShadowsSection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `SpacingSection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `Subsection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `SwatchRow` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `TokenMeta` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `TokenPreview` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
-| `TypographySection` | `token-preview` | `@/components/blocks/token-preview` | Design token preview playground — not product UI |
 | `DeviceStatsTooltip` | `tooltip` | `@/components/blocks/tooltip` | Tooltip demos (reference) |
 | `MetricDetailTooltip` | `tooltip` | `@/components/blocks/tooltip` | Tooltip demos (reference) |
 | `PasswordRequirementsTooltip` | `tooltip` | `@/components/blocks/tooltip` | Tooltip demos (reference) |

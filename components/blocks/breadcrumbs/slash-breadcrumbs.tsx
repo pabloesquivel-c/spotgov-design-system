@@ -26,7 +26,7 @@ export function SlashBreadcrumbs({
       {breadcrumbs.length > 0 && (
         <>
           <Link href='/' onClick={handleClick}>
-            <RiHomeSmile2Line className='size-icon-inline text-text-soft-400 hover:text-text-sub-600' />
+            <RiHomeSmile2Line className='size-4 text-text-soft-400 hover:text-text-sub-600' />
           </Link>
           <span className='cursor-default text-label-xs text-text-soft-400'>
             /

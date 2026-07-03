@@ -176,7 +176,7 @@ export function ProfileDrawer() {
                       <div className='flex items-center gap-2'>
                         <img
                           src={`https://alignui.com/flags/${selectedLanguageData?.flag}.svg`}
-                          className='size-icon rounded-sm'
+                          className='size-5 rounded-sm'
                           alt=''
                         />
                         {selectedLanguageData?.label}
@@ -190,7 +190,7 @@ export function ProfileDrawer() {
                           style={{
                             backgroundImage: `url(https://alignui.com/flags/${language.flag}.svg)`,
                           }}
-                          className='size-icon rounded-sm'
+                          className='size-5 rounded-sm'
                         />
                         {language.label}
                       </Select.Item>

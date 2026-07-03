@@ -23,7 +23,7 @@ export function AuthCardIconHeader({
         )}
       >
         <div className='relative z-10 flex size-12 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200 md:size-16'>
-          <Icon className='size-icon-emphasis text-text-sub-600 md:size-8' />
+          <Icon className='size-6 text-text-sub-600 md:size-8' />
         </div>
       </div>
 

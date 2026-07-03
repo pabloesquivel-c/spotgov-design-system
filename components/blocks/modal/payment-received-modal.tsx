@@ -20,7 +20,7 @@ export function PaymentReceivedModal() {
         <Modal.Body>
           <div className='flex items-start gap-4'>
             <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-success-lighter'>
-              <RiCheckboxCircleLine className='size-icon-emphasis text-success-base' />
+              <RiCheckboxCircleLine className='size-6 text-success-base' />
             </div>
             <div>
               <Modal.Title className='text-label-md text-text-strong-950'>

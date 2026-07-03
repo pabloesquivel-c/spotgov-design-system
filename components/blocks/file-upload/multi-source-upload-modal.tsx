@@ -41,7 +41,7 @@ export function MultiSourceUploadModal() {
                 <CompactButton.Icon as={RiCloseLine} />
               </CompactButton.Root>
             </div>
-            <FileUpload.Root className='flex h-[268px] w-full flex-col items-center justify-center rounded-sg-lg border-stroke-sub-300 p-8 hover:bg-bg-white-0'>
+            <FileUpload.Root className='flex h-[268px] w-full flex-col items-center justify-center rounded-2xl border-stroke-sub-300 p-8 hover:bg-bg-white-0'>
               <input type='file' tabIndex={-1} className='hidden' multiple />
               <div className='pointer-events-none flex flex-col items-center gap-5 text-center'>
                 <span className='text-label-md text-text-sub-600'>
@@ -57,7 +57,7 @@ export function MultiSourceUploadModal() {
                 <div className='flex flex-wrap justify-center gap-3'>
                   <FileUpload.Button className='pointer-events-auto !h-10 gap-2 rounded-full p-1.5 pr-4 transition-all hover:bg-bg-weak-50 hover:!shadow-regular-xs hover:ring-0'>
                     <div className='flex size-7 items-center justify-center rounded-full bg-away-light'>
-                      <RiFolder2Line className='size-icon text-away-dark' />
+                      <RiFolder2Line className='size-5 text-away-dark' />
                     </div>
                     <span className='text-label-sm text-text-sub-600'>
                       My Device

@@ -33,7 +33,7 @@ export function DestructiveConfirmModal({
         <Modal.Body>
           <div className='flex items-start gap-4'>
             <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-error-lighter'>
-              <RiErrorWarningLine className='size-icon-emphasis text-error-base' />
+              <RiErrorWarningLine className='size-6 text-error-base' />
             </div>
             <div>
               <Modal.Title className='text-label-md text-text-strong-950'>
@@ -61,7 +61,7 @@ export function DestructiveConfirmModal({
             variant='error'
             size='small'
             className='w-full'
-            loading={loading}
+            disabled={loading}
             onClick={onConfirm}
           >
             {confirmLabel}

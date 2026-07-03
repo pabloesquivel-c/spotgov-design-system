@@ -46,7 +46,7 @@ const DigitInputSlot = React.forwardRef<
     <input
       ref={forwardedRef}
       className={cn(
-        'h-16 w-full min-w-0 rounded-12 bg-bg-white-0 text-center text-title-h5 text-text-strong-950 shadow-regular-xs outline-none ring-1 ring-inset ring-stroke-soft-200',
+        'h-16 w-full min-w-0 rounded-10 bg-bg-white-0 text-center text-title-h5 text-text-strong-950 shadow-regular-xs outline-none ring-1 ring-inset ring-stroke-soft-200',
         'transition duration-200 ease-out',
         // hover
         'hover:bg-bg-weak-50 hover:shadow-none hover:ring-transparent',

@@ -48,7 +48,7 @@ export function DropdownBreadcrumbs({
         className='text-text-soft-400 hover:text-text-sub-600'
         onClick={handleClick}
       >
-        <RiHomeSmile2Line className='size-icon-inline' />
+        <RiHomeSmile2Line className='size-4' />
       </Link>
 
       {breadcrumbs.map((item) => (
@@ -69,7 +69,7 @@ export function DropdownBreadcrumbs({
                     {item.label}
                   </span>
                   <span className='rounded-full group-data-[state=open]:bg-bg-weak-50'>
-                    <RiArrowDownSLine className='size-icon-inline transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-text-sub-600' />
+                    <RiArrowDownSLine className='size-4 transition-transform duration-200 group-data-[state=open]:rotate-180 group-data-[state=open]:text-text-sub-600' />
                   </span>
                 </button>
               </Dropdown.Trigger>
@@ -87,7 +87,7 @@ export function DropdownBreadcrumbs({
                       <span className='text-label-xs text-text-sub-600'>
                         {subItem.label}
                       </span>
-                      <RiArrowRightSLine className='size-icon-inline text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
+                      <RiArrowRightSLine className='size-4 text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
                     </button>
                   </Dropdown.Item>
                 ))}

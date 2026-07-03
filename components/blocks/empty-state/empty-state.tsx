@@ -35,13 +35,13 @@ export function EmptyState({
           className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'
           aria-hidden
         >
-          <Icon className='size-icon text-text-sub-600' />
+          <Icon className='size-5 text-text-sub-600' />
         </div>
       ) : null}
 
       <div className='flex max-w-[360px] flex-col gap-1'>
-        <h3 className='text-sg-section text-text-strong-950'>{title}</h3>
-        <p className='text-sg-body text-text-sub-600'>{description}</p>
+        <h3 className='text-label-md text-text-strong-950'>{title}</h3>
+        <p className='text-paragraph-sm text-text-sub-600'>{description}</p>
       </div>
 
       {actionLabel && onAction ? (

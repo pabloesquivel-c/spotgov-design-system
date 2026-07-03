@@ -40,7 +40,7 @@ export function SwatchPopoverColorPicker() {
                 style={{ backgroundColor: color.toString('hex') }}
               />
               {selectedIndex === index && (
-                <div className='absolute inset-0 rounded-sg-lg border-[3px] border-primary-alpha-16' />
+                <div className='absolute inset-0 rounded-2xl border-[3px] border-primary-alpha-16' />
               )}
             </button>
           </Popover.Trigger>

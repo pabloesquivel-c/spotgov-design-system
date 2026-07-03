@@ -18,9 +18,10 @@ description: >-
 
 ## Non-negotiables (summary — full rules in AGENTS.md)
 
-- Tokens: `bg-bg-*`, `text-text-*`, `primary-base`, `rounded-12` — no raw hex
+- Use AlignUI tokens as they ship — never redefine palette/radius/type scales in config
+- Tokens: `bg-bg-*`, `text-text-*`, `primary-base`, `rounded-10` — no raw hex
 - Import: `@/components/ui/*` and **canonical blocks** from the manifest
-- Remix Line icons only; six SG type roles (`text-sg-page-title` … `text-sg-small-label`)
+- Remix Line icons only; AlignUI type utilities (`text-title-h6`, `text-label-*`, `text-paragraph-*`)
 - Light-only product; no dark/system theme controls in shipped UI
 - Status: label text + icon or dot — not color alone
 - Forms: `Label.Root htmlFor` matches control `id`; errors via `Hint` or `Alert`

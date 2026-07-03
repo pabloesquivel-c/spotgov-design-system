@@ -18,7 +18,7 @@ const paginationVariants = tv({
     item: 'flex items-center justify-center text-center text-label-sm text-text-sub-600 transition duration-200 ease-out',
     navButton:
       'flex items-center justify-center text-text-sub-600 transition duration-200 ease-out',
-    navIcon: 'size-icon',
+    navIcon: 'size-5',
   },
   variants: {
     variant: {
@@ -26,13 +26,13 @@ const paginationVariants = tv({
         root: 'gap-2',
         item: [
           // base
-          'h-8 min-w-8 rounded-12 px-1.5 ring-1 ring-inset ring-stroke-soft-200',
+          'h-8 min-w-8 rounded-lg px-1.5 ring-1 ring-inset ring-stroke-soft-200',
           // hover
           'hover:bg-bg-weak-50 hover:ring-transparent',
         ],
         navButton: [
           // base
-          'size-8 rounded-12',
+          'size-8 rounded-lg',
           // hover
           'hover:bg-bg-weak-50',
         ],

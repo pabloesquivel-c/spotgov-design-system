@@ -24,12 +24,12 @@ Agent-facing guide for building product UI from this repo. **Existing system onl
 
 | Principle | Exact rule |
 |-----------|------------|
-| Restrained B2B | One accent: `bg-primary-base` / `text-primary-base` = `#335CFF`. No extra blues in chrome. |
-| Soft container, flat data | Surfaces `rounded-16` + `p-6`; table **wrapper** `rounded-20` (see `table-shared.tsx`); rows flat inside. |
+| Restrained B2B | One accent: `bg-primary-base` / `text-primary-base`. No extra blues in chrome. |
+| Soft container, flat data | Surfaces `rounded-2xl` + `p-6`; table **wrapper** `rounded-20` (see `table-shared.tsx`); rows flat inside. |
 | Semantic classes only | Never raw hex in product UI. |
-| Six type roles | `text-sg-page-title`, `text-sg-section`, `text-sg-body`, `text-sg-label`, `text-sg-metadata`, `text-sg-small-label`. |
+| Native type roles | Use AlignUI type utilities: `text-title-h6`, `text-label-md`, `text-paragraph-sm`, `text-label-sm`, `text-paragraph-xs`, `text-label-xs`. |
 | Ring + one shadow | `ring-1 ring-inset ring-stroke-soft-200` + `shadow-regular-xs` OR `shadow-regular-md` — not both tiers on one element. |
-| Dual-density spacing | Dense 4–16px inside data; breathable 8–48px for layout (§3.1). |
+| Trust component defaults | Use AlignUI's built-in radius/spacing on primitives; set spacing only at page/block layout level. |
 | Desktop-first | Productivity surfaces, not mobile-first marketing. |
 | Compose | `@/components/ui/*` + `@/components/blocks/*`. |
 
@@ -115,35 +115,37 @@ Spacing has **no custom CSS variables**. Grid constants are **not** spacing vars
 | Static | `text-static-white`, `text-static-black` | On filled surfaces |
 
 **Dropped — never in product UI:** `verified-*`, `highlighted-*`, `stable-*`  
-**Not UI chrome:** raw `blue-*`, `sky-*`, `--viz-*` (charts only, `globals.css`)
+**Not UI chrome:** raw `blue-*`, `sky-*` scales — go through semantic tokens.
 
 ### 3.4 Typography
 
-| Role | Class | Legacy (primitives only) |
-|------|-------|--------------------------|
-| Page title | `text-sg-page-title` | `text-title-h6` |
-| Section | `text-sg-section` | `text-label-md` |
-| Body | `text-sg-body` | `text-paragraph-sm` |
-| Label | `text-sg-label` | `text-label-sm` |
-| Caption | `text-sg-metadata` | `text-paragraph-xs` |
-| Micro | `text-sg-small-label` | `text-label-xs` |
+Use AlignUI's native type utilities:
 
-**Banned in product UI:** `text-title-h1`–`h5`, `text-doc-*`, `text-subheading-*` (except inside badge micro type).
+| Role | Class | Spec |
+|------|-------|------|
+| Page title | `text-title-h6` | 20px / 28px / 500 |
+| Section | `text-label-md` | 16px / 24px / 500 |
+| Body | `text-paragraph-sm` | 14px / 20px / 400 |
+| Label | `text-label-sm` | 14px / 20px / 500 |
+| Caption | `text-paragraph-xs` | 12px / 16px / 400 |
+| Micro | `text-label-xs` | 12px / 16px / 500 |
+
+Larger `title-h1`–`h5`, `doc-*`, and `subheading-*` utilities are for marketing/document contexts — reach for them only when a screen genuinely needs that scale.
 
 **Readable copy on white:** `text-text-sub-600` or stronger. `text-text-soft-400` = decorative only.
 
 ### 3.5 Icons, radius, shadows
 
-| Icons | `size-icon-inline` (14px) · `size-icon` (16px) · `size-icon-emphasis` (20px) |
+| Icons | `size-4` (16px, inline/dense) · `size-5` (20px, default) · `size-6` (24px, emphasis) |
 |-------|-------------------------------------------------------------------------------|
 | Library | `@remixicon/react` `*Line` only — never `*Fill` |
 | Exceptions | `@/components/ui/file-format-icon`, `avatar-empty-icons`, OAuth SVGs in auth blocks |
 
 | Radius | Class | Use |
 |--------|-------|-----|
-| Micro | `rounded-8` | Tags, small badges |
-| Interactive | `rounded-12` | Buttons, inputs, nav items |
-| Surface | `rounded-16` | Cards, alerts, KPI widgets |
+| Small | `rounded-lg` | Tags, small badges, small/xsmall controls |
+| Control | `rounded-10` | Buttons, inputs, selects, nav items (AlignUI default) |
+| Surface | `rounded-2xl` | Cards, alerts, KPI widgets |
 | Overlay | `rounded-20` | Modals, drawers, **table block wrapper**, command menu |
 | Full | `rounded-full` | Avatars, switch thumb, pagination dots, `CompactButton` with `fullRadius` |
 
@@ -193,7 +195,7 @@ Test at **1024, 1280, 1440, 1728**, and wide. Tailwind refs: `lg` 1024px · `xl`
 
 ```
 Page          → gap-8, bg-bg-white-0
-  Card        → rounded-16, p-6
+  Card        → rounded-2xl, p-6
     TableBlock → rounded-20, ring-1 ring-stroke-soft-200, shadow-regular-xs
       rows     → dense; Table.Cell default h-16 px-3 (components/ui/table.tsx)
 ```
@@ -215,8 +217,8 @@ There is **no** `DashboardShell` or settings layout component. Build pages in `a
 
 ```tsx
 <div className='flex flex-col gap-1'>
-  <h1 className='text-sg-page-title text-text-strong-950'>Settings</h1>
-  <p className='text-sg-body text-text-sub-600'>
+  <h1 className='text-title-h6 text-text-strong-950'>Settings</h1>
+  <p className='text-paragraph-sm text-text-sub-600'>
     Manage your account and notification preferences.
   </p>
 </div>
@@ -469,7 +471,7 @@ Storybook: `Blocks/<Category>`.
 | Feature tile | `bg-feature-lighter text-feature-base` | `finance-command-menu.tsx` |
 | Feature alert | `alert` `status="feature"` | `alert.tsx` |
 | Sparkle CTA | `FancyButton` + `RiSparklingLine` | `fancy-button.stories.tsx` |
-| Panel spacing | `rounded-16 p-6` | `design-tokens.md` § Spacing |
+| Panel spacing | `rounded-2xl p-6` | `design-tokens.md` § Spacing |
 
 ### 7.7 Settings page (compose — no dedicated block)
 
@@ -562,8 +564,8 @@ export default function SettingsPage() {
   return (
     <div className='mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-6 py-8'>
       <div className='flex flex-col gap-1'>
-        <h1 className='text-sg-page-title text-text-strong-950'>Settings</h1>
-        <p className='text-sg-body text-text-sub-600'>
+        <h1 className='text-title-h6 text-text-strong-950'>Settings</h1>
+        <p className='text-paragraph-sm text-text-sub-600'>
           Manage your account and notification preferences.
         </p>
       </div>
@@ -576,7 +578,7 @@ export default function SettingsPage() {
               label={label}
               active={section === label}
               onClick={() => setSection(label)}
-              icon={<RiNotificationBadgeLine className='size-icon' />}
+              icon={<RiNotificationBadgeLine className='size-5' />}
             />
           ))}
         </nav>
@@ -703,7 +705,7 @@ Target **WCAG 2.1 AA**. Details: [`accessibility.md`](./accessibility.md).
 
 | Element | Classes | Repo example |
 |---------|---------|--------------|
-| Section title | `text-sg-section` or `text-label-sm text-text-strong-950` | `Authentication Settings` |
+| Section title | `text-label-md` or `text-label-sm text-text-strong-950` | `Authentication Settings` |
 | Description | `text-paragraph-sm text-text-sub-600` | *"Enter your details to register."* — `create-account-card.tsx` |
 | Helper | `text-paragraph-xs text-text-sub-600`; icon may be `text-text-soft-400` | `change-password-form.tsx` |
 | Label | Sentence case + `Label.Asterisk` if required | `Email Address` — `create-account-card.tsx` |
@@ -752,7 +754,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 - Invent tokens, colors, radii, shadows, or spacing variables.
 - Use `bg-white-0`, `text-strong-950` (wrong — missing prefix).
 - Use dropped tokens, `blue-*`/`sky-*` chrome, `shadow-custom-*`, `shadow-regular-sm`, stacked shadows.
-- Use marketing type (`text-title-h1`–`h5`), stone/article preview vars (`--color-stone-*`), Framer styles.
+- Use marketing type (`text-title-h1`–`h5`) or non-AlignUI style systems (Framer, arbitrary CSS vars) in product UI.
 - Use `text-text-soft-400` for readable 12–14px task text on white.
 - Use `rounded-full` on cards, CTAs, table rows, AI text blocks.
 - Reimplement primitives; add primitives to `components/` root.
@@ -768,11 +770,11 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 
 | Category | Never |
 |----------|-------|
-| Tokens | Raw hex; arbitrary Tailwind colors; `verified-*` / `highlighted-*` / `stable-*`; `--viz-*` for UI chrome |
+| Tokens | Raw hex; arbitrary Tailwind colors; `verified-*` / `highlighted-*` / `stable-*`; raw `blue-*`/`sky-*` scales as UI chrome |
 | Typography | `text-title-h1`–`h5`, `text-doc-*` in product UI |
 | Color | `text-text-soft-400` for metadata, timestamps, helpers, table cells on white |
 | Icons | `*Fill`; icon libraries other than Remix Line (+ documented exceptions) |
-| Radius | `rounded-full` on rectangular cards/CTAs/rows; interactives below `rounded-12` (except micro badges) |
+| Radius | `rounded-full` on rectangular cards/CTAs/rows; changing a primitive's built-in radius per-instance |
 | Shadow | `shadow-regular-xs` + `shadow-regular-md` on same element; `shadow-fancy-buttons-*` in product UI |
 | Spacing | `gap-5` between widgets; dense table directly on page canvas without card/block wrapper |
 | Layout | Fixed `w-screen` forms; center marketing column; infinite stretch on wide monitors |
@@ -780,21 +782,21 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | A11y | Icon-only without `aria-label`; status without text; focus removed without replacement |
 | Data | Rounded table rows — round **wrapper** only (`TableBlock`) |
 | Settings | `TableBlock` or filter panel for settings; `FilterPanelFooter` Clear/Apply; dark/system theme controls; drawer as entire settings app; shadcn `<Form>` / invented `SettingsLayout` |
-| Pages | `ArticleLayout` / `--color-stone-*`; `max-w-2xl` marketing column for app UI |
+| Pages | Marketing/article layouts or `max-w-2xl` marketing columns for app UI |
 
 ---
 
 ## 15. Anti-slop checklist
 
 - [ ] Classes use correct prefixes (`bg-bg-*`, `text-text-*`, `ring-stroke-*`)
-- [ ] Type uses `text-sg-*` in new product code
+- [ ] Type uses AlignUI type utilities (`text-title-h6`, `text-label-*`, `text-paragraph-*`)
 - [ ] One `primary-base` accent in chrome
 - [ ] Readable 12–14px text ≥ `text-text-sub-600` on `bg-bg-white-0`
 - [ ] Status = text + color + icon/dot
 - [ ] Hover + focus-visible + disabled on interactives; `aria-busy` if loading
 - [ ] Icon-only controls have `aria-label`
 - [ ] Labels wired with `htmlFor` / `id`; errors use `Hint hasError` or `Alert`
-- [ ] Radius: interactives `rounded-12`, surfaces `rounded-16`, overlays/table block `rounded-20`
+- [ ] Radius: controls `rounded-10`, surfaces `rounded-2xl`, overlays/table block `rounded-20`
 - [ ] One shadow tier per element
 - [ ] Density nested: page → card → table block
 - [ ] Layout OK at 1024 / 1280 / 1440 / wide

@@ -16,7 +16,7 @@ export const Default: Story = {
     <>
       <button
         type='button'
-        className='rounded-12 bg-primary-base px-3.5 py-2 text-label-sm text-static-white'
+        className='rounded-xl bg-primary-base px-3.5 py-2 text-label-sm text-static-white'
         onClick={() =>
           toast.custom((t) => (
             <AlertToast.Root
@@ -39,7 +39,7 @@ export const NonDismissable: Story = {
     <>
       <button
         type='button'
-        className='rounded-12 bg-primary-base px-3.5 py-2 text-label-sm text-static-white'
+        className='rounded-xl bg-primary-base px-3.5 py-2 text-label-sm text-static-white'
         onClick={() =>
           toast.custom(
             (t) => (

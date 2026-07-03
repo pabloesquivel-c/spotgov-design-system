@@ -67,7 +67,7 @@ export function CreateAccountAuthCard() {
           </Label.Root>
           <PasswordField id='register-password' required />
           <div className='flex gap-1 text-paragraph-xs text-text-sub-600'>
-            <RiInformationLine className='size-icon-inline shrink-0 text-text-soft-400' />
+            <RiInformationLine className='size-4 shrink-0 text-text-soft-400' />
             Must contain 1 uppercase letter, 1 number, min. 8 characters.
           </div>
         </div>

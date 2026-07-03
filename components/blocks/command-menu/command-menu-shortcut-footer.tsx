@@ -14,17 +14,17 @@ export function CommandMenuShortcutFooter() {
       <div className='hidden items-center gap-2 md:flex'>
         <span className='text-label-sm text-text-sub-600'>Use</span>
         <Kbd.Root className='flex size-5 items-center justify-center text-text-sub-600 shadow-regular-xs ring-0'>
-          <RiArrowUpLine className='size-icon shrink-0' />
+          <RiArrowUpLine className='size-5 shrink-0' />
         </Kbd.Root>
         <Kbd.Root className='flex size-5 items-center justify-center text-text-sub-600 shadow-regular-xs ring-0'>
-          <RiArrowDownLine className='size-icon shrink-0' />
+          <RiArrowDownLine className='size-5 shrink-0' />
         </Kbd.Root>
         <span className='text-label-sm text-text-sub-600'>to navigate</span>
       </div>
       <div className='hidden items-center gap-2 md:flex'>
         <span className='text-label-sm text-text-sub-600'>Type</span>
         <Kbd.Root className='flex size-5 items-center justify-center shadow-regular-xs ring-0'>
-          <span className='flex size-icon-inline shrink-0 items-center justify-center text-label-xs text-text-sub-600'>
+          <span className='flex size-4 shrink-0 items-center justify-center text-label-xs text-text-sub-600'>
             /
           </span>
         </Kbd.Root>

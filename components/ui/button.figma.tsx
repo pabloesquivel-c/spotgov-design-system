@@ -28,16 +28,14 @@ figma.connect(
         '2X-Small': 'xxsmall',
       }),
       disabled: figma.boolean('Disabled'),
-      loading: figma.boolean('Loading'),
       label: figma.string('Label'),
     },
-    example: ({ variant, mode, size, disabled, loading, label }) => (
+    example: ({ variant, mode, size, disabled, label }) => (
       <Button.Root
         variant={variant}
         mode={mode}
         size={size}
         disabled={disabled}
-        loading={loading}
       >
         {label}
       </Button.Root>

@@ -19,7 +19,7 @@ alwaysApply: true
 
 - Semantic tokens only — `bg-bg-*`, `text-text-*`, `primary-base`; no raw hex
 - Import primitives from `@/components/ui/*`; prefer **canonical blocks** from the manifest
-- `@remixicon/react` Line icons; six SG type roles (`text-sg-*`)
+- `@remixicon/react` Line icons; AlignUI type utilities (`text-title-h6`, `text-label-*`, `text-paragraph-*`)
 - Light-only product UI; WCAG 2.1 AA; status = text + icon/shape
 - Copy from [`docs/copy.md`](../../docs/copy.md); no em dashes in product UI
 

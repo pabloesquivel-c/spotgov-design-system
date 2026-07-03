@@ -44,8 +44,8 @@ export function WeeklyPromotionsSlider() {
                 <Slider.Thumb />
               </Slider.Root>
             </div>
-            <div className='flex w-full items-center gap-2 rounded-sg-lg bg-faded-lighter p-2'>
-              <RiMagicLine className='size-icon-inline shrink-0 text-faded-base' />
+            <div className='flex w-full items-center gap-2 rounded-2xl bg-faded-lighter p-2'>
+              <RiMagicLine className='size-4 shrink-0 text-faded-base' />
               <p className='text-paragraph-xs text-text-strong-950'>
                 You are charged $122.50 to receive {promotionCount} weekly
                 promotions.

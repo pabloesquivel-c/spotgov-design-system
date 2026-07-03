@@ -46,7 +46,7 @@ const TabMenuVerticalTrigger = React.forwardRef<
       ref={forwardedRef}
       className={cn(
         // base
-        'group/tab-item w-full rounded-12 p-2 text-left text-label-sm text-text-sub-600 outline-none',
+        'group/tab-item w-full rounded-lg p-2 text-left text-label-sm text-text-sub-600 outline-none',
         'grid auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-1.5',
         'transition duration-200 ease-out',
         // hover
@@ -74,7 +74,7 @@ function TabMenuVerticalIcon<T extends React.ElementType>({
     <Component
       className={cn(
         // base
-        'size-icon text-text-sub-600',
+        'size-5 text-text-sub-600',
         'transition duration-200 ease-out',
         // active
         'group-data-[state=active]/tab-item:text-primary-base',
@@ -97,7 +97,7 @@ function TabMenuVerticalArrowIcon<T extends React.ElementType>({
     <Component
       className={cn(
         // base
-        'size-icon p-px text-text-sub-600',
+        'size-5 p-px text-text-sub-600',
         'rounded-full bg-bg-white-0 opacity-0 shadow-regular-xs',
         'scale-75 transition ease-out',
         // active

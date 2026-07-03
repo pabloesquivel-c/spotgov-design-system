@@ -189,7 +189,7 @@ For each pattern document:
 
 **Layout rules**
 - Center in content area; breathable padding (`p-6` minimum)
-- Typography: title `text-sg-section` or `text-label-sm`; body `text-sg-body text-text-sub-600`
+- Typography: title `text-label-md` or `text-label-sm`; body `text-paragraph-sm text-text-sub-600`
 - Do not wrap in heavy card chrome unless inside an existing card/table body
 
 **Responsive / desktop adaptability**

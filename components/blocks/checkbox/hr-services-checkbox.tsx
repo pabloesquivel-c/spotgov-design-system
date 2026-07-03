@@ -114,7 +114,7 @@ function StatusIcon({ status }: { status: StatusType }) {
   const config = iconConfig[status];
   const Icon = config.icon;
 
-  return <Icon className={`size-icon-inline shrink-0 ${config.className}`} />;
+  return <Icon className={`size-4 shrink-0 ${config.className}`} />;
 }
 
 export function HrServicesCheckbox() {
@@ -136,7 +136,7 @@ export function HrServicesCheckbox() {
           className='flex w-[120px] items-center gap-0 rounded-10'
         >
           <span className='text-label-sm text-text-sub-600'>All services</span>
-          <RiArrowDownSLine className='size-icon shrink-0 text-text-sub-600' />
+          <RiArrowDownSLine className='size-5 shrink-0 text-text-sub-600' />
         </Button.Root>
       </div>
 
@@ -177,12 +177,12 @@ export function HrServicesCheckbox() {
                         <Dropdown.Trigger asChild>
                           <CompactButton.Root
                             variant='ghost'
-                            className='size-icon-inline text-text-soft-400 focus:outline-none data-[state=open]:text-primary-base'
+                            className='size-4 text-text-soft-400 focus:outline-none data-[state=open]:text-primary-base'
                             tabIndex={-1}
                           >
                             <CompactButton.Icon
                               as={RiMore2Line}
-                              className='size-icon-inline'
+                              className='size-4'
                               tabIndex={-1}
                             />
                           </CompactButton.Root>
@@ -196,30 +196,30 @@ export function HrServicesCheckbox() {
                             <Dropdown.Group className='flex flex-col gap-0.5'>
                               <Dropdown.Item className='group flex w-full items-center justify-between gap-1.5 rounded-lg p-1.5 hover:bg-bg-weak-50'>
                                 <div className='flex items-center gap-1.5'>
-                                  <RiLoader2Line className='size-icon-inline text-text-soft-400 group-hover:text-text-sub-600' />
+                                  <RiLoader2Line className='size-4 text-text-soft-400 group-hover:text-text-sub-600' />
                                   <span className='text-label-xs text-text-sub-600'>
                                     Details
                                   </span>
                                 </div>
-                                <RiArrowRightSLine className='size-icon-inline text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
+                                <RiArrowRightSLine className='size-4 text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
                               </Dropdown.Item>
                               <Dropdown.Item className='group flex w-full items-center justify-between gap-1.5 rounded-lg p-1.5 hover:bg-bg-weak-50'>
                                 <div className='flex items-center gap-1.5'>
-                                  <RiEditLine className='size-icon-inline text-text-soft-400 group-hover:text-text-sub-600' />
+                                  <RiEditLine className='size-4 text-text-soft-400 group-hover:text-text-sub-600' />
                                   <span className='text-label-xs text-text-sub-600'>
                                     Edit
                                   </span>
                                 </div>
-                                <RiArrowRightSLine className='size-icon-inline text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
+                                <RiArrowRightSLine className='size-4 text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
                               </Dropdown.Item>
                               <Dropdown.Item className='group flex w-full items-center justify-between gap-1.5 rounded-lg p-1.5 hover:bg-bg-weak-50'>
                                 <div className='flex items-center gap-1.5'>
-                                  <RiDeleteBinLine className='size-icon-inline text-text-soft-400 group-hover:text-text-sub-600' />
+                                  <RiDeleteBinLine className='size-4 text-text-soft-400 group-hover:text-text-sub-600' />
                                   <span className='text-label-xs text-text-sub-600'>
                                     Delete
                                   </span>
                                 </div>
-                                <RiArrowRightSLine className='size-icon-inline text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
+                                <RiArrowRightSLine className='size-4 text-text-soft-400 opacity-0 transition-opacity group-hover:opacity-100' />
                               </Dropdown.Item>
                             </Dropdown.Group>
                           </Dropdown.Content>

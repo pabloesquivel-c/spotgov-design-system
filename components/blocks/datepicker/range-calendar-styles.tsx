@@ -35,6 +35,6 @@ export const rangeCalendarClassNames = {
 };
 
 export const rangeCalendarComponents = {
-  IconLeft: () => <RiArrowLeftSLine className='size-icon text-text-sub-600' />,
-  IconRight: () => <RiArrowRightSLine className='size-icon text-text-sub-600' />,
+  IconLeft: () => <RiArrowLeftSLine className='size-5 text-text-sub-600' />,
+  IconRight: () => <RiArrowRightSLine className='size-5 text-text-sub-600' />,
 };

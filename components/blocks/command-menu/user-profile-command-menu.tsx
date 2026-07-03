@@ -116,7 +116,7 @@ export function UserProfileCommandMenu() {
           <div className='group/cmd-input flex h-14 w-full items-center gap-2 border-b border-stroke-soft-200 px-5'>
             <RiSearch2Line
               className={cn(
-                'size-icon shrink-0 text-text-soft-400',
+                'size-5 shrink-0 text-text-soft-400',
                 'transition duration-200 ease-out',
                 'group-focus-within/cmd-input:text-primary-base',
               )}
@@ -209,7 +209,7 @@ export function UserProfileCommandMenu() {
                         return (
                           <div key={item.key} className='flex items-center gap-3'>
                             <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-                              <Icon className='size-icon text-text-sub-600' />
+                              <Icon className='size-5 text-text-sub-600' />
                             </div>
                             <div className='flex flex-col gap-1'>
                               <span className='text-label-sm text-text-soft-400'>

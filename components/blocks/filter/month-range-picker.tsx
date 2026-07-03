@@ -44,7 +44,7 @@ function MonthCalendar({
           onClick={() => onYearChange(-1)}
           className='flex items-center justify-center rounded-full p-1 hover:bg-bg-weak-50'
         >
-          <RiArrowLeftSLine className='size-icon text-text-sub-600' />
+          <RiArrowLeftSLine className='size-5 text-text-sub-600' />
         </button>
         <span className='text-label-sm text-text-sub-600'>{year}</span>
         <button
@@ -52,7 +52,7 @@ function MonthCalendar({
           onClick={() => onYearChange(1)}
           className='flex items-center justify-center rounded-full p-1 hover:bg-bg-weak-50'
         >
-          <RiArrowRightSLine className='size-icon text-text-sub-600' />
+          <RiArrowRightSLine className='size-5 text-text-sub-600' />
         </button>
       </div>
       <div className='py-4'>

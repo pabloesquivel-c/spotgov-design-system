@@ -58,7 +58,7 @@ export function GoalDrawer() {
           <div className='flex-1 overflow-y-auto'>
             <div className='flex items-center gap-3.5 p-5'>
               <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-                <RiTimeLine className='size-icon text-text-sub-600' />
+                <RiTimeLine className='size-5 text-text-sub-600' />
               </div>
               <div className='space-y-1'>
                 <div className='text-label-sm text-text-sub-600'>
@@ -104,7 +104,7 @@ export function GoalDrawer() {
                     size='xsmall'
                     className='size-5 rounded-lg'
                   >
-                    <Button.Icon as={RiMore2Line} className='size-icon text-text-sub-600' />
+                    <Button.Icon as={RiMore2Line} className='size-5 text-text-sub-600' />
                   </Button.Root>
                 </div>
                 <DashedDivider />
@@ -137,7 +137,7 @@ export function GoalDrawer() {
                     size='xsmall'
                     className='size-5 rounded-lg'
                   >
-                    <Button.Icon as={RiMore2Line} className='size-icon text-text-sub-600' />
+                    <Button.Icon as={RiMore2Line} className='size-5 text-text-sub-600' />
                   </Button.Root>
                 </div>
               </div>

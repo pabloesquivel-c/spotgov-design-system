@@ -98,7 +98,7 @@ function AccordionSection({
         <Accordion.Trigger className='group flex w-full items-center outline-none'>
           <div className='flex w-full items-center gap-3.5'>
             <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-              <Icon className='size-icon text-text-sub-600' />
+              <Icon className='size-5 text-text-sub-600' />
             </div>
             <div className='flex min-w-0 flex-1 items-center'>
               <div className='flex min-w-0 flex-1 flex-col items-start gap-1'>
@@ -123,23 +123,23 @@ function AccordionSection({
                     'inline-flex shrink-0 items-center justify-center group-data-[state=open]:border-0',
                   )}
                 >
-                  <RiArrowDownSLine className='size-icon text-text-soft-400 group-data-[state=open]:hidden' />
-                  <RiArrowUpSLine className='hidden size-icon rounded-full bg-bg-surface-800 text-text-white-0 group-data-[state=open]:block' />
+                  <RiArrowDownSLine className='size-5 text-text-soft-400 group-data-[state=open]:hidden' />
+                  <RiArrowUpSLine className='hidden size-5 rounded-full bg-bg-surface-800 text-text-white-0 group-data-[state=open]:block' />
                 </span>
               </div>
             </div>
           </div>
         </Accordion.Trigger>
         <Accordion.Content className='overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'>
-          <div className='rounded-sg-lg bg-bg-white-0 pb-0 pl-[54px] pt-3'>
-            <div className='flex flex-col gap-2 rounded-sg-lg border border-stroke-soft-200 px-3 py-2'>
+          <div className='rounded-2xl bg-bg-white-0 pb-0 pl-[54px] pt-3'>
+            <div className='flex flex-col gap-2 rounded-2xl border border-stroke-soft-200 px-3 py-2'>
               {fields.map((field) => (
                 <div
                   key={field.id}
                   className='flex flex-row items-center gap-4'
                 >
                   <div className='flex flex-row items-center gap-2'>
-                    <field.icon className='size-icon shrink-0 text-text-sub-600' />
+                    <field.icon className='size-5 shrink-0 text-text-sub-600' />
                     <span className='w-[60px] shrink-0 overflow-hidden text-ellipsis whitespace-nowrap text-paragraph-sm text-text-sub-600 md:w-[92px]'>
                       {field.label}
                     </span>

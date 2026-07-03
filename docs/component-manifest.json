@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-02T13:53:07.117Z",
+  "generatedAt": "2026-07-03T12:29:06.087Z",
   "counts": {
-    "primitives": 52,
-    "blockCategories": 22,
-    "blockExports": 155,
+    "primitives": 58,
+    "blockCategories": 21,
+    "blockExports": 133,
     "canonicalBlockExports": 24
   },
   "primitives": [
@@ -75,6 +75,17 @@
     },
     {
       "layer": "primitive",
+      "slug": "badge.figma",
+      "name": "Badge.figma",
+      "importPath": "@/components/ui/badge.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/Badge.figma",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
       "slug": "badge",
       "name": "Badge",
       "importPath": "@/components/ui/badge",
@@ -82,6 +93,17 @@
       "avoid": "Workflow state",
       "canonical": true,
       "storybook": "UI/Badge",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
+      "slug": "banner.figma",
+      "name": "Banner.figma",
+      "importPath": "@/components/ui/banner.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/Banner.figma",
       "subExports": []
     },
     {
@@ -115,6 +137,17 @@
       "avoid": "Single CTA",
       "canonical": true,
       "storybook": "UI/ButtonGroup",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
+      "slug": "button.figma",
+      "name": "Button.figma",
+      "importPath": "@/components/ui/button.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/Button.figma",
       "subExports": []
     },
     {
@@ -295,6 +328,17 @@
     },
     {
       "layer": "primitive",
+      "slug": "input.figma",
+      "name": "Input.figma",
+      "importPath": "@/components/ui/input.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/Input.figma",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
       "slug": "input",
       "name": "Input",
       "importPath": "@/components/ui/input",
@@ -335,6 +379,17 @@
       "avoid": "Submit actions",
       "canonical": true,
       "storybook": "UI/LinkButton",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
+      "slug": "modal.figma",
+      "name": "Modal.figma",
+      "importPath": "@/components/ui/modal.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/Modal.figma",
       "subExports": []
     },
     {
@@ -469,6 +524,17 @@
       "avoid": "Regular actions",
       "canonical": true,
       "storybook": "UI/SocialButton",
+      "subExports": []
+    },
+    {
+      "layer": "primitive",
+      "slug": "status-badge.figma",
+      "name": "StatusBadge.figma",
+      "importPath": "@/components/ui/status-badge.figma",
+      "purpose": "AlignUI primitive — see design-system.md §5",
+      "avoid": null,
+      "canonical": true,
+      "storybook": "UI/StatusBadge.figma",
       "subExports": []
     },
     {
@@ -2120,270 +2186,6 @@
       "canonical": false,
       "referenceOnly": false,
       "storybook": "Blocks/Text Input"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "AccessibilitySection",
-      "exportName": "AccessibilitySection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleGallery",
-      "exportName": "ArticleGallery",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleGalleryGrid",
-      "exportName": "ArticleGalleryGrid",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleGalleryRow",
-      "exportName": "ArticleGalleryRow",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleHeader",
-      "exportName": "ArticleHeader",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleLayout",
-      "exportName": "ArticleLayout",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleParagraph",
-      "exportName": "ArticleParagraph",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleRule",
-      "exportName": "ArticleRule",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleSection",
-      "exportName": "ArticleSection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ArticleSubsection",
-      "exportName": "ArticleSubsection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ColorSwatch",
-      "exportName": "ColorSwatch",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ColorsSection",
-      "exportName": "ColorsSection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ComponentShowcase",
-      "exportName": "ComponentShowcase",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "RadiusSection",
-      "exportName": "RadiusSection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "Section",
-      "exportName": "Section",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "ShadowsSection",
-      "exportName": "ShadowsSection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "SpacingSection",
-      "exportName": "SpacingSection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "Subsection",
-      "exportName": "Subsection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "SwatchRow",
-      "exportName": "SwatchRow",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "TokenMeta",
-      "exportName": "TokenMeta",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "TokenPreview",
-      "exportName": "TokenPreview",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
-    },
-    {
-      "layer": "block",
-      "category": "token-preview",
-      "slug": "token-preview",
-      "name": "TypographySection",
-      "exportName": "TypographySection",
-      "importPath": "@/components/blocks/token-preview",
-      "purpose": "Design token preview playground — not product UI",
-      "canonical": false,
-      "referenceOnly": true,
-      "storybook": "Blocks/TokenPreview"
     },
     {
       "layer": "block",

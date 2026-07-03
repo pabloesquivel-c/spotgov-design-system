@@ -31,7 +31,7 @@ export const selectVariants = tv({
     ],
     triggerArrow: [
       // base
-      'ml-auto size-icon shrink-0',
+      'ml-auto size-5 shrink-0',
       'transition duration-200 ease-out',
       // placeholder state
       'group-data-[placeholder]/trigger:text-text-soft-400',
@@ -59,7 +59,7 @@ export const selectVariants = tv({
       'group-disabled/trigger:[&:not(.remixicon)]:opacity-[.48]',
     ],
     selectItemIcon: [
-      'size-icon shrink-0 bg-[length:1.25rem] text-text-sub-600',
+      'size-5 shrink-0 bg-[length:1.25rem] text-text-sub-600',
       // 'group-has-[&]-ml-0.5',
       // disabled
       '[[data-disabled]_&:not(.remixicon)]:opacity-[.48] [[data-disabled]_&]:text-text-disabled-300',
@@ -134,21 +134,21 @@ export const selectVariants = tv({
       size: 'medium',
       variant: 'default',
       class: {
-        triggerRoot: 'h-10 min-h-10 gap-2 rounded-12 pl-3 pr-2.5',
+        triggerRoot: 'h-10 min-h-10 gap-2 rounded-10 pl-3 pr-2.5',
       },
     },
     {
       size: 'small',
       variant: 'default',
       class: {
-        triggerRoot: 'h-9 min-h-9 gap-2 rounded-12 pl-2.5 pr-2',
+        triggerRoot: 'h-9 min-h-9 gap-2 rounded-lg pl-2.5 pr-2',
       },
     },
     {
       size: 'xsmall',
       variant: 'default',
       class: {
-        triggerRoot: 'h-8 min-h-8 gap-1.5 rounded-12 pl-2 pr-1.5',
+        triggerRoot: 'h-8 min-h-8 gap-1.5 rounded-lg pl-2 pr-1.5',
       },
     },
     //#endregion
@@ -158,7 +158,7 @@ export const selectVariants = tv({
       size: 'medium',
       variant: 'compact',
       class: {
-        triggerRoot: 'h-10 gap-1 rounded-12 pl-3 pr-2.5',
+        triggerRoot: 'h-10 gap-1 rounded-10 pl-3 pr-2.5',
         triggerIcon: '-ml-0.5',
         selectItemIcon: 'group-has-[&]/trigger:-ml-0.5',
       },
@@ -167,7 +167,7 @@ export const selectVariants = tv({
       size: 'small',
       variant: 'compact',
       class: {
-        triggerRoot: 'h-9 gap-1 rounded-12 pl-3 pr-2',
+        triggerRoot: 'h-9 gap-1 rounded-lg pl-3 pr-2',
         triggerIcon: '-ml-0.5',
         selectItemIcon: 'group-has-[&]/trigger:-ml-0.5',
       },
@@ -176,7 +176,7 @@ export const selectVariants = tv({
       size: 'xsmall',
       variant: 'compact',
       class: {
-        triggerRoot: 'h-8 gap-0.5 rounded-12 pl-2.5 pr-1.5',
+        triggerRoot: 'h-8 gap-0.5 rounded-lg pl-2.5 pr-1.5',
         triggerIcon: '-ml-0.5 size-4',
         selectItemIcon: 'size-4 bg-[length:1rem] group-has-[&]/trigger:-ml-0.5',
       },
@@ -371,7 +371,7 @@ const SelectItem = React.forwardRef<
       ref={forwardedRef}
       className={cn(
         // base
-        'group relative cursor-pointer select-none rounded-12 p-2 pr-9 text-paragraph-sm text-text-strong-950',
+        'group relative cursor-pointer select-none rounded-lg p-2 pr-9 text-paragraph-sm text-text-strong-950',
         'flex items-center gap-2 transition duration-200 ease-out',
         // disabled
         'data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled-300',
@@ -404,7 +404,7 @@ const SelectItem = React.forwardRef<
         </span>
       </SelectPrimitives.ItemText>
       <SelectPrimitives.ItemIndicator asChild>
-        <RiCheckLine className='absolute right-2 top-1/2 size-icon shrink-0 -translate-y-1/2 text-text-sub-600' />
+        <RiCheckLine className='absolute right-2 top-1/2 size-5 shrink-0 -translate-y-1/2 text-text-sub-600' />
       </SelectPrimitives.ItemIndicator>
     </SelectPrimitives.Item>
   );

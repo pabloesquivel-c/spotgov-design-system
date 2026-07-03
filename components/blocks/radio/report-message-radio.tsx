@@ -34,7 +34,7 @@ export function ReportMessageRadio() {
     <div className={radioPanelClassName}>
       <div className='flex items-center gap-3.5 px-5 py-4'>
         <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-          <RiFlagLine className='size-icon text-text-sub-600' />
+          <RiFlagLine className='size-5 text-text-sub-600' />
         </div>
         <div>
           <div className='text-label-sm text-text-strong-950'>Report Message</div>

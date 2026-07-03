@@ -84,9 +84,9 @@ export function MeetingsCommandMenu() {
         onOpenChange={setOpen}
         className='h-auto w-full max-w-screen-sm'
       >
-        <div className='flex min-w-0 flex-col rounded-sg-lg bg-bg-white-0 shadow-regular-md'>
+        <div className='flex min-w-0 flex-col rounded-2xl bg-bg-white-0 shadow-regular-md'>
           <div className='group/cmd-input flex h-14 min-w-0 items-center gap-2 border-b border-stroke-soft-200 px-5'>
-            <RiSearch2Line className='size-icon shrink-0 text-text-soft-400 transition duration-200 ease-out group-focus-within/cmd-input:text-primary-base' />
+            <RiSearch2Line className='size-5 shrink-0 text-text-soft-400 transition duration-200 ease-out group-focus-within/cmd-input:text-primary-base' />
             <CommandMenu.Input
               className='min-w-0 flex-1'
               placeholder='Search meetings, people, or type a command...'
@@ -136,7 +136,7 @@ export function MeetingsCommandMenu() {
                   {MEETINGS.map((meeting) => (
                     <div
                       key={meeting.name}
-                      className='flex min-w-[100px] flex-[1_0_auto] cursor-pointer flex-col items-center gap-3 rounded-sg-lg border border-stroke-soft-200 p-3 transition-all'
+                      className='flex min-w-[100px] flex-[1_0_auto] cursor-pointer flex-col items-center gap-3 rounded-2xl border border-stroke-soft-200 p-3 transition-all'
                     >
                       <Avatar.Root size='40'>
                         <Avatar.Image src={meeting.avatar} alt={meeting.name} />
@@ -190,7 +190,7 @@ export function MeetingsCommandMenu() {
                         <div className='flex items-center gap-2.5'>
                           <Icon
                             className={cn(
-                              'size-icon text-text-soft-400 transition-colors duration-200 ease-out',
+                              'size-5 text-text-soft-400 transition-colors duration-200 ease-out',
                               'group-hover/cmd-item:text-text-sub-600',
                               'group-data-[selected=true]/cmd-item:text-text-sub-600',
                             )}

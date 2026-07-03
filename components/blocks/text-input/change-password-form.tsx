@@ -110,9 +110,9 @@ function PasswordField({
           />
           <button type='button' onClick={onToggleVisibility}>
             {showPassword ? (
-              <RiEyeOffLine className='size-icon text-text-soft-400' />
+              <RiEyeOffLine className='size-5 text-text-soft-400' />
             ) : (
-              <RiEyeLine className='size-icon text-text-soft-400' />
+              <RiEyeLine className='size-5 text-text-soft-400' />
             )}
           </button>
         </Input.Wrapper>
@@ -191,9 +191,9 @@ export function ChangePasswordForm() {
             className='flex items-center gap-1.5 text-paragraph-xs text-text-sub-600'
           >
             {criteria[criterion.key] ? (
-              <RiCheckboxCircleLine className='size-icon-inline shrink-0 text-success-base' />
+              <RiCheckboxCircleLine className='size-4 shrink-0 text-success-base' />
             ) : (
-              <RiCloseCircleLine className='size-icon-inline shrink-0 text-text-soft-400' />
+              <RiCloseCircleLine className='size-4 shrink-0 text-text-soft-400' />
             )}
             {criterion.label}
           </div>

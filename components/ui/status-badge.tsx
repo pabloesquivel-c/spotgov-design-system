@@ -13,13 +13,13 @@ const STATUS_BADGE_DOT_NAME = 'StatusBadgeDot';
 export const statusBadgeVariants = tv({
   slots: {
     root: [
-      'inline-flex h-6 items-center justify-center gap-2 whitespace-nowrap rounded-12 px-2 text-label-xs',
+      'inline-flex h-6 items-center justify-center gap-2 whitespace-nowrap rounded-md px-2 text-label-xs',
       'has-[>.dot]:gap-1.5',
     ],
-    icon: '-mx-1 size-icon-inline',
+    icon: '-mx-1 size-4',
     dot: [
       // base
-      'dot -mx-1 flex size-icon-inline items-center justify-center',
+      'dot -mx-1 flex size-4 items-center justify-center',
       // before
       'before:size-1.5 before:rounded-full before:bg-current',
     ],

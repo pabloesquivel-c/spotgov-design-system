@@ -50,7 +50,7 @@ Color must never be the only way to identify status. Status badges need:
 | Rejected / failed / blocked | `error-*` | Close or error icon |
 | Disabled / inactive / archived | `faded-*` | Muted icon, disabled affordance, or explicit label |
 
-Use Remix Icon Line icons only. Keep status icons at `size-icon-inline`.
+Use Remix Icon Line icons only. Keep status icons at `size-4` (inline/dense contexts).
 
 ## Component state checklist
 

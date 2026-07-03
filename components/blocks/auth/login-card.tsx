@@ -55,9 +55,9 @@ export function LoginAuthCard() {
               />
               <button type='button' onClick={() => setShowPassword((s) => !s)}>
                 {showPassword ? (
-                  <RiEyeOffLine className='size-icon text-text-soft-400' />
+                  <RiEyeOffLine className='size-5 text-text-soft-400' />
                 ) : (
-                  <RiEyeLine className='size-icon text-text-soft-400' />
+                  <RiEyeLine className='size-5 text-text-soft-400' />
                 )}
               </button>
             </Input.Wrapper>

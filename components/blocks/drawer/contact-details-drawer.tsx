@@ -25,7 +25,7 @@ const TransactionItem = React.forwardRef<
   <button
     type='button'
     ref={ref}
-    className='flex w-full items-center gap-3 rounded-sg-lg py-2 text-left transition-all duration-200 ease-out hover:bg-bg-weak-50 hover:px-3'
+    className='flex w-full items-center gap-3 rounded-2xl py-2 text-left transition-all duration-200 ease-out hover:bg-bg-weak-50 hover:px-3'
     {...rest}
   >
     {children}
@@ -143,7 +143,7 @@ export function ContactDetailsDrawer() {
           <Divider.Root variant='solid-text'>Recent Transactions</Divider.Root>
           <div className='space-y-2.5 px-5 py-3.5'>
             {TRANSACTIONS.map((transaction) => {
-              const iconClassName = `size-icon ${transaction.color ?? 'text-text-sub-600'}`;
+              const iconClassName = `size-5 ${transaction.color ?? 'text-text-sub-600'}`;
 
               return (
                 <TransactionItem key={transaction.title}>
