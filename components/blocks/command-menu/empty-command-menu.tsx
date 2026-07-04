@@ -52,9 +52,9 @@ export function EmptyCommandMenu() {
         onOpenChange={setOpen}
         className='h-auto w-full max-w-screen-sm'
       >
-        <div className='flex min-w-0 flex-col rounded-sg-lg bg-bg-white-0 shadow-regular-md'>
+        <div className='flex min-w-0 flex-col rounded-2xl bg-bg-white-0 shadow-regular-md'>
           <div className='group/cmd-input flex h-14 min-w-0 items-center gap-2 border-b border-stroke-soft-200 px-5'>
-            <RiSearch2Line className='size-icon shrink-0 text-text-soft-400 transition duration-200 ease-out group-focus-within/cmd-input:text-primary-base' />
+            <RiSearch2Line className='size-5 shrink-0 text-text-soft-400 transition duration-200 ease-out group-focus-within/cmd-input:text-primary-base' />
             <CommandMenu.Input
               className='min-w-0 flex-1'
               placeholder='Search meetings, people, or type a command...'

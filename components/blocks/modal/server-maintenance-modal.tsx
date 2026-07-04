@@ -22,7 +22,7 @@ export function ServerMaintenanceModal() {
         <Modal.Body>
           <div className='flex flex-col items-center gap-4'>
             <div className='flex size-10 shrink-0 items-center justify-center rounded-10 bg-warning-lighter'>
-              <RiAlertLine className='size-icon-emphasis text-warning-base' />
+              <RiAlertLine className='size-6 text-warning-base' />
             </div>
             <div>
               <Modal.Title className='text-center text-label-md text-text-strong-950'>

@@ -72,7 +72,7 @@ function BreadcrumbItemIcon<T extends React.ElementType>({
 }: PolymorphicComponentProps<T>) {
   const Component = as || 'div';
 
-  return <Component className={cn('size-icon', className)} {...rest} />;
+  return <Component className={cn('size-5', className)} {...rest} />;
 }
 BreadcrumbItemIcon.displayName = BREADCRUMB_ICON_NAME;
 
@@ -86,7 +86,7 @@ function BreadcrumbItemArrowIcon<T extends React.ElementType>({
   return (
     <Component
       className={cn(
-        'flex size-icon select-none items-center justify-center text-text-disabled-300',
+        'flex size-5 select-none items-center justify-center text-text-disabled-300',
         className,
       )}
       {...rest}

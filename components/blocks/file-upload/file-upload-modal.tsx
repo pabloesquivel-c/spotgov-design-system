@@ -66,7 +66,7 @@ export function FileUploadModal() {
                       <span className='text-paragraph-xs text-text-sub-600'>
                         ∙
                       </span>
-                      <RiLoader2Line className='size-icon-inline shrink-0 animate-spin text-primary-base' />
+                      <RiLoader2Line className='size-4 shrink-0 animate-spin text-primary-base' />
                       <span className='text-paragraph-xs text-text-strong-950'>
                         Uploading...
                       </span>
@@ -95,7 +95,7 @@ export function FileUploadModal() {
                     <span className='text-paragraph-xs text-text-sub-600'>
                       ∙
                     </span>
-                    <RiCheckboxCircleLine className='size-icon-inline shrink-0 text-success-base' />
+                    <RiCheckboxCircleLine className='size-4 shrink-0 text-success-base' />
                     <span className='text-paragraph-xs text-text-strong-950'>
                       Completed
                     </span>

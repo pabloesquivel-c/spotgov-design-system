@@ -123,7 +123,7 @@ export function HrModulesCheckbox() {
           className='flex items-center gap-1 text-label-sm text-text-sub-600'
         >
           All priorities
-          <RiArrowDownSLine className='size-icon-inline' />
+          <RiArrowDownSLine className='size-4' />
         </Button.Root>
       </div>
 
@@ -145,7 +145,7 @@ export function HrModulesCheckbox() {
           <label
             key={module.id}
             htmlFor={module.id}
-            className='group block cursor-pointer rounded-sg-lg bg-bg-white-0 p-4 shadow-regular-xs ring-1 ring-stroke-soft-200 transition-all duration-200 hover:bg-bg-weak-50 hover:shadow-none hover:ring-transparent'
+            className='group block cursor-pointer rounded-2xl bg-bg-white-0 p-4 shadow-regular-xs ring-1 ring-stroke-soft-200 transition-all duration-200 hover:bg-bg-weak-50 hover:shadow-none hover:ring-transparent'
           >
             <div className='flex items-start gap-3'>
               <Checkbox.Root

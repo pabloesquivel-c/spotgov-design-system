@@ -32,7 +32,7 @@ export function EventCalendarDatepicker() {
       <div className='flex items-start justify-between px-5 py-4'>
         <div className='flex items-center gap-[14px]'>
           <div className='flex size-11 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-            <RiTimeLine className='size-icon-emphasis text-text-sub-600' />
+            <RiTimeLine className='size-6 text-text-sub-600' />
           </div>
           <div className='flex flex-col gap-1'>
             <h2 className='text-label-md text-text-strong-950'>Event Calendar</h2>
@@ -77,10 +77,10 @@ export function EventCalendarDatepicker() {
             }}
             components={{
               IconLeft: () => (
-                <RiArrowLeftSLine className='size-icon !rounded-full' />
+                <RiArrowLeftSLine className='size-5 !rounded-full' />
               ),
               IconRight: () => (
-                <RiArrowRightSLine className='size-icon !rounded-full' />
+                <RiArrowRightSLine className='size-5 !rounded-full' />
               ),
             }}
           />

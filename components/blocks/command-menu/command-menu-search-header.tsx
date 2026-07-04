@@ -27,7 +27,7 @@ export function CommandMenuSearchHeader({
     >
       <RiSearch2Line
         className={cn(
-          'size-icon shrink-0 text-text-soft-400',
+          'size-5 shrink-0 text-text-soft-400',
           'transition duration-200 ease-out',
           'group-focus-within/cmd-input:text-primary-base',
         )}

@@ -117,7 +117,7 @@ export function ContactInformationForm() {
             <Textarea.CharCounter current={address.length} max={200} />
           </Textarea.Root>
           <div className='flex items-center gap-2 text-text-sub-600'>
-            <RiInformationLine className='size-icon text-text-soft-400' />
+            <RiInformationLine className='size-5 text-text-soft-400' />
             <span className='text-paragraph-xs'>
               Input your residential address for HR records.
             </span>

@@ -231,7 +231,7 @@ export function DesignSpaceSetupForm() {
               onClick={handleUploadClick}
               className='gap-1 rounded-10'
             >
-              <RiUploadCloud2Line className='size-icon text-text-sub-600' />
+              <RiUploadCloud2Line className='size-5 text-text-sub-600' />
               <span className='text-label-sm text-text-sub-600'>Upload</span>
             </Button.Root>
           </div>

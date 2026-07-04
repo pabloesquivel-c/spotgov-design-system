@@ -91,7 +91,7 @@ export function RatingInput({
             aria-label={`${starValue} star${starValue === 1 ? '' : 's'}`}
             disabled={disabled}
             className={cn(
-              'rounded-8 outline-none transition duration-200 ease-out',
+              'rounded-lg outline-none transition duration-200 ease-out',
               'focus-visible:ring-2 focus-visible:ring-primary-base focus-visible:ring-offset-2',
               'disabled:pointer-events-none disabled:opacity-50',
             )}

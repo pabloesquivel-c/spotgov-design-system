@@ -113,7 +113,7 @@ CommandGroup.displayName = 'CommandGroup';
 
 const commandItemVariants = tv({
   base: [
-    'flex items-center gap-3 rounded-12 bg-bg-white-0',
+    'flex items-center gap-3 rounded-10 bg-bg-white-0',
     'cursor-pointer text-paragraph-sm text-text-strong-950',
     'transition duration-200 ease-out',
     // hover/selected
@@ -156,7 +156,7 @@ function CommandItemIcon<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-icon shrink-0 text-text-sub-600', className)}
+      className={cn('size-5 shrink-0 text-text-sub-600', className)}
       {...rest}
     />
   );
@@ -184,7 +184,7 @@ function CommandFooterKeyBox({
   return (
     <div
       className={cn(
-        'flex size-icon shrink-0 items-center justify-center rounded bg-bg-weak-50 text-text-sub-600 ring-1 ring-inset ring-stroke-soft-200',
+        'flex size-5 shrink-0 items-center justify-center rounded bg-bg-weak-50 text-text-sub-600 ring-1 ring-inset ring-stroke-soft-200',
         className,
       )}
       {...rest}

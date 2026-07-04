@@ -47,7 +47,7 @@ function ColorSwatchButton({
           </div>
           <div className='absolute inset-0 flex items-center justify-center'>
             <RiCheckLine
-              className={`size-icon ${
+              className={`size-5 ${
                 isWhite ? 'text-text-disabled-300' : 'text-text-white-0'
               }`}
             />

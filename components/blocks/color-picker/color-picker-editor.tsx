@@ -47,7 +47,7 @@ export function ColorPickerEditor({
             size='xsmall'
             className='w-8'
           >
-            <RiDeleteBinLine className='size-icon shrink-0' />
+            <RiDeleteBinLine className='size-5 shrink-0' />
           </Button.Root>
 
           <div className='flex flex-1 -space-x-px'>
@@ -92,7 +92,7 @@ export function ColorPickerEditor({
         type='button'
         className='flex w-full items-center justify-center gap-2 px-4 py-3.5 text-center'
       >
-        <RiAddLine className='size-icon shrink-0 text-text-soft-400' />
+        <RiAddLine className='size-5 shrink-0 text-text-soft-400' />
         <span className='text-label-sm text-text-sub-600'>Add new color</span>
       </button>
     </ColorPicker.Root>

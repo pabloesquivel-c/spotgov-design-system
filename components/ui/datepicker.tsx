@@ -85,8 +85,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <RiArrowLeftSLine className='size-icon' />,
-        IconRight: () => <RiArrowRightSLine className='size-icon' />,
+        IconLeft: () => <RiArrowLeftSLine className='size-5' />,
+        IconRight: () => <RiArrowRightSLine className='size-5' />,
       }}
       {...rest}
     />

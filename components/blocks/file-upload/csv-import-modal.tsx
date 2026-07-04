@@ -56,7 +56,7 @@ export function CsvImportModal() {
           </FileUpload.Root>
           <div className='flex w-full flex-col gap-4'>
             <div className='flex items-center gap-2'>
-              <RiDownloadCloud2Line className='size-icon text-text-soft-400' />
+              <RiDownloadCloud2Line className='size-5 text-text-soft-400' />
               <a href='#' className='text-label-sm text-text-soft-400'>
                 Download CSV Template
               </a>

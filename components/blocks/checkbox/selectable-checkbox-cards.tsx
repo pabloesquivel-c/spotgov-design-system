@@ -8,7 +8,7 @@ import * as Badge from '@/components/ui/badge';
 import * as Checkbox from '@/components/ui/checkbox';
 
 const cardClassName =
-  'group/card flex cursor-pointer items-start gap-3.5 rounded-sg-lg bg-bg-white-0 p-4 ring-1 ring-inset ring-stroke-soft-200 transition duration-200 ease-out hover:bg-bg-weak-50 hover:ring-transparent has-[[data-state=checked]]:ring-primary-base';
+  'group/card flex cursor-pointer items-start gap-3.5 rounded-2xl bg-bg-white-0 p-4 ring-1 ring-inset ring-stroke-soft-200 transition duration-200 ease-out hover:bg-bg-weak-50 hover:ring-transparent has-[[data-state=checked]]:ring-primary-base';
 
 export function SelectableCheckboxCards() {
   return (
@@ -31,7 +31,7 @@ export function SelectableCheckboxCards() {
 
       <LabelPrimitives.Root className={cardClassName}>
         <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-          <RiUser6Line className='size-icon text-text-sub-600' />
+          <RiUser6Line className='size-5 text-text-sub-600' />
         </div>
         <div className='flex-1 space-y-1'>
           <div className='flex items-center gap-1'>

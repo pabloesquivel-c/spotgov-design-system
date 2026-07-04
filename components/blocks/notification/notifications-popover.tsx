@@ -89,7 +89,7 @@ export function NotificationsPopover() {
             return (
               <div
                 key={notification.id}
-                className='group relative rounded-sg-lg p-4 hover:bg-bg-weak-50'
+                className='group relative rounded-2xl p-4 hover:bg-bg-weak-50'
               >
                 <CompactButton.Root
                   size='medium'
@@ -100,7 +100,7 @@ export function NotificationsPopover() {
                 </CompactButton.Root>
                 <div className='flex items-start gap-4'>
                   <div className='flex size-9 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-                    <Icon className={`size-icon ${notification.iconColor}`} />
+                    <Icon className={`size-5 ${notification.iconColor}`} />
                   </div>
                   <div className='flex flex-col gap-2'>
                     <div className='flex flex-col gap-1'>

@@ -35,7 +35,7 @@ export function FilterNavItem({
     >
       <span
         className={cn(
-          'flex size-icon items-center justify-center',
+          'flex size-5 items-center justify-center',
           active ? 'text-primary-base' : 'text-text-soft-400',
         )}
       >
@@ -43,7 +43,7 @@ export function FilterNavItem({
       </span>
       <span className='text-label-sm'>{label}</span>
       {active && (
-        <RiArrowRightSLine className='ml-auto hidden size-icon text-text-soft-400 md:block md:opacity-100' />
+        <RiArrowRightSLine className='ml-auto hidden size-5 text-text-soft-400 md:block md:opacity-100' />
       )}
     </button>
   );

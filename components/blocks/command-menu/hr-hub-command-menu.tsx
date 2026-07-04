@@ -126,7 +126,7 @@ function HubSection({
     <div className='flex-1 p-2.5'>
       <div className='flex items-center justify-between px-2.5 py-2'>
         <span className='text-label-sm text-text-soft-400'>{title}</span>
-        <RiArrowRightUpLine className='size-icon-inline text-text-soft-400' />
+        <RiArrowRightUpLine className='size-4 text-text-soft-400' />
       </div>
       <CommandMenu.Group className='p-0'>{children}</CommandMenu.Group>
     </div>
@@ -149,7 +149,7 @@ export function HrHubCommandMenu() {
         <div className='group/cmd-input flex h-14 items-center gap-3 border-b border-stroke-soft-200 px-5'>
           <RiSearch2Line
             className={cn(
-              'size-icon shrink-0 text-text-soft-400',
+              'size-5 shrink-0 text-text-soft-400',
               'transition duration-200 ease-out',
               'group-focus-within/cmd-input:text-primary-base',
             )}
@@ -256,16 +256,16 @@ export function HrHubCommandMenu() {
           <div className='hidden gap-3 md:flex'>
             <div className='flex items-center gap-2'>
               <CommandMenu.FooterKeyBox className='ring-0'>
-                <RiArrowUpLine className='size-icon-inline text-text-soft-400' />
+                <RiArrowUpLine className='size-4 text-text-soft-400' />
               </CommandMenu.FooterKeyBox>
               <CommandMenu.FooterKeyBox className='ring-0'>
-                <RiArrowDownLine className='size-icon-inline text-text-soft-400' />
+                <RiArrowDownLine className='size-4 text-text-soft-400' />
               </CommandMenu.FooterKeyBox>
               <span className='text-label-sm text-text-soft-400'>Navigate</span>
             </div>
             <div className='flex items-center gap-2'>
               <CommandMenu.FooterKeyBox className='ring-0'>
-                <RiCornerDownLeftLine className='size-icon-inline text-text-soft-400' />
+                <RiCornerDownLeftLine className='size-4 text-text-soft-400' />
               </CommandMenu.FooterKeyBox>
               <span className='text-label-sm text-text-soft-400'>Select</span>
             </div>

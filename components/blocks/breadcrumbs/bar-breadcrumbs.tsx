@@ -25,10 +25,10 @@ export function BarBreadcrumbs({
   return (
     <nav className='flex items-center gap-1.5 rounded-lg bg-bg-weak-50 px-2.5 py-2'>
       <Link href='/' onClick={handleClick}>
-        <RiHomeSmile2Line className='size-icon-inline text-text-sub-600 hover:text-text-strong-950' />
+        <RiHomeSmile2Line className='size-4 text-text-sub-600 hover:text-text-strong-950' />
       </Link>
       {breadcrumbs.length > 0 && (
-        <RiArrowRightSLine className='size-icon-inline cursor-default text-text-soft-400' />
+        <RiArrowRightSLine className='size-4 cursor-default text-text-soft-400' />
       )}
 
       {breadcrumbs.map((item, index) => (
@@ -43,7 +43,7 @@ export function BarBreadcrumbs({
             <Link href={item.href}>{item.label}</Link>
           </LinkButton.Root>
           {index < breadcrumbs.length - 1 && (
-            <RiArrowRightSLine className='size-icon-inline cursor-default text-text-soft-400' />
+            <RiArrowRightSLine className='size-4 cursor-default text-text-soft-400' />
           )}
         </React.Fragment>
       ))}

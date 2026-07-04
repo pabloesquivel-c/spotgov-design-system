@@ -14,7 +14,7 @@ import * as LinkButton from '@/components/ui/link-button';
 import * as ProgressBar from '@/components/ui/progress-bar';
 
 const cardClassName =
-  'w-full rounded-sg-lg bg-bg-white-0 p-4 pl-3.5 ring-1 ring-inset ring-stroke-soft-200';
+  'w-full rounded-2xl bg-bg-white-0 p-4 pl-3.5 ring-1 ring-inset ring-stroke-soft-200';
 
 export function FileUploadStatusCards() {
   return (
@@ -29,7 +29,7 @@ export function FileUploadStatusCards() {
                 0 KB of 120 KB
               </span>
               <span className='text-paragraph-xs text-text-sub-600'>∙</span>
-              <RiLoader2Line className='size-icon-inline shrink-0 animate-spin text-primary-base' />
+              <RiLoader2Line className='size-4 shrink-0 animate-spin text-primary-base' />
               <span className='text-paragraph-xs text-text-strong-950'>
                 Uploading...
               </span>
@@ -52,7 +52,7 @@ export function FileUploadStatusCards() {
                 0 KB of 120 KB
               </span>
               <span className='text-paragraph-xs text-text-sub-600'>∙</span>
-              <RiCheckboxCircleLine className='size-icon-inline shrink-0 text-success-base' />
+              <RiCheckboxCircleLine className='size-4 shrink-0 text-success-base' />
               <span className='text-paragraph-xs text-text-strong-950'>
                 Completed
               </span>
@@ -64,7 +64,7 @@ export function FileUploadStatusCards() {
         </div>
       </div>
 
-      <div className='w-full rounded-sg-lg bg-bg-white-0 p-4 pl-3.5 ring-1 ring-inset ring-error-base'>
+      <div className='w-full rounded-2xl bg-bg-white-0 p-4 pl-3.5 ring-1 ring-inset ring-error-base'>
         <div className='flex gap-3'>
           <FileFormatIcon.Root format='PDF' color='red' />
           <div className='flex flex-1 flex-col items-start gap-2'>
@@ -75,7 +75,7 @@ export function FileUploadStatusCards() {
                   0 KB of 120 KB
                 </span>
                 <span className='text-paragraph-xs text-text-sub-600'>∙</span>
-                <RiErrorWarningLine className='size-icon-inline shrink-0 text-error-base' />
+                <RiErrorWarningLine className='size-4 shrink-0 text-error-base' />
                 <span className='text-paragraph-xs text-text-strong-950'>
                   Failed
                 </span>

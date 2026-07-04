@@ -24,7 +24,7 @@ export function DietaryPreferenceRadio() {
   return (
     <div className={radioPanelClassName}>
       <div className='flex items-center gap-3 px-5 py-4'>
-        <RiRestaurant2Line className='size-icon-emphasis text-text-sub-600' />
+        <RiRestaurant2Line className='size-6 text-text-sub-600' />
         <div className='text-label-sm text-text-strong-950'>
           Choose your dietary preference
         </div>

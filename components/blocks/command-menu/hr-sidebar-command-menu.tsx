@@ -137,7 +137,7 @@ export function HrSidebarCommandMenu() {
                   >
                     <Icon
                       className={cn(
-                        'size-icon',
+                        'size-5',
                         isActive ? 'text-primary-base' : 'text-text-soft-400',
                       )}
                     />
@@ -150,7 +150,7 @@ export function HrSidebarCommandMenu() {
                       {item.title}
                     </span>
                     {isActive && (
-                      <RiArrowRightSLine className='ml-auto size-icon text-text-sub-600' />
+                      <RiArrowRightSLine className='ml-auto size-5 text-text-sub-600' />
                     )}
                   </button>
                 );
@@ -162,7 +162,7 @@ export function HrSidebarCommandMenu() {
             <div className='group/cmd-input flex h-14 items-center gap-3 border-b border-stroke-soft-200 px-5'>
               <RiSearch2Line
                 className={cn(
-                  'size-icon shrink-0 text-text-soft-400',
+                  'size-5 shrink-0 text-text-soft-400',
                   'transition duration-200 ease-out',
                   'group-focus-within/cmd-input:text-primary-base',
                 )}
@@ -196,7 +196,7 @@ export function HrSidebarCommandMenu() {
                                   'group-data-[selected=true]/cmd-item:bg-bg-white-0 group-data-[selected=true]/cmd-item:shadow-regular-xs',
                                 )}
                               >
-                                <Icon className='size-icon' />
+                                <Icon className='size-5' />
                               </div>
                               <div className='flex flex-1 flex-col gap-1'>
                                 <div className='flex items-center gap-2'>

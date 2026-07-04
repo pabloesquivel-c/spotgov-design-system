@@ -138,19 +138,19 @@ export function SupportDrawer() {
           </Divider.Root>
           <div className='flex flex-col gap-5 p-5'>
             <div className='flex items-center gap-2.5'>
-              <RiFileHistoryLine className='size-icon text-text-soft-400' />
+              <RiFileHistoryLine className='size-5 text-text-soft-400' />
               <span className='text-label-sm text-text-strong-950'>
                 Generate monthly statement?
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <RiRefreshLine className='size-icon text-text-soft-400' />
+              <RiRefreshLine className='size-5 text-text-soft-400' />
               <span className='text-label-sm text-text-strong-950'>
                 Want to automate your bill payments?
               </span>
             </div>
             <div className='flex items-center gap-2'>
-              <RiGiftLine className='size-icon text-text-soft-400' />
+              <RiGiftLine className='size-5 text-text-soft-400' />
               <span className='truncate text-label-sm text-text-strong-950'>
                 Looking to earn rewards with premium banking?
               </span>
@@ -169,7 +169,7 @@ export function SupportDrawer() {
                       <div
                         className={`flex size-9 items-center justify-center rounded-full ${item.bg}`}
                       >
-                        <Icon className={`size-icon ${item.color}`} />
+                        <Icon className={`size-5 ${item.color}`} />
                       </div>
                       <div className='flex flex-1 flex-col gap-1'>
                         <div className='text-label-sm text-text-strong-950'>
@@ -179,7 +179,7 @@ export function SupportDrawer() {
                           {item.desc}
                         </div>
                       </div>
-                      <RiArrowRightSLine className='size-icon text-text-soft-400' />
+                      <RiArrowRightSLine className='size-5 text-text-soft-400' />
                     </div>
                   </div>
                   {index < SELF_SERVICE_ITEMS.length - 1 && <DashedDivider />}
@@ -192,7 +192,7 @@ export function SupportDrawer() {
         <Drawer.Footer className='flex justify-between gap-4 border-t border-stroke-soft-200'>
           <div className='flex flex-1 items-center gap-2'>
             <div className='flex items-center gap-1.5'>
-              <RiQuestionAnswerLine className='size-icon text-text-soft-400' />
+              <RiQuestionAnswerLine className='size-5 text-text-soft-400' />
               <span className='text-label-sm text-text-sub-600'>Support</span>
               <span className='text-label-sm text-text-soft-400'>(8)</span>
             </div>

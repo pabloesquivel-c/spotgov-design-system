@@ -46,9 +46,8 @@ export const States: Story = {
     <div className='flex flex-wrap gap-3'>
       <Button.Root>Default</Button.Root>
       <Button.Root disabled>Disabled</Button.Root>
-      <Button.Root loading>Loading</Button.Root>
-      <Button.Root variant='neutral' mode='stroke' loading>
-        Syncing
+      <Button.Root variant='neutral' mode='stroke'>
+        Neutral stroke
       </Button.Root>
       <Button.Root variant='error' mode='stroke' disabled>
         Disabled error

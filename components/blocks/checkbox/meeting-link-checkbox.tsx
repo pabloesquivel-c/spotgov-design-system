@@ -24,7 +24,7 @@ function MeetingLinkInput() {
             'focus-visible:bg-bg-weak-50 focus-visible:text-text-strong-950 focus-visible:ring-transparent',
           )}
         >
-          <RiFileCopyLine className='-mx-1 size-icon shrink-0' />
+          <RiFileCopyLine className='-mx-1 size-5 shrink-0' />
         </button>
       </Input.Root>
     </div>

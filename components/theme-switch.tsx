@@ -15,13 +15,13 @@ export default function ThemeSwitch() {
     >
       <SegmentedControl.List>
         <SegmentedControl.Trigger value='light' className='aspect-square'>
-          <RiSunLine className='size-icon' />
+          <RiSunLine className='size-5' />
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='dark' className='aspect-square'>
-          <RiMoonLine className='size-icon' />
+          <RiMoonLine className='size-5' />
         </SegmentedControl.Trigger>
         <SegmentedControl.Trigger value='system' className='aspect-square'>
-          <RiEqualizer3Line className='size-icon' />
+          <RiEqualizer3Line className='size-5' />
         </SegmentedControl.Trigger>
       </SegmentedControl.List>
     </SegmentedControl.Root>

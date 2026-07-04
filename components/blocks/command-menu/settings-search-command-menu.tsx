@@ -83,7 +83,7 @@ export function SettingsSearchCommandMenu() {
             {RESULTS.map((result) => (
               <CommandMenu.Item key={result.title} size='medium'>
                 <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-                  <RiSettings2Line className='size-icon text-text-sub-600' />
+                  <RiSettings2Line className='size-5 text-text-sub-600' />
                 </div>
                 <div className='flex flex-1 flex-col gap-1'>
                   <span className='text-label-sm'>{result.title}</span>

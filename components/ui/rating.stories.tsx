@@ -23,7 +23,7 @@ function InteractiveRatingDemo() {
   return (
     <div className='flex flex-col gap-2'>
       <RatingInput value={value} onChange={setValue} label='Rate this tender match' />
-      <p className='text-sg-metadata text-text-sub-600'>Selected: {value} stars</p>
+      <p className='text-paragraph-xs text-text-sub-600'>Selected: {value} stars</p>
     </div>
   );
 }

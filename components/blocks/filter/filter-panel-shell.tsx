@@ -65,7 +65,7 @@ export function FilterPanelHeader({
       )}
     >
       <div className='flex flex-row items-center gap-2'>
-        <Icon className='size-icon text-text-sub-600' />
+        <Icon className='size-5 text-text-sub-600' />
         <h4 className='text-label-sm text-text-strong-950'>{title}</h4>
       </div>
       {action}
@@ -91,7 +91,7 @@ export function FilterSearchField({
     >
       <RiSearch2Line
         className={cn(
-          'size-icon shrink-0 text-text-soft-400 transition duration-200 ease-out',
+          'size-5 shrink-0 text-text-soft-400 transition duration-200 ease-out',
           'group-focus-within/cmd-input:text-primary-base',
         )}
       />

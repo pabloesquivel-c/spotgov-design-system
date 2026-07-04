@@ -33,7 +33,7 @@ export function ProfileCard() {
           </div>
         </div>
         <div className='flex size-9 shrink-0 items-center justify-center rounded-10 bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-          <RiUserAddLine className='size-icon text-text-sub-600' />
+          <RiUserAddLine className='size-5 text-text-sub-600' />
         </div>
       </div>
       <Divider.Root />

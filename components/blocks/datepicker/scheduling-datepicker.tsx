@@ -137,7 +137,7 @@ export function SchedulingDatepicker() {
         <div className='flex w-full flex-col'>
           <div className='flex items-center justify-between gap-2 border-b border-stroke-soft-200 px-4 py-3'>
             <div className='flex items-center gap-2'>
-              <RiTimeLine className='size-icon shrink-0 text-text-soft-400' />
+              <RiTimeLine className='size-5 shrink-0 text-text-soft-400' />
               <div className='text-label-sm text-text-sub-600'>
                 {range?.from
                   ? format(range.from, 'dd MMMM, HH:mm a')
@@ -165,7 +165,7 @@ export function SchedulingDatepicker() {
                   className='flex justify-between gap-2.5 rounded-lg px-3 py-2'
                 >
                   <div className='flex items-center gap-2.5'>
-                    <Icon className={cn('size-icon', preset.iconColor)} />
+                    <Icon className={cn('size-5', preset.iconColor)} />
                     <span className='text-label-sm text-text-sub-600'>
                       {preset.label}
                     </span>
@@ -217,10 +217,10 @@ export function SchedulingDatepicker() {
               }}
               components={{
                 IconLeft: () => (
-                  <RiArrowLeftSLine className='size-icon text-text-sub-600' />
+                  <RiArrowLeftSLine className='size-5 text-text-sub-600' />
                 ),
                 IconRight: () => (
-                  <RiArrowRightSLine className='size-icon text-text-sub-600' />
+                  <RiArrowRightSLine className='size-5 text-text-sub-600' />
                 ),
               }}
             />

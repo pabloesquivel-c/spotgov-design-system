@@ -21,9 +21,9 @@ export function PasswordField(
         />
         <button type='button' onClick={() => setShowPassword((s) => !s)}>
           {showPassword ? (
-            <RiEyeOffLine className='size-icon text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
+            <RiEyeOffLine className='size-5 text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
           ) : (
-            <RiEyeLine className='size-icon text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
+            <RiEyeLine className='size-5 text-text-soft-400 group-has-[disabled]:text-text-disabled-300' />
           )}
         </button>
       </Input.Wrapper>

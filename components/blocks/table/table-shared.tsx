@@ -31,12 +31,12 @@ import { cn } from '@/utils/cn';
 
 export function getSortingIcon(state: 'asc' | 'desc' | false) {
   if (state === 'asc') {
-    return <RiArrowUpSLine className='size-icon text-text-sub-600' />;
+    return <RiArrowUpSLine className='size-5 text-text-sub-600' />;
   }
   if (state === 'desc') {
-    return <RiArrowDownSLine className='size-icon text-text-sub-600' />;
+    return <RiArrowDownSLine className='size-5 text-text-sub-600' />;
   }
-  return <RiExpandUpDownLine className='size-icon text-text-sub-600' />;
+  return <RiExpandUpDownLine className='size-5 text-text-sub-600' />;
 }
 
 export function SortableHeader<T>({

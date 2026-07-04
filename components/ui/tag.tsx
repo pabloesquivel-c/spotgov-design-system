@@ -4,7 +4,7 @@ import * as React from 'react';
 import { tv, type VariantProps } from '@/utils/tv';
 import { recursiveCloneChildren } from '@/utils/recursive-clone-children';
 import { Slot } from '@radix-ui/react-slot';
-import { RiCloseLine } from '@remixicon/react';
+import { RiCloseFill } from '@remixicon/react';
 import { PolymorphicComponentProps } from '@/utils/polymorphic';
 
 const TAG_ROOT_NAME = 'TagRoot';
@@ -15,13 +15,13 @@ const TAG_DISMISS_ICON_NAME = 'TagDismissIcon';
 export const tagVariants = tv({
   slots: {
     root: [
-      'group/tag inline-flex h-6 items-center gap-2 rounded-8 px-2 text-label-xs text-text-sub-600',
+      'group/tag inline-flex h-6 items-center gap-2 rounded-md px-2 text-label-xs text-text-sub-600',
       'transition duration-200 ease-out',
       'ring-1 ring-inset',
     ],
     icon: [
       // base
-      '-mx-1 size-icon-inline shrink-0 text-text-soft-400 transition duration-200 ease-out',
+      '-mx-1 size-4 shrink-0 text-text-soft-400 transition duration-200 ease-out',
       // hover
       'group-hover/tag:text-text-sub-600',
     ],
@@ -31,7 +31,7 @@ export const tagVariants = tv({
       // focus
       'focus:outline-none',
     ],
-    dismissIcon: 'size-icon-inline text-text-soft-400 transition duration-200 ease-out',
+    dismissIcon: 'size-4 text-text-soft-400 transition duration-200 ease-out',
   },
   variants: {
     variant: {
@@ -156,7 +156,7 @@ const TagDismissButton = React.forwardRef<
           <TagDismissIcon
             variant={variant}
             disabled={disabled}
-            as={RiCloseLine}
+            as={RiCloseFill}
           />
         )}
       </Component>

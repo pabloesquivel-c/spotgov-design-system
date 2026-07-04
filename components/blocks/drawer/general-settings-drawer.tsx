@@ -93,7 +93,7 @@ function SettingsSelect({
               <div className='flex items-center gap-2'>
                 <img
                   src={`https://alignui.com/flags/${selected.flag}.svg`}
-                  className='size-icon rounded-sm'
+                  className='size-5 rounded-sm'
                   alt=''
                 />
                 {selected.label}
@@ -111,7 +111,7 @@ function SettingsSelect({
                   style={{
                     backgroundImage: `url(https://alignui.com/flags/${option.flag}.svg)`,
                   }}
-                  className='size-icon rounded-sm'
+                  className='size-5 rounded-sm'
                 />
               )}
               {option.label}

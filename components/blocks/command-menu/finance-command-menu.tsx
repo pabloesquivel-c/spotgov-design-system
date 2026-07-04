@@ -131,7 +131,7 @@ function ServiceRow({
   return (
     <CommandMenu.Item className='group/cmd-item flex items-center gap-3 p-2.5 hover:bg-bg-weak-50'>
       <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200'>
-        <Icon className='size-icon text-text-sub-600' />
+        <Icon className='size-5 text-text-sub-600' />
       </div>
       <div className='flex flex-1 flex-col gap-1'>
         <div className='flex items-center gap-2'>
@@ -178,11 +178,11 @@ export function FinanceCommandMenu() {
         onOpenChange={setOpen}
         className='h-full max-h-[702px] w-full max-w-[632px]'
       >
-        <div className='rounded-sg-lg bg-bg-white-0 shadow-regular-md'>
+        <div className='rounded-2xl bg-bg-white-0 shadow-regular-md'>
           <div className='group/cmd-input flex h-14 items-center gap-2 border-b border-stroke-soft-200 px-5'>
             <RiSearch2Line
               className={cn(
-                'size-icon shrink-0 text-text-soft-400',
+                'size-5 shrink-0 text-text-soft-400',
                 'transition duration-200 ease-out',
                 'group-focus-within/cmd-input:text-primary-base',
               )}
@@ -212,7 +212,7 @@ export function FinanceCommandMenu() {
                       action.iconBgColor,
                     )}
                   >
-                    <Icon className={cn('size-icon', action.iconColor)} />
+                    <Icon className={cn('size-5', action.iconColor)} />
                   </div>
                   <div className='flex flex-col items-center gap-0.5 text-center'>
                     <div className='text-label-sm text-text-strong-950'>
@@ -233,7 +233,7 @@ export function FinanceCommandMenu() {
                 <CommandMenu.Group
                   heading={
                     <div className='flex items-center gap-1.5'>
-                      <RiTimeLine className='size-icon text-text-soft-400' />
+                      <RiTimeLine className='size-5 text-text-soft-400' />
                       <span className='text-label-sm text-text-soft-400'>
                         Recent activity
                       </span>
@@ -257,7 +257,7 @@ export function FinanceCommandMenu() {
                               className='size-6'
                             />
                           ) : (
-                            <ActivityIcon className='size-icon text-text-sub-600' />
+                            <ActivityIcon className='size-5 text-text-sub-600' />
                           )}
                         </div>
                         <div className='flex flex-1 flex-col gap-1'>
@@ -298,7 +298,7 @@ export function FinanceCommandMenu() {
                 <CommandMenu.Group
                   heading={
                     <div className='flex items-center gap-1.5'>
-                      <RiBankLine className='size-icon text-text-soft-400' />
+                      <RiBankLine className='size-5 text-text-soft-400' />
                       <span className='text-label-sm text-text-soft-400'>
                         Financial services
                       </span>

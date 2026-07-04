@@ -39,7 +39,7 @@ function VerticalStepperArrow<T extends React.ElementType>({
 
   return (
     <Component
-      className={cn('size-icon shrink-0 text-text-sub-600', className)}
+      className={cn('size-5 shrink-0 text-text-sub-600', className)}
       {...rest}
     />
   );
@@ -50,7 +50,7 @@ const verticalStepperItemVariants = tv({
   slots: {
     root: [
       // base
-      'grid w-full auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5 rounded-12 p-2 text-left text-paragraph-sm',
+      'grid w-full auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5 rounded-10 p-2 text-left text-paragraph-sm',
     ],
     indicator: [
       // base

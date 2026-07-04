@@ -29,16 +29,16 @@ export function CommandMenuKeyboardFooter({
       <div className='hidden gap-3 md:flex'>
         <div className='flex items-center gap-2'>
           <CommandMenu.FooterKeyBox>
-            <RiArrowUpLine className='size-icon-inline' />
+            <RiArrowUpLine className='size-4' />
           </CommandMenu.FooterKeyBox>
           <CommandMenu.FooterKeyBox>
-            <RiArrowDownLine className='size-icon-inline' />
+            <RiArrowDownLine className='size-4' />
           </CommandMenu.FooterKeyBox>
           <span className={labelClass}>Navigate</span>
         </div>
         <div className='flex items-center gap-2'>
           <CommandMenu.FooterKeyBox>
-            <RiCornerDownLeftLine className='size-icon-inline' />
+            <RiCornerDownLeftLine className='size-4' />
           </CommandMenu.FooterKeyBox>
           <span className={labelClass}>Select</span>
         </div>
