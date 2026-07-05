@@ -13,7 +13,10 @@ export type Swatch = {
 export function SwatchGrid({ swatches }: { swatches: Swatch[] }) {
   return (
     <ExampleContainer className='items-stretch'>
-      <div className='grid grid-cols-3 gap-x-5 gap-y-6'>
+      {/* Fixed-width (not `fr`) columns: the container now sizes itself to
+          its content (`w-fit`), and `fr` tracks need a definite parent
+          width to distribute — without one they collapse unpredictably. */}
+      <div className='grid grid-cols-[repeat(3,168px)] gap-x-5 gap-y-6'>
         {swatches.map((swatch) => (
           <div key={swatch.label} className='flex flex-col gap-2.5'>
             <div

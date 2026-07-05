@@ -43,8 +43,23 @@ export const articleEyebrow =
 export const articleCaption = 'font-mono text-[12px] leading-[18px] text-[#A6A09B]';
 
 // The gray presentation surface for anything concrete: palettes, code, demos.
+// Split in two because the box must size itself to its content (a 272px
+// sidebar and a wide data table need different widths) while the article
+// column it lives in is fixed at 672px:
+// - `articleExampleRow` breaks out of that fixed column using the standard
+//   full-bleed technique (`left`/`right` 50% + `-50vw` margins on a `100vw`
+//   box), so the box below is never constrained by the text width, then
+//   re-centers it with `flex justify-center`.
+// - `articleExampleContainer` is the visible box itself, sized with `w-fit`
+//   so it grows to fit content wider than the text column instead of
+//   overflowing it (min/max bounds are set in ExampleContainer, since they
+//   need calc()/min() against the viewport). `p-8` is the generous white
+//   space so content never sits flush against the edges.
+export const articleExampleRow =
+  'pg-example relative left-1/2 right-1/2 mt-5 w-screen -mx-[50vw] flex justify-center';
+
 export const articleExampleContainer =
-  'pg-example mt-5 flex flex-col items-center gap-4 rounded-xl bg-bg-weak-50 p-8';
+  'flex w-fit flex-col items-center gap-4 overflow-x-auto rounded-xl bg-bg-weak-50 p-8';
 
 // Centered short divider that opens each new section. mt-[60px] carries the
 // larger section-to-section gap; mb-10 (40px) is the gap to the heading.

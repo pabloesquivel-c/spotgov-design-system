@@ -9,6 +9,7 @@ import { ExampleContainer } from '@/components/playground/example-container';
 import { SwatchGrid } from '@/components/playground/swatch-grid';
 import { DemoFrame } from '@/components/playground/demo-frame';
 import { PulseDemo } from '@/components/playground/demo-content/pulse-demo';
+import { AppSidebar } from '@/components/blocks/sidebar/app-sidebar';
 import {
   articleH2,
   articleH3,
@@ -51,4 +52,5 @@ export const playgroundMdxComponents: MDXComponents = {
   DemoFrame,
   Badge,
   PulseDemo,
+  AppSidebar,
 };

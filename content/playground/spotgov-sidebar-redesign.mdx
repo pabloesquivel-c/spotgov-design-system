@@ -1,0 +1,33 @@
+---
+title: SpotGov sidebar redesign
+summary: Untangling the main nav so capabilities are organized, actions are clear, and the SpotGov wordmark stops eating space it isn't earning.
+order: 2
+---
+
+The sidebar we ship today has grown a bit inconsistent. Capabilities are organized in a way that doesn't really make sense anymore, and the account menu surfaces information that probably shouldn't be there. This redesign tackles both: reorganize what's in the nav so it's legible at a glance, and give people a cleaner way to reach settings, log out, or switch workspaces.
+
+It also drops the SpotGov wordmark from the top of the sidebar. Once someone is already inside the product, that branding isn't doing much for them, so that real estate goes to something more useful instead: a workspace switcher.
+
+<DemoFrame>
+  <div className='h-[640px]'>
+    <AppSidebar />
+  </div>
+</DemoFrame>
+
+Everything above is the real, interactive component. Open the account menu, hover "What's new," click through the groups. Here's each piece, and why it ended up this way.
+
+## Dropping the branding for a workspace switcher
+
+The SpotGov logo used to sit at the top of the sidebar and didn't do much once someone was already logged in. That slot now holds a workspace toggle instead, since each user belongs to a workspace and workspaces are the thing people actually need quick access to, not a reminder of which product they're using.
+
+## Organizing the nav into groups
+
+The old nav's capabilities weren't grouped in a way that matched how people actually use them. This version splits them into Discover, Workspace, and Intelligence, flat with no accordions so everything stays one click away. Notification counts and a "Beta" badge live inline on the rows that need them instead of as separate indicators bolted on elsewhere.
+
+## Search first
+
+A search-first command bar sits right under the workspace switcher. This came out of comparing a few directions on Paper: one leaned on reorganizing the workspace switcher, another leaned on a search-first entry point, and search won because it gets people to what they need faster than browsing groups does.
+
+## Account menu and the changelog flyout
+
+The account menu at the bottom is intentionally minimal for now: just settings and log out. It opens upward, above the account row, so nothing in the layout shifts when it's open, which was a real problem in an earlier direction that moved the avatar to the top of the sidebar. "What's new" escalates to a changelog flyout on hover, aligned to the bottom of the menu rather than centered. Centered, it would drift low enough to disappear off the bottom of the screen.
