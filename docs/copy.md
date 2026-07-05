@@ -2,7 +2,7 @@
 
 Agent-facing voice and wording rules for SpotGov product UI. Use with [`AGENTS.md`](../AGENTS.md), [`product-principles.md`](./product-principles.md), and [`component-patterns.md`](./component-patterns.md).
 
-**Locale:** US English, conversational B2B. Use procurement terms (tender, contract, agency, bid, award, solicitation) when they match user vocabulary — without jargon walls.
+**Locale:** US English, conversational B2B. Use procurement terms (tender, contract, agency, bid, award, solicitation) when they match user vocabulary, without jargon walls.
 
 ---
 
@@ -14,6 +14,10 @@ Agent-facing voice and wording rules for SpotGov product UI. Use with [`AGENTS.m
 - Concise
 - Product-native
 - No marketing fluff inside workflows
+
+## Punctuation
+
+- No em dashes, in product UI copy or in agent-authored prose. Use a period, comma, or colon instead.
 
 ## Principles
 
