@@ -75,5 +75,5 @@ export function getProject(slug: string): PlaygroundProject {
 export function getAllProjects(): PlaygroundProject[] {
   return getProjectSlugs()
     .map((slug) => getProject(slug))
-    .sort((a, b) => a.frontmatter.order - b.frontmatter.order);
+    .sort((a, b) => b.frontmatter.order - a.frontmatter.order);
 }
