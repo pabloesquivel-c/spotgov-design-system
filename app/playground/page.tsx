@@ -39,7 +39,14 @@ export default function PlaygroundIndexPage() {
         things are headed; Storybook is what&apos;s actually built.
       </p>
       <p className={articleBody}>
-        For engineers who want to run this locally: clone the repo, then
+        For engineers who want to run this locally: clone{' '}
+        <a
+          href='https://github.com/pabloesquivel-c/spotgov-design-system'
+          className='underline underline-offset-2 hover:text-text-strong-950'
+        >
+          the repo
+        </a>
+        , then
       </p>
       <pre className='rounded-md bg-bg-weak-50 px-4 py-3 text-[13px] leading-[22px] text-text-strong-950'>
         npm install{'\n'}npm run dev
