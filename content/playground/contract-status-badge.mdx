@@ -1,0 +1,47 @@
+---
+title: Contract status badge
+summary: Exploring a clearer way to surface where a contract sits in its lifecycle.
+order: 1
+---
+
+Right now contract status is buried in a table column with no visual weight.
+The goal here is a small, glanceable badge that carries enough meaning on its
+own: color, label, and icon together, so a reviewer can scan a list of
+contracts and immediately spot what needs attention.
+
+## B1: Filled vs. stroke
+
+First pass: does a solid fill or an outlined badge read better against a
+dense table row? Toggle between the two below.
+
+<DemoFrame
+  variants={[
+    { label: 'Filled', content: <Badge.Root variant='filled' color='blue'>Awarded</Badge.Root> },
+    { label: 'Stroke', content: <Badge.Root variant='stroke' color='blue'>Awarded</Badge.Root> },
+  ]}
+/>
+
+Filled won. It holds up better at a glance in a dense table, where a thin
+outline tends to disappear next to other borders.
+
+## B2: Status palette
+
+Each lifecycle stage gets its own color, pulled straight from AlignUI's
+status roles rather than inventing new ones.
+
+<SwatchGrid
+  swatches={[
+    { label: 'status-away', value: '#F6B51E' },
+    { label: 'status-success', value: '#1FC16B' },
+    { label: 'status-error', value: '#FB3748' },
+  ]}
+/>
+
+### Entrance motion
+
+A small entrance animation for when a badge's status changes live on screen,
+so the update doesn't get missed. Use replay to see it again.
+
+<DemoFrame replay>
+  <PulseDemo />
+</DemoFrame>

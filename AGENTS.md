@@ -171,6 +171,7 @@ Avoid:
 - Modals for everything
 - Empty states that sound like marketing
 - Layouts that only look good in one screenshot
+- Em dashes, in product copy or in your own written responses ([`docs/copy.md`](docs/copy.md))
 
 ## Response style
 
