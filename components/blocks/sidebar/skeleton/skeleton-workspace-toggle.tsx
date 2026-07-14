@@ -52,7 +52,7 @@ export function SkeletonWorkspaceToggle({
 
   if (!isMultiOrg) {
     return (
-      <div className='flex shrink-0 items-center gap-1.5 px-4 py-3.5'>
+      <div className='flex shrink-0 items-center gap-1.5 p-3.5'>
         <OrgAvatar org={activeOrg} className='size-6' />
         <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
           {activeOrg.name}
@@ -66,7 +66,7 @@ export function SkeletonWorkspaceToggle({
       <DropdownMenu.Trigger asChild>
         <button
           type='button'
-          className='flex shrink-0 items-center gap-1.5 px-4 py-3.5 text-left outline-none transition-colors hover:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50'
+          className='flex shrink-0 items-center gap-1.5 p-3.5 text-left outline-none transition-colors hover:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50'
         >
           <OrgAvatar org={activeOrg} className='size-6' />
           <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
