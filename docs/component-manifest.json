@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-03T12:29:06.087Z",
+  "generatedAt": "2026-07-14T18:15:58.217Z",
   "counts": {
     "primitives": 58,
-    "blockCategories": 21,
-    "blockExports": 133,
-    "canonicalBlockExports": 24
+    "blockCategories": 22,
+    "blockExports": 141,
+    "canonicalBlockExports": 25
   },
   "primitives": [
     {
@@ -1958,6 +1958,102 @@
       "canonical": false,
       "referenceOnly": true,
       "storybook": "Blocks/Radio"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "AppSidebar",
+      "exportName": "AppSidebar",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": true,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "SkeletonAccountFooter",
+      "exportName": "SkeletonAccountFooter",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "SkeletonHomeMock",
+      "exportName": "SkeletonHomeMock",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "SkeletonNotificationsDrawer",
+      "exportName": "SkeletonNotificationsDrawer",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "SkeletonSidebar",
+      "exportName": "SkeletonSidebar",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": true,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "SkeletonWorkspaceToggle",
+      "exportName": "SkeletonWorkspaceToggle",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "mockSessionMultiOrg",
+      "exportName": "mockSessionMultiOrg",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
+    },
+    {
+      "layer": "block",
+      "category": "sidebar",
+      "slug": "sidebar",
+      "name": "mockSessionSingleOrg",
+      "exportName": "mockSessionSingleOrg",
+      "importPath": "@/components/blocks/sidebar",
+      "purpose": "Primary app navigation shell",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Sidebar/Skeleton"
     },
     {
       "layer": "block",

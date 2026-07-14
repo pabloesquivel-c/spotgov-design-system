@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit by hand. Run `npm run generate:manifest` after adding primitives or blocks.
 >
-> Generated: 2026-07-03 · 58 primitives · 21 block categories · 24 canonical block exports
+> Generated: 2026-07-14 · 58 primitives · 22 block categories · 25 canonical block exports
 
 Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md) §8 (which-one-when), and [`component-patterns.md`](./component-patterns.md).
 
@@ -94,6 +94,7 @@ Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS
 | `FilterPanelShell` | `@/components/blocks/filter` | Filter panels and settings nav | `Blocks/Filter` |
 | `FilterSearchField` | `@/components/blocks/filter` | Filter panels and settings nav | `Blocks/Filter` |
 | `DestructiveConfirmModal` | `@/components/blocks/modal` | Dialogs and confirmations | `Blocks/Modal` |
+| `SkeletonSidebar` | `@/components/blocks/sidebar` | Primary app navigation shell | `Blocks/Sidebar/Skeleton` |
 | `NotificationPreferencesSwitch` | `@/components/blocks/switch` | Switch preference demos | `Blocks/Switch` |
 | `BlockDataTable` | `@/components/blocks/table` | Data tables and table chrome | `Blocks/Table` |
 | `ContractsTable` | `@/components/blocks/table` | Data tables and table chrome | `Blocks/Table` |
@@ -206,6 +207,13 @@ AlignUI catalog demos. Replace placeholder copy and prefer **canonical blocks** 
 | `ReportMessageRadio` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
 | `SecurityPrivacyRadio` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
 | `SelectableRadioCards` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
+| `AppSidebar` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `SkeletonAccountFooter` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `SkeletonHomeMock` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `SkeletonNotificationsDrawer` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `SkeletonWorkspaceToggle` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `mockSessionMultiOrg` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
+| `mockSessionSingleOrg` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
 | `WeeklyPromotionsSlider` | `slider` | `@/components/blocks/slider` | Slider demos (reference) |
 | `CoursesTable` | `table` | `@/components/blocks/table` | Data tables and table chrome |
 | `PayrollTable` | `table` | `@/components/blocks/table` | Data tables and table chrome |
