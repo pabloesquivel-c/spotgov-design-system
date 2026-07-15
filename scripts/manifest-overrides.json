@@ -217,6 +217,11 @@
     }
   },
   "blocks": {
+    "sidebar": {
+      "purpose": "Primary app navigation shell",
+      "canonicalExports": ["SkeletonSidebar"],
+      "referenceOnlyExports": ["AppSidebar"]
+    },
     "empty-state": {
       "purpose": "Missing data / zero-results surfaces",
       "canonicalExports": ["EmptyState"]
