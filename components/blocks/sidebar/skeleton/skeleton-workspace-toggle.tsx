@@ -7,24 +7,36 @@
 // popover to switch between their organizations. (The polished Paper mock
 // draws the chevron unconditionally since it only shows one example state —
 // this conditional behavior itself was confirmed earlier and is preserved.)
-// Row spec (spacing/font/avatar radius) matches Paper node IGD-0 exactly.
+// Row spec matches Paper node J5B-0 (hover state); menu spec matches J5I-0.
+// Only the chevron square is the click/hover target — not the full row.
 
 import * as React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { motion } from 'framer-motion';
 import { RiExpandUpDownLine } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
 import { useCollisionBoundary } from '@/components/collision-boundary';
 import type { CurrentOrg } from './skeleton-mock-session';
+import { FadeLabel, SIDEBAR_SPRING } from './skeleton-collapse';
 
 const contentAnimation =
   'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95';
 
-function OrgAvatar({ org, className }: { org: CurrentOrg; className?: string }) {
+function OrgAvatar({
+  org,
+  isCollapsed,
+  className,
+}: {
+  org: CurrentOrg;
+  isCollapsed?: boolean;
+  className?: string;
+}) {
   return (
     <span
       className={cn(
-        'flex shrink-0 items-center justify-center rounded-lg text-[12px] font-semibold text-static-white',
+        'flex shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-static-white',
+        isCollapsed ? 'size-7' : 'size-6',
         className,
       )}
       style={{
@@ -36,14 +48,19 @@ function OrgAvatar({ org, className }: { org: CurrentOrg; className?: string }) 
   );
 }
 
+// The collapse/expand control lives at the bottom of the rail (see
+// skeleton-sidebar.tsx), grouped with Support/Settings — it's chrome, not
+// org identity, so it doesn't compete with the avatar for this row's space.
 export function SkeletonWorkspaceToggle({
   organizations,
   activeOrgId,
   onSwitchOrg,
+  isCollapsed,
 }: {
   organizations: CurrentOrg[];
   activeOrgId: string;
   onSwitchOrg: (orgId: string) => void;
+  isCollapsed: boolean;
 }) {
   const collisionBoundary = useCollisionBoundary();
   const activeOrg =
@@ -52,29 +69,54 @@ export function SkeletonWorkspaceToggle({
 
   if (!isMultiOrg) {
     return (
-      <div className='flex shrink-0 items-center gap-1.5 p-3.5'>
-        <OrgAvatar org={activeOrg} className='size-6' />
-        <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
+      <motion.div
+        layout
+        transition={SIDEBAR_SPRING}
+        className={cn(
+          'flex shrink-0 items-center py-3.5',
+          isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
+        )}
+      >
+        <OrgAvatar org={activeOrg} isCollapsed={isCollapsed} />
+        <FadeLabel
+          isCollapsed={isCollapsed}
+          className='min-w-0 truncate text-[13px] font-semibold leading-4 text-text-strong-950'
+        >
           {activeOrg.name}
-        </span>
-      </div>
+        </FadeLabel>
+      </motion.div>
     );
   }
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button
-          type='button'
-          className='flex shrink-0 items-center gap-1.5 p-3.5 text-left outline-none transition-colors hover:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50'
+      <motion.div
+        layout
+        transition={SIDEBAR_SPRING}
+        className={cn(
+          'flex shrink-0 items-center py-3.5',
+          isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
+        )}
+      >
+        <OrgAvatar org={activeOrg} isCollapsed={isCollapsed} />
+        <FadeLabel
+          isCollapsed={isCollapsed}
+          className='min-w-0 truncate text-[13px] font-semibold leading-4 text-text-strong-950'
         >
-          <OrgAvatar org={activeOrg} className='size-6' />
-          <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
-            {activeOrg.name}
-          </span>
-          <RiExpandUpDownLine className='size-3 shrink-0 text-text-sub-600' />
-        </button>
-      </DropdownMenu.Trigger>
+          {activeOrg.name}
+        </FadeLabel>
+        <FadeLabel isCollapsed={isCollapsed} grow={false} className='shrink-0'>
+          <DropdownMenu.Trigger asChild>
+            <button
+              type='button'
+              aria-label='Switch workspace'
+              className='flex shrink-0 items-center justify-center gap-1.5 rounded-10 p-2 outline-none transition-colors hover:bg-bg-soft-200 data-[state=open]:bg-bg-soft-200'
+            >
+              <RiExpandUpDownLine className='size-3 shrink-0 text-text-sub-600' />
+            </button>
+          </DropdownMenu.Trigger>
+        </FadeLabel>
+      </motion.div>
       <SwitchWorkspaceMenu
         organizations={organizations}
         activeOrgId={activeOrgId}
@@ -105,20 +147,20 @@ function SwitchWorkspaceMenu({
         collisionBoundary={collisionBoundary}
         collisionPadding={8}
         className={cn(
-          'z-50 flex w-[260px] flex-col rounded-[12px] border border-stroke-soft-200 bg-bg-white-0 p-1.5 shadow-[0px_0px_24px_-12px_#0E121B33]',
+          'z-50 flex w-[260px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#0E121B33]',
           contentAnimation,
         )}
       >
-        <span className='px-2.5 py-1.5 text-label-xs uppercase tracking-wide text-text-soft-400'>
+        <span className='px-2 py-1.5 text-[10px] font-semibold uppercase leading-3 tracking-[0.06em] text-text-sub-600'>
           Switch workspace
         </span>
         {organizations.map((org) => (
           <DropdownMenu.Item
             key={org.id}
             onSelect={() => onSwitchOrg(org.id)}
-            className='flex cursor-pointer items-center gap-2.5 rounded-10 px-2.5 py-2 text-paragraph-sm text-text-strong-950 outline-none transition-colors data-[highlighted]:bg-bg-weak-50'
+            className='flex cursor-pointer items-center gap-1.5 rounded-10 px-2 py-1.5 text-[13px] font-medium leading-4 text-text-sub-600 outline-none transition-colors data-[highlighted]:bg-bg-weak-50'
           >
-            <OrgAvatar org={org} className='size-6 text-[11px]' />
+            <OrgAvatar org={org} className='text-[11px]' />
             <span className='line-clamp-1 flex-1'>{org.name}</span>
             {org.id === activeOrgId && (
               <span className='size-[7px] shrink-0 rounded-full bg-primary-base' />
