@@ -7,6 +7,16 @@
     --font-sans: 'Inter', sans-serif;
   }
 
+  /* Applied at the true document root (rather than relying on a wrapper
+     element's `antialiased` class) so Radix-portaled content — which mounts
+     as a sibling under `document.body`, outside any wrapper div — still
+     inherits font smoothing. Storybook's preview wraps stories in a div with
+     `antialiased` (.storybook/providers.tsx), which portaled popovers escape;
+     this rule closes that gap without touching every component. */
+  html {
+    @apply antialiased;
+  }
+
   /*#region Colors */
   :root {
     --gray-950: #171717;
