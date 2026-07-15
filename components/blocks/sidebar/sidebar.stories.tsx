@@ -19,7 +19,7 @@ function SkeletonSidebarDemo() {
   const [notificationsOpen, setNotificationsOpen] = React.useState(false);
 
   return (
-    <div className='flex h-screen bg-bg-weak-50 p-4'>
+    <div className='flex h-[883px] bg-bg-weak-50 p-4'>
       <SkeletonSidebar
         session={mockSessionSingleOrg}
         onOpenNotifications={() => setNotificationsOpen(true)}

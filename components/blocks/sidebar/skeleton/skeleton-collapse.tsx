@@ -1,24 +1,22 @@
 'use client';
 
-// Shared collapse primitives for the skeleton sidebar. One spring drives
-// every part of the transition: rail width, row reflow, and the
-// opacity/height of anything that disappears (labels, badges, section
-// headers). Nothing gets its own timing — that's what keeps it feeling like
-// a single continuous motion instead of several animations layered together.
+// Shared collapse primitives for the skeleton sidebar. Everything animates
+// with plain CSS transitions (matching app-sidebar.tsx's duration-200
+// ease-out convention) instead of a JS animation library — no measuring, no
+// competing animated properties. FadeLabel shrinks via the CSS grid
+// fr-unit trick: a single-track grid transitioning grid-template-columns
+// between 1fr and 0fr is natively animatable by the browser, so it replaces
+// animating width to/from 'auto' entirely.
 
 import * as React from 'react';
-import { motion } from 'framer-motion';
 
 import { cn } from '@/utils/cn';
-
-export const SIDEBAR_SPRING = { type: 'spring', visualDuration: 0.2, bounce: 0.1 } as const;
 
 export const SIDEBAR_EXPANDED_WIDTH = 240;
 export const SIDEBAR_COLLAPSED_WIDTH = 50;
 
-// Always mounted (never removed from the DOM), just faded/shrunk with
-// SIDEBAR_SPRING, so it reads as one motion instead of text popping in and
-// out on its own timing.
+// Always mounted (never removed from the DOM), just shrunk to zero width,
+// so it reads as one motion instead of text popping in and out on its own.
 export function FadeLabel({
   isCollapsed,
   className,
@@ -37,20 +35,20 @@ export function FadeLabel({
   grow?: boolean;
 }) {
   return (
-    <motion.span
+    <span
       aria-hidden={isCollapsed}
-      initial={false}
-      animate={{
-        opacity: isCollapsed ? 0 : 1,
-        flexGrow: isCollapsed || !grow ? 0 : 1,
-        width: isCollapsed ? 0 : 'auto',
-        height: isCollapsed ? 0 : 'auto',
+      style={{
+        gridTemplateColumns: isCollapsed ? '0fr' : '1fr',
+        pointerEvents: isCollapsed ? 'none' : 'auto',
       }}
-      style={{ pointerEvents: isCollapsed ? 'none' : 'auto' }}
-      transition={SIDEBAR_SPRING}
-      className={cn('overflow-hidden whitespace-nowrap', className)}
+      className={cn(
+        'grid overflow-hidden transition-[grid-template-columns] duration-200 ease-out',
+        grow && !isCollapsed && 'flex-1',
+      )}
     >
-      {children}
-    </motion.span>
+      <span className={cn('min-w-0 overflow-hidden whitespace-nowrap', className)}>
+        {children}
+      </span>
+    </span>
   );
 }

@@ -12,13 +12,12 @@
 
 import * as React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { motion } from 'framer-motion';
 import { RiExpandUpDownLine } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
 import { useCollisionBoundary } from '@/components/collision-boundary';
 import type { CurrentOrg } from './skeleton-mock-session';
-import { FadeLabel, SIDEBAR_SPRING } from './skeleton-collapse';
+import { FadeLabel } from './skeleton-collapse';
 
 const contentAnimation =
   'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95';
@@ -69,11 +68,9 @@ export function SkeletonWorkspaceToggle({
 
   if (!isMultiOrg) {
     return (
-      <motion.div
-        layout
-        transition={SIDEBAR_SPRING}
+      <div
         className={cn(
-          'flex shrink-0 items-center py-3.5',
+          'flex shrink-0 items-center py-3.5 transition-all duration-200 ease-out',
           isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
         )}
       >
@@ -84,17 +81,15 @@ export function SkeletonWorkspaceToggle({
         >
           {activeOrg.name}
         </FadeLabel>
-      </motion.div>
+      </div>
     );
   }
 
   return (
     <DropdownMenu.Root>
-      <motion.div
-        layout
-        transition={SIDEBAR_SPRING}
+      <div
         className={cn(
-          'flex shrink-0 items-center py-3.5',
+          'flex shrink-0 items-center py-3.5 transition-all duration-200 ease-out',
           isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
         )}
       >
@@ -116,7 +111,7 @@ export function SkeletonWorkspaceToggle({
             </button>
           </DropdownMenu.Trigger>
         </FadeLabel>
-      </motion.div>
+      </div>
       <SwitchWorkspaceMenu
         organizations={organizations}
         activeOrgId={activeOrgId}

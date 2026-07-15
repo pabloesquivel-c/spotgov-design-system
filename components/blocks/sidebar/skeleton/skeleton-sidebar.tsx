@@ -4,11 +4,14 @@
 // Matches Paper node IGC-0 ("Sidebar - Polished - 13px base"): 13px labels,
 // 16px icons throughout, including Home (Paper node IGQ-0 dropped Home's
 // icon/label down to match every other row exactly — it used to be larger).
-// Collapse state: an earlier pass tried a collapsed rail and dropped it
-// because the width/label/section-header changes all happened independently
-// and the transition read as broken. This pass drives all of it — rail
-// width, row reflow, and every disappearing label/badge/header — off one
-// shared spring (SIDEBAR_SPRING) so it reads as a single motion.
+// Collapse state: an earlier pass drove rail width, row reflow, and every
+// disappearing label/badge/header off a framer-motion spring, but several
+// independently-animated layout elements with no shared layout group made
+// it read as broken/janky. This pass uses plain CSS transitions instead —
+// `transition-[width] duration-200 ease-out` for the rail (matching
+// app-sidebar.tsx's convention) and the CSS grid fr-unit trick for anything
+// that needs to go from natural size to zero (see FadeLabel in
+// skeleton-collapse.tsx) — no measuring, no JS, nothing to fight.
 //
 // This is a working preview built alongside the production
 // `components/blocks/sidebar/app-sidebar.tsx`, not a replacement for it yet.
@@ -26,7 +29,6 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
 import {
   RiHeadphoneLine,
   RiHistoryLine,
@@ -50,7 +52,6 @@ import {
   FadeLabel,
   SIDEBAR_COLLAPSED_WIDTH,
   SIDEBAR_EXPANDED_WIDTH,
-  SIDEBAR_SPRING,
 } from './skeleton-collapse';
 import type { Session } from './skeleton-mock-session';
 
@@ -230,14 +231,11 @@ export function SkeletonSidebar({
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
-    <motion.nav
+    <nav
       aria-label='Main navigation'
-      layout
-      initial={false}
-      animate={{ width: isCollapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH }}
-      transition={SIDEBAR_SPRING}
+      style={{ width: isCollapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH }}
       className={cn(
-        'flex h-full min-h-0 shrink-0 flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 text-text-sub-600 shadow-regular-xs',
+        'flex h-full min-h-0 shrink-0 flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 text-text-sub-600 shadow-regular-xs transition-[width] duration-200 ease-out',
         className,
       )}
     >
@@ -295,20 +293,16 @@ export function SkeletonSidebar({
             <React.Fragment key={group.label}>
               {index > 0 && <GroupDivider isCollapsed={isCollapsed} />}
               <div className='flex w-full flex-col'>
-                <motion.div
-                  layout
-                  initial={false}
-                  animate={{
-                    opacity: isCollapsed ? 0 : 1,
-                    height: isCollapsed ? 0 : 'auto',
-                  }}
-                  transition={SIDEBAR_SPRING}
-                  className='overflow-hidden'
+                <div
+                  className={cn(
+                    'overflow-hidden transition-[max-height] duration-200 ease-out',
+                    isCollapsed ? 'max-h-0' : 'max-h-6',
+                  )}
                 >
                   <span className='truncate px-2 py-1.5 text-[10px] font-semibold uppercase leading-3 tracking-[0.06em] text-text-sub-600'>
                     {group.label}
                   </span>
-                </motion.div>
+                </div>
                 <div
                   className={cn(
                     'flex flex-col items-start',
@@ -357,7 +351,7 @@ export function SkeletonSidebar({
       </div>
 
       <SkeletonAccountFooter user={session.user} isCollapsed={isCollapsed} />
-    </motion.nav>
+    </nav>
   );
 }
 
