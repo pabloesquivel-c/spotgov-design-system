@@ -4,9 +4,7 @@
 // sidebar. Conditional per the design decision: single-org accounts (~91%
 // of customers, per PostHog) see a static, non-interactive identity row;
 // multi-org accounts (~9%) get the same row made interactive, opening a
-// popover to switch between their organizations. (The polished Paper mock
-// draws the chevron unconditionally since it only shows one example state —
-// this conditional behavior itself was confirmed earlier and is preserved.)
+// popover to switch between their organizations.
 // Row spec matches Paper node J5B-0 (hover state); menu spec matches J5I-0.
 // Only the chevron square is the click/hover target — not the full row.
 
@@ -17,25 +15,15 @@ import { RiExpandUpDownLine } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import { useCollisionBoundary } from '@/components/collision-boundary';
 import type { CurrentOrg } from './skeleton-mock-session';
-import { FadeLabel } from './skeleton-collapse';
 
 const contentAnimation =
   'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95';
 
-function OrgAvatar({
-  org,
-  isCollapsed,
-  className,
-}: {
-  org: CurrentOrg;
-  isCollapsed?: boolean;
-  className?: string;
-}) {
+function OrgAvatar({ org, className }: { org: CurrentOrg; className?: string }) {
   return (
     <span
       className={cn(
-        'flex shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-static-white',
-        isCollapsed ? 'size-7' : 'size-6',
+        'flex size-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-static-white',
         className,
       )}
       style={{
@@ -47,19 +35,14 @@ function OrgAvatar({
   );
 }
 
-// The collapse/expand control lives at the bottom of the rail (see
-// skeleton-sidebar.tsx), grouped with Support/Settings — it's chrome, not
-// org identity, so it doesn't compete with the avatar for this row's space.
 export function SkeletonWorkspaceToggle({
   organizations,
   activeOrgId,
   onSwitchOrg,
-  isCollapsed,
 }: {
   organizations: CurrentOrg[];
   activeOrgId: string;
   onSwitchOrg: (orgId: string) => void;
-  isCollapsed: boolean;
 }) {
   const collisionBoundary = useCollisionBoundary();
   const activeOrg =
@@ -68,49 +51,31 @@ export function SkeletonWorkspaceToggle({
 
   if (!isMultiOrg) {
     return (
-      <div
-        className={cn(
-          'flex shrink-0 items-center py-3.5 transition-all duration-200 ease-out',
-          isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
-        )}
-      >
-        <OrgAvatar org={activeOrg} isCollapsed={isCollapsed} />
-        <FadeLabel
-          isCollapsed={isCollapsed}
-          className='min-w-0 truncate text-[13px] font-semibold leading-4 text-text-strong-950'
-        >
+      <div className='flex shrink-0 items-center gap-1.5 py-3.5 pl-4 pr-2'>
+        <OrgAvatar org={activeOrg} />
+        <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
           {activeOrg.name}
-        </FadeLabel>
+        </span>
       </div>
     );
   }
 
   return (
     <DropdownMenu.Root>
-      <div
-        className={cn(
-          'flex shrink-0 items-center py-3.5 transition-all duration-200 ease-out',
-          isCollapsed ? 'justify-center gap-0 px-2' : 'gap-1.5 pl-4 pr-2',
-        )}
-      >
-        <OrgAvatar org={activeOrg} isCollapsed={isCollapsed} />
-        <FadeLabel
-          isCollapsed={isCollapsed}
-          className='min-w-0 truncate text-[13px] font-semibold leading-4 text-text-strong-950'
-        >
+      <div className='flex shrink-0 items-center gap-1.5 py-3.5 pl-4 pr-2'>
+        <OrgAvatar org={activeOrg} />
+        <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
           {activeOrg.name}
-        </FadeLabel>
-        <FadeLabel isCollapsed={isCollapsed} grow={false} className='shrink-0'>
-          <DropdownMenu.Trigger asChild>
-            <button
-              type='button'
-              aria-label='Switch workspace'
-              className='flex shrink-0 items-center justify-center gap-1.5 rounded-10 p-2 outline-none transition-colors hover:bg-bg-soft-200 data-[state=open]:bg-bg-soft-200'
-            >
-              <RiExpandUpDownLine className='size-3 shrink-0 text-text-sub-600' />
-            </button>
-          </DropdownMenu.Trigger>
-        </FadeLabel>
+        </span>
+        <DropdownMenu.Trigger asChild>
+          <button
+            type='button'
+            aria-label='Switch workspace'
+            className='flex shrink-0 items-center justify-center gap-1.5 rounded-10 p-2 outline-none transition-colors hover:bg-bg-soft-200 data-[state=open]:bg-bg-soft-200'
+          >
+            <RiExpandUpDownLine className='size-3 shrink-0 text-text-sub-600' />
+          </button>
+        </DropdownMenu.Trigger>
       </div>
       <SwitchWorkspaceMenu
         organizations={organizations}

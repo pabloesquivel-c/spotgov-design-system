@@ -4,14 +4,10 @@
 // Matches Paper node IGC-0 ("Sidebar - Polished - 13px base"): 13px labels,
 // 16px icons throughout, including Home (Paper node IGQ-0 dropped Home's
 // icon/label down to match every other row exactly — it used to be larger).
-// Collapse state: an earlier pass drove rail width, row reflow, and every
-// disappearing label/badge/header off a framer-motion spring, but several
-// independently-animated layout elements with no shared layout group made
-// it read as broken/janky. This pass uses plain CSS transitions instead —
-// `transition-[width] duration-200 ease-out` for the rail (matching
-// app-sidebar.tsx's convention) and the CSS grid fr-unit trick for anything
-// that needs to go from natural size to zero (see FadeLabel in
-// skeleton-collapse.tsx) — no measuring, no JS, nothing to fight.
+// Fixed at 240px (Paper node IW4-0, "Sidebar - No Search Bar") — no collapse.
+// When the sidebar can be collapsed, it'll be a separate all-or-nothing
+// state (rail hidden entirely), not a mid-width icon-only rail — so there's
+// nothing to build here until that lands.
 //
 // This is a working preview built alongside the production
 // `components/blocks/sidebar/app-sidebar.tsx`, not a replacement for it yet.
@@ -45,14 +41,8 @@ import {
 } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
-import * as Tooltip from '@/components/ui/tooltip';
 import { SkeletonWorkspaceToggle } from './skeleton-workspace-toggle';
 import { SkeletonAccountFooter } from './skeleton-account-footer';
-import {
-  FadeLabel,
-  SIDEBAR_COLLAPSED_WIDTH,
-  SIDEBAR_EXPANDED_WIDTH,
-} from './skeleton-collapse';
 import type { Session } from './skeleton-mock-session';
 
 // Exact paths from Paper, no confident Remixicon name — see file header.
@@ -74,21 +64,6 @@ const ProposalRevisionIcon: RemixiconComponentType = (props) => (
 const PipelineRadarIcon: RemixiconComponentType = (props) => (
   <svg viewBox='0 0 20 20' fill='currentColor' {...props}>
     <path d='M3.332 6.667H16.668V4.167H3.332V6.667ZM11.668 15.834V8.334H8.332V15.834H11.668ZM13.332 15.834H16.668V8.334H13.332V15.834ZM6.668 15.834V8.334H3.332V15.834H6.668ZM2.5 2.5H17.5C17.96 2.5 18.332 2.874 18.332 3.334V16.667C18.332 17.127 17.96 17.5 17.5 17.5H2.5C2.04 17.5 1.668 17.127 1.668 16.667V3.334C1.668 2.874 2.04 2.5 2.5 2.5Z' />
-  </svg>
-);
-// "New search" action icon — Paper node IZ3-0's magnifier-with-history mark,
-// no confident Remixicon match, so it inlines the exact exported path.
-const NewSearchIcon: RemixiconComponentType = (props) => (
-  <svg viewBox='0 8 16 16' fill='currentColor' {...props}>
-    <path d='M10.334 11.334C9.045 11.334 8 12.379 8 13.668 8 14.956 9.045 16 10.334 16 11.622 16 12.666 14.956 12.666 13.668 12.666 12.379 11.622 11.334 10.334 11.334ZM6.666 13.668C6.666 11.642 8.308 10 10.334 10 12.358 10 14 11.642 14 13.668 14 14.44 13.762 15.156 13.354 15.745L15.138 17.529 14.195 18.472 12.411 16.688C11.822 17.096 11.105 17.334 10.334 17.334 8.308 17.334 6.666 15.692 6.666 13.668ZM2 10.668H5.334V12H2V10.668ZM2 15.334H5.334V16.668H2V15.334ZM14 20V21.334H2V20H14Z' />
-  </svg>
-);
-// Collapse/expand rail icon — Paper node draws the exact same glyph in both
-// states (no fold/unfold swap), so unlike RiSidebarFoldLine/RiSidebarUnfoldLine
-// this is a single static icon inlined from Paper's exported path.
-const CollapseRailIcon: RemixiconComponentType = (props) => (
-  <svg viewBox='0 0 24 24' fill='currentColor' {...props}>
-    <path d='M5 5H13V19H5V5ZM19 19H15V5H19V19ZM4 3C3.448 3 3 3.448 3 4V20C3 20.552 3.448 21 4 21H20C20.552 21 21 20.552 21 20V4C21 3.448 20.552 3 20 3H4ZM7 12L11 8.5V15.5L7 12Z' />
   </svg>
 );
 
@@ -209,9 +184,9 @@ export type SkeletonSidebarProps = {
   onOpenNotifications: () => void;
   /**
    * Renders the "New search" row above Home (Paper node IZ2-0). Defaults to
-   * off — the action isn't wired to anything real yet (no command palette,
-   * no collapsed-state UX decided), so it's parked here rather than shipped
-   * half-functional. Flip to `true` once there's something for it to do.
+   * off — the action isn't wired to anything real yet (no command palette),
+   * so it's parked here rather than shipped half-functional. Flip to `true`
+   * once there's something for it to do.
    */
   showSearchButton?: boolean;
   onNewSearch?: () => void;
@@ -228,14 +203,12 @@ export function SkeletonSidebar({
   const [activeOrgId, setActiveOrgId] = React.useState(
     session.organizations[0].id,
   );
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return (
     <nav
       aria-label='Main navigation'
-      style={{ width: isCollapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH }}
       className={cn(
-        'flex h-full min-h-0 shrink-0 flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 text-text-sub-600 shadow-regular-xs transition-[width] duration-200 ease-out',
+        'flex h-full min-h-0 w-60 shrink-0 flex-col overflow-hidden border border-stroke-soft-200 bg-bg-white-0 text-text-sub-600 shadow-regular-xs',
         className,
       )}
     >
@@ -243,77 +216,38 @@ export function SkeletonSidebar({
         organizations={session.organizations}
         activeOrgId={activeOrgId}
         onSwitchOrg={setActiveOrgId}
-        isCollapsed={isCollapsed}
       />
 
       {showSearchButton && (
         <div className='flex shrink-0 flex-col px-2 py-1.5'>
-          <NavTooltip label='New search' isCollapsed={isCollapsed}>
-            <div
-              className={cn(
-                'flex items-center gap-[7px] rounded-10 border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_1px_2px_#0A0D1408] transition-colors focus-within:border-stroke-sub-300',
-                isCollapsed ? 'justify-center px-2 py-1.5' : 'px-2.5 py-2',
-              )}
-            >
-              {isCollapsed ? (
-                <button
-                  type='button'
-                  onClick={onNewSearch}
-                  aria-label='New search'
-                  className='flex size-4 shrink-0 items-center justify-center'
-                >
-                  <NewSearchIcon className='size-4 shrink-0 text-text-sub-600' />
-                </button>
-              ) : (
-                <NewSearchIcon className='size-4 shrink-0 text-text-sub-600' />
-              )}
-              <FadeLabel isCollapsed={isCollapsed} className='flex-1'>
-                <input
-                  type='text'
-                  placeholder='New search'
-                  onFocus={onNewSearch}
-                  className='w-full bg-transparent text-[13px] font-medium leading-4 tracking-[-0.006em] text-text-strong-950 placeholder:text-text-sub-600 focus:outline-none'
-                />
-              </FadeLabel>
-            </div>
-          </NavTooltip>
+          <div className='flex items-center gap-[7px] rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-2.5 py-2 shadow-[0px_1px_2px_#0A0D1408] transition-colors focus-within:border-stroke-sub-300'>
+            <NewSearchIcon className='size-4 shrink-0 text-text-sub-600' />
+            <input
+              type='text'
+              placeholder='New search'
+              onFocus={onNewSearch}
+              className='w-full flex-1 bg-transparent text-[13px] font-medium leading-4 tracking-[-0.006em] text-text-strong-950 placeholder:text-text-sub-600 focus:outline-none'
+            />
+          </div>
         </div>
       )}
 
       <div className='flex min-h-0 flex-1 flex-col justify-between gap-4 overflow-y-auto px-2 pb-1.5'>
-        <div
-          className={cn(
-            'flex flex-col items-start',
-            isCollapsed ? 'gap-1.5' : 'gap-3',
-          )}
-        >
-          <NavRow item={HOME_ITEM} isCollapsed={isCollapsed} />
+        <div className='flex flex-col items-start gap-3'>
+          <NavRow item={HOME_ITEM} />
 
           {NAV_GROUPS.map((group, index) => (
             <React.Fragment key={group.label}>
-              {index > 0 && <GroupDivider isCollapsed={isCollapsed} />}
+              {index > 0 && <GroupDivider />}
               <div className='flex w-full flex-col'>
-                <div
-                  className={cn(
-                    'overflow-hidden transition-[max-height] duration-200 ease-out',
-                    isCollapsed ? 'max-h-0' : 'max-h-6',
-                  )}
-                >
-                  <span className='truncate px-2 py-1.5 text-[10px] font-semibold uppercase leading-3 tracking-[0.06em] text-text-sub-600'>
-                    {group.label}
-                  </span>
-                </div>
-                <div
-                  className={cn(
-                    'flex flex-col items-start',
-                    isCollapsed ? 'gap-0.5' : 'gap-px',
-                  )}
-                >
+                <span className='truncate px-2 py-1.5 text-[10px] font-semibold uppercase leading-3 tracking-[0.06em] text-text-sub-600'>
+                  {group.label}
+                </span>
+                <div className='flex flex-col items-start gap-px'>
                   {group.items.map((item) => (
                     <NavRow
                       key={item.key}
                       item={item}
-                      isCollapsed={isCollapsed}
                       onClick={
                         item.key === 'notifications'
                           ? onOpenNotifications
@@ -329,79 +263,25 @@ export function SkeletonSidebar({
 
         <div className='flex flex-col items-start gap-px'>
           {BOTTOM_ROWS.map((item) => (
-            <NavRow key={item.key} item={item} isCollapsed={isCollapsed} />
+            <NavRow key={item.key} item={item} />
           ))}
-          <NavTooltip
-            label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            isCollapsed={isCollapsed}
-          >
-            <button
-              type='button'
-              onClick={() => setIsCollapsed((v) => !v)}
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              className='flex w-full items-center gap-1.5 rounded-10 px-2 py-1.5 text-left text-text-sub-600 transition-colors hover:bg-bg-weak-50'
-            >
-              <CollapseRailIcon className='size-4 shrink-0' />
-              <FadeLabel isCollapsed={isCollapsed} className='flex-1 text-[13px] font-medium leading-4'>
-                Collapse
-              </FadeLabel>
-            </button>
-          </NavTooltip>
         </div>
       </div>
 
-      <SkeletonAccountFooter user={session.user} isCollapsed={isCollapsed} />
+      <SkeletonAccountFooter user={session.user} />
     </nav>
   );
 }
 
-// Expanded: full-width hairline. Collapsed: a shorter, centered hairline so
-// it doesn't run edge-to-edge across the icon-only rail.
-function GroupDivider({ isCollapsed }: { isCollapsed: boolean }) {
-  if (isCollapsed) {
-    return (
-      <div className='flex h-6 w-full shrink-0 items-center justify-center'>
-        <div className='h-px w-8 shrink-0 bg-stroke-soft-200' />
-      </div>
-    );
-  }
-
+function GroupDivider() {
   return <div className='h-px w-full shrink-0 rounded-full bg-bg-soft-200' />;
-}
-
-// Wraps icon-only collapsed rows in a tooltip so the label (and any
-// badge/tag context a caller renders in it) survives collapse instead of
-// disappearing with no way to recover it.
-function NavTooltip({
-  label,
-  isCollapsed,
-  children,
-}: {
-  label: React.ReactNode;
-  isCollapsed: boolean;
-  children: React.ReactNode;
-}) {
-  if (!isCollapsed) return <>{children}</>;
-
-  return (
-    <Tooltip.Provider>
-      <Tooltip.Root delayDuration={200}>
-        <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
-        <Tooltip.Content side='right' size='small' variant='dark'>
-          {label}
-        </Tooltip.Content>
-      </Tooltip.Root>
-    </Tooltip.Provider>
-  );
 }
 
 function NavRow({
   item,
-  isCollapsed,
   onClick,
 }: {
   item: NavItem;
-  isCollapsed: boolean;
   onClick?: () => void;
 }) {
   const pathname = usePathname();
@@ -425,7 +305,7 @@ function NavRow({
     <>
       <Icon className='size-4 shrink-0' />
 
-      <FadeLabel isCollapsed={isCollapsed} className='flex items-center gap-1.5'>
+      <span className='flex flex-1 items-center gap-1.5'>
         <span className='flex-1 whitespace-normal text-[13px] font-medium leading-4'>
           {item.label}
         </span>
@@ -453,37 +333,29 @@ function NavRow({
             {item.badge}
           </span>
         ) : null}
-      </FadeLabel>
+      </span>
     </>
-  );
-
-  const tooltipLabel = (
-    <span className='flex items-center gap-1.5'>
-      {item.label}
-      {item.beta && <span className='text-text-soft-400'>· Beta</span>}
-      {item.soon && <span className='text-text-soft-400'>· Soon</span>}
-      {item.tag && <span className='text-text-soft-400'>· {item.tag}</span>}
-      {item.badge ? (
-        <span className='text-text-soft-400'>· {item.badge}</span>
-      ) : null}
-    </span>
   );
 
   if (item.href && !disabled) {
     return (
-      <NavTooltip label={tooltipLabel} isCollapsed={isCollapsed}>
-        <Link href={item.href} onClick={onClick} className={className}>
-          {content}
-        </Link>
-      </NavTooltip>
+      <Link href={item.href} onClick={onClick} className={className}>
+        {content}
+      </Link>
     );
   }
 
   return (
-    <NavTooltip label={tooltipLabel} isCollapsed={isCollapsed}>
-      <button type='button' onClick={onClick} disabled={disabled} className={className}>
-        {content}
-      </button>
-    </NavTooltip>
+    <button type='button' onClick={onClick} disabled={disabled} className={className}>
+      {content}
+    </button>
   );
 }
+
+// "New search" action icon — Paper node IZ3-0's magnifier-with-history mark,
+// no confident Remixicon match, so it inlines the exact exported path.
+const NewSearchIcon: RemixiconComponentType = (props) => (
+  <svg viewBox='0 8 16 16' fill='currentColor' {...props}>
+    <path d='M10.334 11.334C9.045 11.334 8 12.379 8 13.668 8 14.956 9.045 16 10.334 16 11.622 16 12.666 14.956 12.666 13.668 12.666 12.379 11.622 11.334 10.334 11.334ZM6.666 13.668C6.666 11.642 8.308 10 10.334 10 12.358 10 14 11.642 14 13.668 14 14.44 13.762 15.156 13.354 15.745L15.138 17.529 14.195 18.472 12.411 16.688C11.822 17.096 11.105 17.334 10.334 17.334 8.308 17.334 6.666 15.692 6.666 13.668ZM2 10.668H5.334V12H2V10.668ZM2 15.334H5.334V16.668H2V15.334ZM14 20V21.334H2V20H14Z' />
+  </svg>
+);
