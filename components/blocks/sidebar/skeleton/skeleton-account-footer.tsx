@@ -82,7 +82,7 @@ export function SkeletonAccountFooter({
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
           className={cn(
-            'z-50 flex w-[228px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#0E121B33]',
+            'z-50 flex w-[228px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#5C5C5C]',
             contentAnimation,
           )}
         >
@@ -156,8 +156,8 @@ function MenuDivider() {
 // Language row (Paper node JEV-0's "Language" row) escalates to the
 // 5-language submenu (JGI-0) on hover — Radix `Sub`/`SubTrigger` open on
 // hover natively, no custom timers needed. Per the design, only this row
-// gets a trailing chevron, and only while hovered/open — every other menu
-// row has no trailing element at all.
+// gets a trailing chevron, always visible — every other menu row has no
+// trailing element at all.
 function LanguageMenu({
   selectedLanguageId,
   onSelectLanguage,
@@ -176,7 +176,7 @@ function LanguageMenu({
       <DropdownMenu.SubTrigger className='group/lang flex cursor-pointer items-center gap-1.5 self-stretch rounded-[8px] px-2 py-1.5 text-[13px] font-medium leading-4 text-text-sub-600 outline-none transition-colors data-[highlighted]:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50'>
         <LanguageIcon className='size-4 shrink-0' />
         <span className='flex-1'>Language</span>
-        <ChevronRightIcon className='size-4 shrink-0 opacity-0 transition-opacity group-data-[highlighted]/lang:opacity-100 group-data-[state=open]/lang:opacity-100' />
+        <ChevronRightIcon className='size-4 shrink-0' />
       </DropdownMenu.SubTrigger>
 
       <DropdownMenu.Portal>
@@ -213,9 +213,9 @@ function LanguageMenu({
 }
 
 // Learn more row (Paper node JEV-0) escalates to a 2-item flyout (JJX-0) on
-// hover, same treatment as LanguageMenu above: chevron only appears while
-// hovered/open, no other row gets one. Both destinations are placeholders
-// ("ready to connect") until real URLs exist.
+// hover, same treatment as LanguageMenu above: chevron is always visible,
+// no other row gets one. Both destinations are placeholders ("ready to
+// connect") until real URLs exist.
 function LearnMoreMenu({
   websiteHref,
   linkedinHref,
@@ -234,7 +234,7 @@ function LearnMoreMenu({
       <DropdownMenu.SubTrigger className='group/learnmore flex cursor-pointer items-center gap-1.5 self-stretch rounded-[8px] px-2 py-1.5 text-[13px] font-medium leading-4 text-text-sub-600 outline-none transition-colors data-[highlighted]:bg-bg-weak-50 data-[state=open]:bg-bg-weak-50'>
         <LearnMoreIcon className='size-4 shrink-0' />
         <span className='flex-1'>Learn more</span>
-        <ChevronRightIcon className='size-4 shrink-0 opacity-0 transition-opacity group-data-[highlighted]/learnmore:opacity-100 group-data-[state=open]/learnmore:opacity-100' />
+        <ChevronRightIcon className='size-4 shrink-0' />
       </DropdownMenu.SubTrigger>
 
       <DropdownMenu.Portal>

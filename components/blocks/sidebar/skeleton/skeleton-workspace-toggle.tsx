@@ -138,7 +138,7 @@ function SwitchWorkspaceMenu({
         onMouseEnter={onContentMouseEnter}
         onMouseLeave={onContentMouseLeave}
         className={cn(
-          'z-50 flex w-[228px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#0E121B33]',
+          'z-50 flex w-[228px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#5C5C5C]',
           contentAnimation,
         )}
       >
