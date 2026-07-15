@@ -5,8 +5,10 @@
 // of customers, per PostHog) see a static, non-interactive identity row;
 // multi-org accounts (~9%) get the same row made interactive, opening a
 // popover to switch between their organizations.
-// Row spec matches Paper node J5B-0 (hover state); menu spec matches J5I-0.
-// Only the chevron square is the click/hover target — not the full row.
+// Row spec matches Paper node J5B-0 (hover state); menu spec matches IW4-0's
+// "Org Selector Menu" (JZL-0) — opens flush beneath the row, centered, at
+// ~95% of the sidebar width. Unlike the account footer menu, only the
+// chevron toggle is the click/hover target here — not the full row.
 
 import * as React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -14,6 +16,7 @@ import { RiExpandUpDownLine } from '@remixicon/react';
 
 import { cn } from '@/utils/cn';
 import { useCollisionBoundary } from '@/components/collision-boundary';
+import { useHoverCloseMenu } from '@/hooks/use-hover-close-menu';
 import type { CurrentOrg } from './skeleton-mock-session';
 
 const contentAnimation =
@@ -45,6 +48,14 @@ export function SkeletonWorkspaceToggle({
   onSwitchOrg: (orgId: string) => void;
 }) {
   const collisionBoundary = useCollisionBoundary();
+  const { open, onOpenChange, cancelClose, scheduleClose } = useHoverCloseMenu();
+
+  // Guards against `organizations` ever being empty (shouldn't happen in
+  // practice — a session always belongs to at least one org — but an
+  // undefined `activeOrg` would otherwise crash both branches below on
+  // `OrgAvatar`'s `org.initials` access).
+  if (organizations.length === 0) return null;
+
   const activeOrg =
     organizations.find((org) => org.id === activeOrgId) ?? organizations[0];
   const isMultiOrg = organizations.length > 1;
@@ -61,7 +72,7 @@ export function SkeletonWorkspaceToggle({
   }
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
       <div className='flex shrink-0 items-center gap-1.5 py-3.5 pl-4 pr-2'>
         <OrgAvatar org={activeOrg} />
         <span className='min-w-0 flex-1 truncate text-[13px] font-semibold leading-4 text-text-strong-950'>
@@ -82,6 +93,8 @@ export function SkeletonWorkspaceToggle({
         activeOrgId={activeOrgId}
         onSwitchOrg={onSwitchOrg}
         collisionBoundary={collisionBoundary}
+        onContentMouseEnter={cancelClose}
+        onContentMouseLeave={scheduleClose}
       />
     </DropdownMenu.Root>
   );
@@ -92,22 +105,40 @@ function SwitchWorkspaceMenu({
   activeOrgId,
   onSwitchOrg,
   collisionBoundary,
+  onContentMouseEnter,
+  onContentMouseLeave,
 }: {
   organizations: CurrentOrg[];
   activeOrgId: string;
   onSwitchOrg: (orgId: string) => void;
   collisionBoundary: Element | undefined;
+  onContentMouseEnter: () => void;
+  onContentMouseLeave: () => void;
 }) {
   return (
     <DropdownMenu.Portal>
+      {/*
+        `sideOffset`/`alignOffset`/width below were reverse-engineered by
+        measuring rendered pixel gaps, not derived from a formula: Radix's
+        `DropdownMenu` has no public `Anchor` (unlike `Popover`), so the
+        content can only position itself relative to the trigger — which is
+        just the small chevron button here, not the full row. Measured at a
+        240px sidebar / 28px toggle button: leftGap = rightGap = 6px,
+        content width = 228px (0.95 * 240px sidebar). If the sidebar width,
+        toggle button size, or row padding (`pl-4 pr-2` above) ever change,
+        re-measure and retune these rather than trusting them as-is.
+      */}
       <DropdownMenu.Content
-        side='right'
-        align='start'
-        sideOffset={20}
+        side='bottom'
+        align='end'
+        sideOffset={6}
+        alignOffset={-3}
         collisionBoundary={collisionBoundary}
         collisionPadding={8}
+        onMouseEnter={onContentMouseEnter}
+        onMouseLeave={onContentMouseLeave}
         className={cn(
-          'z-50 flex w-[260px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#0E121B33]',
+          'z-50 flex w-[228px] flex-col rounded-10 border border-stroke-soft-200 bg-bg-white-0 px-1.5 pb-1.5 pt-1 shadow-[0px_0px_24px_-12px_#0E121B33]',
           contentAnimation,
         )}
       >

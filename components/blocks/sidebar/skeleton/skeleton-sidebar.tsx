@@ -26,7 +26,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  RiHeadphoneLine,
   RiHistoryLine,
   RiHomeLine,
   RiLineChartLine,
@@ -34,7 +33,6 @@ import {
   RiNotification3Line,
   RiRadarLine,
   RiSearch2Line,
-  RiSettings4Line,
   RiStackLine,
   RiTimerFlashLine,
   type RemixiconComponentType,
@@ -167,11 +165,6 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-const BOTTOM_ROWS: NavItem[] = [
-  { key: 'support', label: 'Support', icon: RiHeadphoneLine, href: '/support' },
-  { key: 'settings', label: 'Settings', icon: RiSettings4Line, href: '/settings' },
-];
-
 const HOME_ITEM: NavItem = {
   key: 'home',
   label: 'Home',
@@ -190,6 +183,7 @@ export type SkeletonSidebarProps = {
    */
   showSearchButton?: boolean;
   onNewSearch?: () => void;
+  onLogoutClick?: () => void;
   className?: string;
 };
 
@@ -198,6 +192,7 @@ export function SkeletonSidebar({
   onOpenNotifications,
   showSearchButton = false,
   onNewSearch,
+  onLogoutClick,
   className,
 }: SkeletonSidebarProps) {
   const [activeOrgId, setActiveOrgId] = React.useState(
@@ -260,15 +255,9 @@ export function SkeletonSidebar({
             </React.Fragment>
           ))}
         </div>
-
-        <div className='flex flex-col items-start gap-px'>
-          {BOTTOM_ROWS.map((item) => (
-            <NavRow key={item.key} item={item} />
-          ))}
-        </div>
       </div>
 
-      <SkeletonAccountFooter user={session.user} />
+      <SkeletonAccountFooter user={session.user} onLogoutClick={onLogoutClick} />
     </nav>
   );
 }
