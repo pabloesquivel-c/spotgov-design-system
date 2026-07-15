@@ -1,20 +1,33 @@
 // Sidebar footer — avatar, name, email. Matches Paper's polished pass
 // exactly: no divider above it beyond the footer's own top border.
 
+import { cn } from '@/utils/cn';
+import { FadeLabel } from './skeleton-collapse';
 import type { CurrentUser } from './skeleton-mock-session';
 
-export function SkeletonAccountFooter({ user }: { user: CurrentUser }) {
+export function SkeletonAccountFooter({
+  user,
+  isCollapsed = false,
+}: {
+  user: CurrentUser;
+  isCollapsed?: boolean;
+}) {
   return (
-    <div className='flex shrink-0 items-center gap-2.5 border-t border-stroke-soft-200 p-2.5'>
+    <div
+      className={cn(
+        'flex shrink-0 items-center border-t border-stroke-soft-200',
+        isCollapsed ? 'justify-center gap-0 px-1 py-2.5' : 'gap-2.5 p-2.5',
+      )}
+    >
       <UserAvatar user={user} />
-      <span className='flex min-w-0 flex-1 flex-col gap-px'>
+      <FadeLabel isCollapsed={isCollapsed} className='flex min-w-0 flex-col gap-px'>
         <span className='truncate text-[13px] font-medium leading-4 text-text-strong-950'>
           {user.name}
         </span>
         <span className='truncate text-[12px] leading-4 text-text-sub-600'>
           {user.email}
         </span>
-      </span>
+      </FadeLabel>
     </div>
   );
 }
