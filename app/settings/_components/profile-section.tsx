@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { RiUserLine } from '@remixicon/react';
+import { RiMailLine, RiUserLine } from '@remixicon/react';
 
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
+import * as Hint from '@/components/ui/hint';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
@@ -13,54 +14,87 @@ import { notification } from '@/hooks/use-notification';
 import { mockSessionSingleOrg } from '@/components/blocks/sidebar/skeleton/skeleton-mock-session';
 
 import { SettingsCard } from './settings-card';
+import { DemoNote } from './demo-note';
 
 const owner = mockSessionSingleOrg.user;
+const MIN_PASSWORD_LENGTH = 8;
 
-export function ProfileSection() {
+export function ProfileSection({
+  onDirtyChange,
+}: {
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const [name, setName] = React.useState(owner.name);
   const [email, setEmail] = React.useState(owner.email);
   const [saved, setSaved] = React.useState({ name: owner.name, email: owner.email });
+  const [pendingEmail, setPendingEmail] = React.useState<string | null>(null);
 
   const [currentPassword, setCurrentPassword] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [passwordTouched, setPasswordTouched] = React.useState(false);
 
   const [disconnectOpen, setDisconnectOpen] = React.useState(false);
   const [googleConnected, setGoogleConnected] = React.useState(true);
 
-  const passwordChanged = Boolean(
-    currentPassword || newPassword || confirmPassword,
-  );
-  const changedFields = [
-    name !== saved.name ? 'Name' : null,
-    email !== saved.email ? 'Email' : null,
-    passwordChanged ? 'Password' : null,
-  ].filter(Boolean) as string[];
-  const dirty = changedFields.length > 0;
+  const dirty = name !== saved.name || email !== saved.email;
 
-  const resetPasswordFields = () => {
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-  };
+  React.useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
 
   const handleDiscard = () => {
     setName(saved.name);
     setEmail(saved.email);
-    resetPasswordFields();
   };
 
   const handleApply = () => {
-    const fields = changedFields;
-    setSaved({ name, email });
-    resetPasswordFields();
-    if (fields.length) {
+    const nameChanged = name !== saved.name;
+    const emailChanged = email !== saved.email;
+    const newEmail = email;
+
+    if (nameChanged) {
+      setSaved((prev) => ({ ...prev, name }));
+    }
+    if (emailChanged) {
+      setPendingEmail(newEmail);
+      setEmail(saved.email); // keep the authoritative address until verified
+    }
+
+    if (nameChanged || emailChanged) {
+      const fields = [nameChanged && 'Name', emailChanged && 'Email']
+        .filter(Boolean)
+        .join(' and ');
       notification({
         status: 'success',
         title: 'Profile updated',
-        description: `Changes to ${fields.join(' and ')} were saved.`,
+        description: emailChanged
+          ? `${fields} saved. Verify ${newEmail} to finish the email change.`
+          : `Changes to ${fields} were saved.`,
       });
     }
+  };
+
+  const newPasswordError =
+    newPassword.length > 0 && newPassword.length < MIN_PASSWORD_LENGTH
+      ? `Must be at least ${MIN_PASSWORD_LENGTH} characters.`
+      : null;
+  const confirmPasswordError =
+    confirmPassword.length > 0 && confirmPassword !== newPassword
+      ? "Passwords don't match."
+      : null;
+
+  const canUpdatePassword =
+    currentPassword.length > 0 &&
+    newPassword.length >= MIN_PASSWORD_LENGTH &&
+    newPassword === confirmPassword;
+
+  const handleUpdatePassword = () => {
+    setPasswordTouched(false);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    notification({ status: 'success', title: 'Password updated' });
   };
 
   return (
@@ -125,6 +159,60 @@ export function ProfileSection() {
                   />
                 </Input.Wrapper>
               </Input.Root>
+
+              {pendingEmail && (
+                <div className='mt-1 flex flex-col gap-1 rounded-xl bg-bg-weak-50 p-3'>
+                  <div className='flex flex-wrap items-center justify-between gap-2'>
+                    <span className='flex items-center gap-1.5 text-paragraph-xs text-text-sub-600'>
+                      <RiMailLine className='size-3.5 shrink-0' />
+                      Verification sent to{' '}
+                      <span className='font-medium text-text-strong-950'>
+                        {pendingEmail}
+                      </span>
+                    </span>
+                    <div className='flex items-center gap-3'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          notification({
+                            status: 'information',
+                            title: `Verification resent to ${pendingEmail}`,
+                          })
+                        }
+                        className='text-label-xs text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                      >
+                        Resend
+                      </button>
+                      <button
+                        type='button'
+                        onClick={() => setPendingEmail(null)}
+                        className='text-label-xs text-text-sub-600 outline-none transition-colors hover:text-text-strong-950 focus-visible:underline'
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                  <DemoNote>
+                    Real verification isn&apos;t wired up.{' '}
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setSaved((prev) => ({ ...prev, email: pendingEmail }));
+                        setPendingEmail(null);
+                        notification({
+                          status: 'success',
+                          title: 'Email verified',
+                          description: `${pendingEmail} is now your account email.`,
+                        });
+                      }}
+                      className='font-medium text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                    >
+                      Simulate confirmation
+                    </button>
+                    .
+                  </DemoNote>
+                </div>
+              )}
             </div>
           </div>
 
@@ -197,34 +285,56 @@ export function ProfileSection() {
             </div>
             <div className='flex flex-col gap-1'>
               <Label.Root htmlFor='new-password'>New Password</Label.Root>
-              <Input.Root>
+              <Input.Root hasError={Boolean(newPasswordError)}>
                 <Input.Wrapper>
                   <Input.Input
                     id='new-password'
                     type='password'
                     autoComplete='new-password'
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                      setPasswordTouched(true);
+                    }}
                   />
                 </Input.Wrapper>
               </Input.Root>
+              {passwordTouched && newPasswordError && (
+                <Hint.Root hasError>{newPasswordError}</Hint.Root>
+              )}
             </div>
             <div className='flex flex-col gap-1'>
               <Label.Root htmlFor='confirm-password'>
                 Confirm New Password
               </Label.Root>
-              <Input.Root>
+              <Input.Root hasError={Boolean(confirmPasswordError)}>
                 <Input.Wrapper>
                   <Input.Input
                     id='confirm-password'
                     type='password'
                     autoComplete='new-password'
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      setPasswordTouched(true);
+                    }}
                   />
                 </Input.Wrapper>
               </Input.Root>
+              {passwordTouched && confirmPasswordError && (
+                <Hint.Root hasError>{confirmPasswordError}</Hint.Root>
+              )}
             </div>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              size='small'
+              className='w-fit'
+              disabled={!canUpdatePassword}
+              onClick={handleUpdatePassword}
+            >
+              Update password
+            </Button.Root>
           </div>
         </div>
       </SettingsCard>

@@ -12,6 +12,7 @@ import * as React from 'react';
 
 import { AppSidebar } from '@/components/blocks/sidebar/app-sidebar';
 import * as SegmentedControl from '@/components/ui/segmented-control';
+import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 
 import {
   ORG_SECTION_IDS,
@@ -22,30 +23,76 @@ import { DemoNote } from './_components/demo-note';
 import { ProfileSection } from './_components/profile-section';
 import { PreferencesSection } from './_components/preferences-section';
 import { NotificationsSection } from './_components/notifications-section';
+import { SecuritySection } from './_components/security-section';
 import { GeneralSection } from './_components/general-section';
 import { MembersSection } from './_components/members-section';
 import { BusinessProfileSection } from './_components/business-profile-section';
 import { IntegrationsSection } from './_components/integrations-section';
 import { AnalysisTemplatesSection } from './_components/analysis-templates-section';
+import { BillingSection } from './_components/billing-section';
 
 type ViewerRole = 'owner-admin' | 'member';
+
+// Sections that report unsaved-changes state up (Apply/Discard footer
+// sections). Switching away from one of these while dirty is guarded by a
+// confirm dialog, since the section unmounts on navigation and would
+// otherwise silently drop the edit.
+type PendingNav =
+  | { type: 'section'; section: SectionId }
+  | { type: 'role'; role: ViewerRole };
 
 export default function SettingsPreviewPage() {
   const [activeSection, setActiveSection] =
     React.useState<SectionId>('profile');
   const [role, setRole] = React.useState<ViewerRole>('owner-admin');
   const [requested, setRequested] = React.useState(false);
+  const [activeDirty, setActiveDirty] = React.useState(false);
+  const [pendingNav, setPendingNav] = React.useState<PendingNav | null>(null);
 
   const orgLocked = role === 'member';
 
-  const handleRoleChange = (next: ViewerRole) => {
+  const applyRoleChange = (next: ViewerRole) => {
     setRole(next);
     setRequested(false);
-    // If access is revoked while viewing an Organization section, snap back to
-    // the first Personal section — mirrors real client-side permission gating.
-    if (next === 'member' && ORG_SECTION_IDS.includes(activeSection)) {
+    // If access is revoked while viewing a locked Organization section, snap
+    // back to the first Personal section — mirrors real client-side
+    // permission gating. Members stays reachable (read-only), so it's exempt.
+    if (
+      next === 'member' &&
+      ORG_SECTION_IDS.includes(activeSection) &&
+      activeSection !== 'members'
+    ) {
       setActiveSection('profile');
     }
+  };
+
+  const requestSectionChange = (id: SectionId) => {
+    if (id === activeSection) return;
+    if (activeDirty) {
+      setPendingNav({ type: 'section', section: id });
+      return;
+    }
+    setActiveSection(id);
+  };
+
+  const requestRoleChange = (next: ViewerRole) => {
+    if (next === role) return;
+    if (activeDirty) {
+      setPendingNav({ type: 'role', role: next });
+      return;
+    }
+    applyRoleChange(next);
+  };
+
+  const confirmDiscardNav = () => {
+    if (!pendingNav) return;
+    setActiveDirty(false);
+    if (pendingNav.type === 'section') {
+      setActiveSection(pendingNav.section);
+    } else {
+      applyRoleChange(pendingNav.role);
+    }
+    setPendingNav(null);
   };
 
   return (
@@ -73,7 +120,7 @@ export default function SettingsPreviewPage() {
                 <div className='w-[200px]'>
                   <SegmentedControl.Root
                     value={role}
-                    onValueChange={(v) => handleRoleChange(v as ViewerRole)}
+                    onValueChange={(v) => requestRoleChange(v as ViewerRole)}
                   >
                     <SegmentedControl.List>
                       <SegmentedControl.Trigger value='owner-admin'>
@@ -98,7 +145,7 @@ export default function SettingsPreviewPage() {
               <div className='lg:w-[224px] lg:shrink-0'>
                 <SettingsRail
                   activeSection={activeSection}
-                  onSectionChange={setActiveSection}
+                  onSectionChange={requestSectionChange}
                   orgLocked={orgLocked}
                   requested={requested}
                   onRequestAccess={() => setRequested(true)}
@@ -108,13 +155,25 @@ export default function SettingsPreviewPage() {
               <div className='min-w-0 flex-1'>
                 <SectionContent
                   section={activeSection}
-                  onNavigate={setActiveSection}
+                  onNavigate={requestSectionChange}
+                  onDirtyChange={setActiveDirty}
+                  readOnlyMembers={orgLocked}
                 />
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <DestructiveConfirmModal
+        open={pendingNav !== null}
+        onOpenChange={(open) => !open && setPendingNav(null)}
+        title='Discard unsaved changes?'
+        description="You have unsaved changes in this section. Leaving now will discard them."
+        confirmLabel='Discard changes'
+        cancelLabel='Keep editing'
+        onConfirm={confirmDiscardNav}
+      />
     </div>
   );
 }
@@ -122,27 +181,37 @@ export default function SettingsPreviewPage() {
 function SectionContent({
   section,
   onNavigate,
+  onDirtyChange,
+  readOnlyMembers,
 }: {
   section: SectionId;
   onNavigate: (id: SectionId) => void;
+  onDirtyChange: (dirty: boolean) => void;
+  readOnlyMembers: boolean;
 }) {
   switch (section) {
     case 'profile':
-      return <ProfileSection />;
+      return <ProfileSection onDirtyChange={onDirtyChange} />;
     case 'preferences':
-      return <PreferencesSection />;
+      return <PreferencesSection onDirtyChange={onDirtyChange} />;
     case 'notifications':
-      return <NotificationsSection />;
+      return <NotificationsSection onDirtyChange={onDirtyChange} />;
+    case 'security':
+      return <SecuritySection />;
     case 'general':
-      return <GeneralSection onNavigate={onNavigate} />;
+      return (
+        <GeneralSection onNavigate={onNavigate} onDirtyChange={onDirtyChange} />
+      );
     case 'members':
-      return <MembersSection />;
+      return <MembersSection readOnly={readOnlyMembers} />;
     case 'business-profile':
       return <BusinessProfileSection />;
     case 'integrations':
       return <IntegrationsSection />;
     case 'analysis-templates':
       return <AnalysisTemplatesSection />;
+    case 'billing':
+      return <BillingSection />;
     default:
       return null;
   }

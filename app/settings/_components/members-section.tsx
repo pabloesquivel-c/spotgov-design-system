@@ -8,6 +8,7 @@ import {
   RiArrowRightSLine,
   RiCloseLine,
   RiMore2Line,
+  RiSearchLine,
   RiTeamLine,
 } from '@remixicon/react';
 
@@ -28,6 +29,7 @@ import { cn } from '@/utils/cn';
 import { SettingsCard } from './settings-card';
 import { DemoNote } from './demo-note';
 import {
+  DEFAULT_BILLING_PLAN,
   DEFAULT_MEMBERS,
   LARGE_MEMBERS,
   MEMBER_ROLE_LABEL,
@@ -39,13 +41,22 @@ import {
 const PAGE_SIZE = 6;
 const ORG_DOMAIN = 'acmecorp.com';
 const ORG_NAME = 'Acme Corporation';
+const FILTER_THRESHOLD = 8;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Invitee = { id: number; email: string; role: MemberRole };
 
-export function MembersSection() {
+export function MembersSection({
+  readOnly = false,
+  onNavigateGeneral,
+}: {
+  readOnly?: boolean;
+  onNavigateGeneral?: () => void;
+}) {
   const [largeTeam, setLargeTeam] = React.useState(false);
   const [members, setMembers] = React.useState<Member[]>(DEFAULT_MEMBERS);
   const [page, setPage] = React.useState(1);
+  const [query, setQuery] = React.useState('');
 
   // confirm-remove / confirm-cancel state
   const [pendingRemoval, setPendingRemoval] = React.useState<Member | null>(null);
@@ -59,12 +70,23 @@ export function MembersSection() {
     setPage(1);
   };
 
-  const owner = members.find((m) => m.role === 'owner');
-  const admins = members.filter((m) => m.role === 'admin');
-  const activeMembers = members.filter(
+  const q = query.trim().toLowerCase();
+  const visibleMembers = q
+    ? members.filter(
+        (m) =>
+          m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q),
+      )
+    : members;
+
+  const owner = visibleMembers.find((m) => m.role === 'owner');
+  const admins = visibleMembers.filter((m) => m.role === 'admin');
+  const activeMembers = visibleMembers.filter(
     (m) => m.role === 'member' && m.status === 'active',
   );
-  const pending = members.filter((m) => m.status === 'pending');
+  const pending = visibleMembers.filter((m) => m.status === 'pending');
+
+  const totalActive = members.filter((m) => m.status === 'active').length;
+  const totalPending = members.filter((m) => m.status === 'pending').length;
 
   const totalPages = Math.max(1, Math.ceil(activeMembers.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -73,8 +95,20 @@ export function MembersSection() {
     currentPage * PAGE_SIZE,
   );
 
+  const seatsRemaining = Math.max(
+    0,
+    DEFAULT_BILLING_PLAN.seatsTotal - members.length,
+  );
+
   const changeRole = (id: string, role: MemberRole) => {
+    const member = members.find((m) => m.id === id);
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, role } : m)));
+    if (member) {
+      notification({
+        status: 'success',
+        title: `${member.name} is now ${MEMBER_ROLE_LABEL[role]}`,
+      });
+    }
   };
 
   const confirmRemoval = () => {
@@ -91,50 +125,113 @@ export function MembersSection() {
     });
   };
 
+  const handleSend = (invitees: Invitee[]) => {
+    const nextMembers: Member[] = invitees.map((invitee) => ({
+      id: `invite-${invitee.email.toLowerCase()}`,
+      name: invitee.email,
+      email: invitee.email,
+      initials: invitee.email[0]?.toUpperCase() ?? '?',
+      role: invitee.role,
+      status: 'pending',
+      color: 'gray',
+      expiresInDays: 7,
+    }));
+    setMembers((prev) => [...prev, ...nextMembers]);
+    setInviteOpen(false);
+    notification({
+      status: 'success',
+      title:
+        nextMembers.length === 1
+          ? 'Invitation sent'
+          : `${nextMembers.length} invitations sent`,
+    });
+  };
+
+  const headerDescription =
+    totalPending > 0
+      ? `${totalActive} member${totalActive === 1 ? '' : 's'} · ${totalPending} pending invite${totalPending === 1 ? '' : 's'}`
+      : `${totalActive} member${totalActive === 1 ? '' : 's'} have access to this organization.`;
+
   return (
     <>
       <SettingsCard
         icon={RiTeamLine}
         title='Members'
-        description={`${members.length} people have access to this organization.`}
+        description={headerDescription}
         headerAction={
-          <Button.Root
-            variant='primary'
-            size='small'
-            onClick={() => setInviteOpen(true)}
-          >
-            <Button.Icon as={RiAddLine} />
-            Invite
-          </Button.Root>
+          readOnly ? (
+            <Badge.Root variant='lighter' color='gray' size='medium'>
+              View only
+            </Badge.Root>
+          ) : (
+            <Button.Root
+              variant='primary'
+              size='small'
+              onClick={() => setInviteOpen(true)}
+            >
+              <Button.Icon as={RiAddLine} />
+              Invite
+            </Button.Root>
+          )
         }
       >
         <div className='flex flex-col gap-5'>
           {/* Simulate-larger-team demo control */}
-          <div className='flex flex-col gap-1.5 rounded-xl bg-bg-weak-50 p-3'>
-            <label className='flex items-center justify-between gap-4'>
-              <span className='text-label-sm text-text-strong-950'>
-                Simulate larger team
-              </span>
-              <Switch.Root
-                checked={largeTeam}
-                onCheckedChange={handleToggleLargeTeam}
-              />
-            </label>
-            <DemoNote>
-              Swaps the {DEFAULT_MEMBERS.length}-person roster for a{' '}
-              {LARGE_MEMBERS.length}-person one so pagination pages through
-              different people. This toggle is a demo affordance, not part of the
-              shipped design.
-            </DemoNote>
-          </div>
+          {!readOnly && (
+            <div className='flex flex-col gap-1.5 rounded-xl bg-bg-weak-50 p-3'>
+              <label className='flex items-center justify-between gap-4'>
+                <span className='text-label-sm text-text-strong-950'>
+                  Simulate larger team
+                </span>
+                <Switch.Root
+                  checked={largeTeam}
+                  onCheckedChange={handleToggleLargeTeam}
+                />
+              </label>
+              <DemoNote>
+                Swaps the {DEFAULT_MEMBERS.length}-person roster for a{' '}
+                {LARGE_MEMBERS.length}-person one so pagination pages through
+                different people. This toggle is a demo affordance, not part of
+                the shipped design.
+              </DemoNote>
+            </div>
+          )}
+
+          {members.length > FILTER_THRESHOLD && (
+            <Input.Root size='small'>
+              <Input.Wrapper>
+                <Input.Icon as={RiSearchLine} />
+                <Input.Input
+                  placeholder='Filter by name or email'
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </Input.Wrapper>
+            </Input.Root>
+          )}
 
           {owner && (
             <RoleGroup label='Owner'>
               <MemberRow
                 member={owner}
+                readOnly={readOnly}
                 onChangeRole={changeRole}
                 onRequestRemoval={setPendingRemoval}
                 onResend={() => {}}
+                footnote={
+                  !readOnly && onNavigateGeneral ? (
+                    <button
+                      type='button'
+                      onClick={onNavigateGeneral}
+                      className='text-paragraph-xs text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                    >
+                      Transfer ownership from General → Danger Zone
+                    </button>
+                  ) : null
+                }
               />
             </RoleGroup>
           )}
@@ -148,6 +245,7 @@ export function MembersSection() {
                   )}
                   <MemberRow
                     member={member}
+                    readOnly={readOnly}
                     onChangeRole={changeRole}
                     onRequestRemoval={setPendingRemoval}
                     onResend={() => {}}
@@ -166,6 +264,7 @@ export function MembersSection() {
                   )}
                   <MemberRow
                     member={member}
+                    readOnly={readOnly}
                     onChangeRole={changeRole}
                     onRequestRemoval={setPendingRemoval}
                     onResend={() => {}}
@@ -184,6 +283,7 @@ export function MembersSection() {
                   )}
                   <MemberRow
                     member={member}
+                    readOnly={readOnly}
                     onChangeRole={changeRole}
                     onRequestRemoval={setPendingRemoval}
                     onResend={() =>
@@ -196,6 +296,12 @@ export function MembersSection() {
                 </React.Fragment>
               ))}
             </RoleGroup>
+          )}
+
+          {visibleMembers.length === 0 && (
+            <DemoNote className='justify-center text-center'>
+              No members match &ldquo;{query}&rdquo;.
+            </DemoNote>
           )}
 
           {/* Pagination — only the Members group grows unbounded */}
@@ -228,7 +334,7 @@ export function MembersSection() {
               </Pagination.Root>
             </div>
           )}
-          {!largeTeam && (
+          {!largeTeam && !readOnly && (
             <DemoNote className='justify-center text-center'>
               Only {DEFAULT_MEMBERS.length} members exist at this size, so
               there&apos;s a single page. Turn on &ldquo;Simulate larger
@@ -258,7 +364,13 @@ export function MembersSection() {
         onConfirm={confirmRemoval}
       />
 
-      <InviteModal open={inviteOpen} onOpenChange={setInviteOpen} />
+      <InviteModal
+        open={inviteOpen}
+        onOpenChange={setInviteOpen}
+        currentMemberEmails={members.map((m) => m.email.toLowerCase())}
+        seatsRemaining={seatsRemaining}
+        onSend={handleSend}
+      />
     </>
   );
 }
@@ -307,113 +419,125 @@ function roleBadgeColor(role: MemberRole) {
 
 function MemberRow({
   member,
+  readOnly,
   onChangeRole,
   onRequestRemoval,
   onResend,
+  footnote,
 }: {
   member: Member;
+  readOnly: boolean;
   onChangeRole: (id: string, role: MemberRole) => void;
   onRequestRemoval: (member: Member) => void;
   onResend: () => void;
+  footnote?: React.ReactNode;
 }) {
   const isPending = member.status === 'pending';
   const isOwner = member.role === 'owner';
 
   return (
-    <div className='flex items-center gap-3 px-3.5 py-3'>
-      <Avatar.Root size='32' color={member.color as AvatarColor}>
-        {member.initials}
-      </Avatar.Root>
+    <div className='flex flex-col gap-1 px-3.5 py-3'>
+      <div className='flex items-center gap-3'>
+        <Avatar.Root size='32' color={member.color as AvatarColor}>
+          {member.initials}
+        </Avatar.Root>
 
-      <div className='flex min-w-0 flex-1 flex-col'>
-        <span className='truncate text-label-sm text-text-strong-950'>
-          {member.name}
-        </span>
-        {!isPending && (
-          <span className='truncate text-paragraph-xs text-text-sub-600'>
-            {member.email}
+        <div className='flex min-w-0 flex-1 flex-col'>
+          <span className='truncate text-label-sm text-text-strong-950'>
+            {member.name}
           </span>
-        )}
-      </div>
+          {isPending ? (
+            <span className='truncate text-paragraph-xs text-text-sub-600'>
+              Expires in {member.expiresInDays ?? 7} day
+              {member.expiresInDays === 1 ? '' : 's'}
+            </span>
+          ) : (
+            <span className='truncate text-paragraph-xs text-text-sub-600'>
+              {member.email}
+            </span>
+          )}
+        </div>
 
-      <div className='flex shrink-0 items-center gap-2'>
-        {isPending ? (
-          <Badge.Root variant='light' color='orange' size='medium'>
-            Pending
-          </Badge.Root>
-        ) : (
-          <Badge.Root
-            variant='light'
-            color={roleBadgeColor(member.role)}
-            size='medium'
-          >
-            {MEMBER_ROLE_LABEL[member.role]}
-          </Badge.Root>
-        )}
+        <div className='flex shrink-0 items-center gap-2'>
+          {isPending ? (
+            <Badge.Root variant='light' color='orange' size='medium'>
+              Pending
+            </Badge.Root>
+          ) : (
+            <Badge.Root
+              variant='light'
+              color={roleBadgeColor(member.role)}
+              size='medium'
+            >
+              {MEMBER_ROLE_LABEL[member.role]}
+            </Badge.Root>
+          )}
 
-        {/* Owner has no row actions */}
-        {isOwner ? (
-          <div className='size-7' aria-hidden='true' />
-        ) : (
-          <Dropdown.Root>
-            <Dropdown.Trigger asChild>
-              <CompactButton.Root variant='ghost' size='large'>
-                <CompactButton.Icon as={RiMore2Line} />
-              </CompactButton.Root>
-            </Dropdown.Trigger>
-            <Dropdown.Content align='end' className='w-[220px]'>
-              {isPending ? (
-                <>
-                  <Dropdown.Item onSelect={onResend}>
-                    Resend invite
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    className='text-error-base data-[highlighted]:text-error-base'
-                    onSelect={() => onRequestRemoval(member)}
-                  >
-                    Cancel invite
-                  </Dropdown.Item>
-                </>
-              ) : (
-                <>
-                  <Dropdown.MenuSub>
-                    <Dropdown.MenuSubTrigger>
-                      Change role
-                    </Dropdown.MenuSubTrigger>
-                    <Dropdown.MenuSubContent className='w-[160px]'>
-                      <Dropdown.RadioGroup
-                        value={member.role}
-                        onValueChange={(v) =>
-                          onChangeRole(member.id, v as MemberRole)
-                        }
-                      >
-                        <Dropdown.RadioItem
-                          value='admin'
-                          className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
+          {/* Owner has no row actions; read-only preview hides all menus */}
+          {isOwner || readOnly ? (
+            <div className='size-7' aria-hidden='true' />
+          ) : (
+            <Dropdown.Root>
+              <Dropdown.Trigger asChild>
+                <CompactButton.Root variant='ghost' size='large'>
+                  <CompactButton.Icon as={RiMore2Line} />
+                </CompactButton.Root>
+              </Dropdown.Trigger>
+              <Dropdown.Content align='end' className='w-[220px]'>
+                {isPending ? (
+                  <>
+                    <Dropdown.Item onSelect={onResend}>
+                      Resend invite
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className='text-error-base data-[highlighted]:text-error-base'
+                      onSelect={() => onRequestRemoval(member)}
+                    >
+                      Cancel invite
+                    </Dropdown.Item>
+                  </>
+                ) : (
+                  <>
+                    <Dropdown.MenuSub>
+                      <Dropdown.MenuSubTrigger>
+                        Change role
+                      </Dropdown.MenuSubTrigger>
+                      <Dropdown.MenuSubContent className='w-[160px]'>
+                        <Dropdown.RadioGroup
+                          value={member.role}
+                          onValueChange={(v) =>
+                            onChangeRole(member.id, v as MemberRole)
+                          }
                         >
-                          Admin
-                        </Dropdown.RadioItem>
-                        <Dropdown.RadioItem
-                          value='member'
-                          className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
-                        >
-                          Member
-                        </Dropdown.RadioItem>
-                      </Dropdown.RadioGroup>
-                    </Dropdown.MenuSubContent>
-                  </Dropdown.MenuSub>
-                  <Dropdown.Item
-                    className='text-error-base data-[highlighted]:text-error-base'
-                    onSelect={() => onRequestRemoval(member)}
-                  >
-                    Remove from organization
-                  </Dropdown.Item>
-                </>
-              )}
-            </Dropdown.Content>
-          </Dropdown.Root>
-        )}
+                          <Dropdown.RadioItem
+                            value='admin'
+                            className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
+                          >
+                            Admin
+                          </Dropdown.RadioItem>
+                          <Dropdown.RadioItem
+                            value='member'
+                            className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
+                          >
+                            Member
+                          </Dropdown.RadioItem>
+                        </Dropdown.RadioGroup>
+                      </Dropdown.MenuSubContent>
+                    </Dropdown.MenuSub>
+                    <Dropdown.Item
+                      className='text-error-base data-[highlighted]:text-error-base'
+                      onSelect={() => onRequestRemoval(member)}
+                    >
+                      Remove from organization
+                    </Dropdown.Item>
+                  </>
+                )}
+              </Dropdown.Content>
+            </Dropdown.Root>
+          )}
+        </div>
       </div>
+      {footnote && <div className='pl-11'>{footnote}</div>}
     </div>
   );
 }
@@ -433,37 +557,82 @@ function domainMismatch(email: string) {
   return email.slice(at + 1).toLowerCase() !== ORG_DOMAIN;
 }
 
+function splitEmails(raw: string): string[] {
+  return raw
+    .split(/[,;\s]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function InviteModal({
   open,
   onOpenChange,
+  currentMemberEmails,
+  seatsRemaining,
+  onSend,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  currentMemberEmails: string[];
+  seatsRemaining: number;
+  onSend: (invitees: Invitee[]) => void;
 }) {
   const [draft, setDraft] = React.useState('');
+  const [draftNote, setDraftNote] = React.useState<string | null>(null);
   const [invitees, setInvitees] = React.useState<Invitee[]>([]);
+  const [closeConfirmOpen, setCloseConfirmOpen] = React.useState(false);
   const nextId = React.useRef(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const reset = () => {
     setDraft('');
+    setDraftNote(null);
     setInvitees([]);
   };
 
-  const commitDraft = () => {
-    const email = draft.trim();
-    if (!email) return;
-    setInvitees((prev) => [
-      ...prev,
-      { id: nextId.current++, email, role: 'member' },
-    ]);
+  const commitEmails = (raw: string) => {
+    const candidates = splitEmails(raw);
+    if (candidates.length === 0) return;
+
+    const seen = new Set(invitees.map((i) => i.email.toLowerCase()));
+    const added: Invitee[] = [];
+    const skipped: string[] = [];
+
+    for (const email of candidates) {
+      const lower = email.toLowerCase();
+      if (!EMAIL_REGEX.test(email)) {
+        skipped.push(`${email} (invalid email)`);
+        continue;
+      }
+      if (currentMemberEmails.includes(lower)) {
+        skipped.push(`${email} (already a member)`);
+        continue;
+      }
+      if (seen.has(lower)) {
+        skipped.push(`${email} (duplicate)`);
+        continue;
+      }
+      seen.add(lower);
+      added.push({ id: nextId.current++, email, role: 'member' });
+    }
+
+    setInvitees((prev) => [...prev, ...added]);
     setDraft('');
+    setDraftNote(skipped.length ? `Skipped ${skipped.join(', ')}` : null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || e.key === ',' || e.key === ';') {
       e.preventDefault();
-      commitDraft();
+      commitEmails(draft);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData('text');
+    if (splitEmails(text).length > 1) {
+      e.preventDefault();
+      commitEmails(text);
     }
   };
 
@@ -475,139 +644,182 @@ function InviteModal({
     setInvitees((prev) => prev.map((i) => (i.id === id ? { ...i, role } : i)));
   };
 
-  const send = () => {
-    const count = invitees.length + (draft.trim() ? 1 : 0);
+  const requestClose = () => {
+    if (invitees.length > 0 || draft.trim().length > 0) {
+      setCloseConfirmOpen(true);
+      return;
+    }
     onOpenChange(false);
     reset();
-    notification({
-      status: 'success',
-      title:
-        count === 1 ? 'Invitation sent' : `${count} invitations sent`,
-    });
   };
 
-  const canSend = invitees.length > 0 || draft.trim().length > 0;
+  const send = () => {
+    onSend(invitees);
+    reset();
+  };
+
+  const canSend = invitees.length > 0;
   const draftMismatch = draft.trim().length > 0 && domainMismatch(draft.trim());
+  const overSeatLimit = invitees.length > seatsRemaining;
 
   return (
-    <Modal.Root
-      open={open}
-      onOpenChange={(next) => {
-        onOpenChange(next);
-        if (!next) reset();
-      }}
-    >
-      <Modal.Content className='max-w-[480px]'>
-        <Modal.Header
-          title='Invite members'
-          description='Add email addresses and pick a role for each person.'
-        />
-        <Modal.Body className='flex flex-col gap-4'>
-          <div className='flex flex-col gap-1'>
-            <Input.Root>
-              <Input.Wrapper>
-                <Input.Input
-                  ref={inputRef}
-                  placeholder='name@company.com'
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-              </Input.Wrapper>
-            </Input.Root>
-            {draftMismatch && (
-              <span className='flex items-start gap-1 text-paragraph-xs text-warning-base'>
-                <RiAlertLine className='mt-px size-3.5 shrink-0' />
-                This address doesn&apos;t match {ORG_DOMAIN} — double check
-                before sending.
-              </span>
+    <>
+      <Modal.Root
+        open={open}
+        onOpenChange={(next) => {
+          if (!next) {
+            requestClose();
+            return;
+          }
+          onOpenChange(next);
+        }}
+      >
+        <Modal.Content className='max-w-[480px]'>
+          <Modal.Header
+            title='Invite members'
+            description='Add email addresses and pick a role for each person.'
+          />
+          <Modal.Body className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-1'>
+              <Input.Root>
+                <Input.Wrapper>
+                  <Input.Input
+                    ref={inputRef}
+                    placeholder='name@company.com'
+                    value={draft}
+                    onChange={(e) => {
+                      setDraft(e.target.value);
+                      setDraftNote(null);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    onPaste={handlePaste}
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+              {draftNote && (
+                <span className='flex items-start gap-1 text-paragraph-xs text-warning-base'>
+                  <RiAlertLine className='mt-px size-3.5 shrink-0' />
+                  {draftNote}
+                </span>
+              )}
+              {!draftNote && draftMismatch && (
+                <span className='flex items-start gap-1 text-paragraph-xs text-warning-base'>
+                  <RiAlertLine className='mt-px size-3.5 shrink-0' />
+                  This address doesn&apos;t match {ORG_DOMAIN} — double check
+                  before sending.
+                </span>
+              )}
+            </div>
+
+            {invitees.length > 0 && (
+              <ul className='flex flex-col gap-2'>
+                {invitees.map((invitee) => (
+                  <li key={invitee.id} className='flex flex-col gap-1'>
+                    <div className='flex items-center gap-2'>
+                      <span className='min-w-0 flex-1 truncate text-paragraph-sm text-text-strong-950'>
+                        {invitee.email}
+                      </span>
+                      <Select.Root
+                        size='xsmall'
+                        variant='compact'
+                        value={invitee.role}
+                        onValueChange={(v) => setRole(invitee.id, v as MemberRole)}
+                      >
+                        <Select.Trigger className='w-[110px]'>
+                          <Select.Value />
+                        </Select.Trigger>
+                        <Select.Content>
+                          {ROLE_OPTIONS.map((option) => (
+                            <Select.Item key={option.value} value={option.value}>
+                              {option.label}
+                            </Select.Item>
+                          ))}
+                        </Select.Content>
+                      </Select.Root>
+                      <CompactButton.Root
+                        variant='ghost'
+                        size='large'
+                        aria-label={`Remove ${invitee.email}`}
+                        onClick={() => removeInvitee(invitee.id)}
+                      >
+                        <CompactButton.Icon as={RiCloseLine} />
+                      </CompactButton.Root>
+                    </div>
+                    {domainMismatch(invitee.email) && (
+                      <span className='flex items-start gap-1 pl-0.5 text-paragraph-xs text-warning-base'>
+                        <RiAlertLine className='mt-px size-3.5 shrink-0' />
+                        This address doesn&apos;t match {ORG_DOMAIN}.
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
 
-          {invitees.length > 0 && (
-            <ul className='flex flex-col gap-2'>
-              {invitees.map((invitee) => (
-                <li key={invitee.id} className='flex flex-col gap-1'>
-                  <div className='flex items-center gap-2'>
-                    <span className='min-w-0 flex-1 truncate text-paragraph-sm text-text-strong-950'>
-                      {invitee.email}
-                    </span>
-                    <Select.Root
-                      size='xsmall'
-                      variant='compact'
-                      value={invitee.role}
-                      onValueChange={(v) => setRole(invitee.id, v as MemberRole)}
-                    >
-                      <Select.Trigger className='w-[110px]'>
-                        <Select.Value />
-                      </Select.Trigger>
-                      <Select.Content>
-                        {ROLE_OPTIONS.map((option) => (
-                          <Select.Item key={option.value} value={option.value}>
-                            {option.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Root>
-                    <CompactButton.Root
-                      variant='ghost'
-                      size='large'
-                      aria-label={`Remove ${invitee.email}`}
-                      onClick={() => removeInvitee(invitee.id)}
-                    >
-                      <CompactButton.Icon as={RiCloseLine} />
-                    </CompactButton.Root>
-                  </div>
-                  {domainMismatch(invitee.email) && (
-                    <span className='flex items-start gap-1 pl-0.5 text-paragraph-xs text-warning-base'>
-                      <RiAlertLine className='mt-px size-3.5 shrink-0' />
-                      This address doesn&apos;t match {ORG_DOMAIN}.
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+            <button
+              type='button'
+              onClick={() => {
+                commitEmails(draft);
+                inputRef.current?.focus();
+              }}
+              className='flex w-fit items-center gap-1 text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+            >
+              <RiAddLine className='size-4' />
+              Add another person
+            </button>
 
-          <button
-            type='button'
-            onClick={() => {
-              commitDraft();
-              inputRef.current?.focus();
-            }}
-            className='flex w-fit items-center gap-1 text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
-          >
-            <RiAddLine className='size-4' />
-            Add another person
-          </button>
+            <p className='text-paragraph-xs text-text-soft-400'>
+              They&apos;ll get an email invite to join {ORG_NAME}. Invite links
+              expire after 7 days.
+            </p>
 
-          <p className='text-paragraph-xs text-text-soft-400'>
-            They&apos;ll get an email invite to join {ORG_NAME}. Invite links
-            expire after 7 days.
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Modal.Close asChild>
+            <p
+              className={cn(
+                'text-paragraph-xs',
+                overSeatLimit ? 'text-warning-base' : 'text-text-sub-600',
+              )}
+            >
+              {overSeatLimit
+                ? `Only ${seatsRemaining} seat${seatsRemaining === 1 ? '' : 's'} remaining on your plan — remove ${invitees.length - seatsRemaining} invitee${invitees.length - seatsRemaining === 1 ? '' : 's'} or upgrade before sending.`
+                : `${seatsRemaining} seat${seatsRemaining === 1 ? '' : 's'} remaining on your plan.`}
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
             <Button.Root
               variant='neutral'
               mode='stroke'
               size='small'
               className='w-full'
+              onClick={requestClose}
             >
               Cancel
             </Button.Root>
-          </Modal.Close>
-          <Button.Root
-            variant='primary'
-            size='small'
-            className='w-full'
-            disabled={!canSend}
-            onClick={send}
-          >
-            Send invite
-          </Button.Root>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal.Root>
+            <Button.Root
+              variant='primary'
+              size='small'
+              className='w-full'
+              disabled={!canSend || overSeatLimit}
+              onClick={send}
+            >
+              Send invite
+            </Button.Root>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal.Root>
+
+      <DestructiveConfirmModal
+        open={closeConfirmOpen}
+        onOpenChange={setCloseConfirmOpen}
+        title='Discard these invites?'
+        description="You haven't sent the invitations you added. Closing now will discard them."
+        confirmLabel='Discard'
+        cancelLabel='Keep editing'
+        onConfirm={() => {
+          setCloseConfirmOpen(false);
+          onOpenChange(false);
+          reset();
+        }}
+      />
+    </>
   );
 }

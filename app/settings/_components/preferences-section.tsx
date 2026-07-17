@@ -77,12 +77,20 @@ function AppearancePreview({ appearance }: { appearance: Appearance }) {
   );
 }
 
-export function PreferencesSection() {
+export function PreferencesSection({
+  onDirtyChange,
+}: {
+  onDirtyChange?: (dirty: boolean) => void;
+}) {
   const [appearance, setAppearance] = React.useState<Appearance>('light');
   const [currency, setCurrency] = React.useState('usd');
   const [saved, setSaved] = React.useState({ appearance, currency });
 
   const dirty = appearance !== saved.appearance || currency !== saved.currency;
+
+  React.useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
 
   return (
     <SettingsCard
@@ -103,7 +111,8 @@ export function PreferencesSection() {
               Display Currency
             </span>
             <span className='text-paragraph-xs text-text-sub-600'>
-              Used across tenders, contracts, and reports.
+              Converted for display only — official tender values stay in
+              their original currency.
             </span>
           </div>
           <Select.Root
