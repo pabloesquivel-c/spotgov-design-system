@@ -11,7 +11,8 @@ import {
 import * as Button from '@/components/ui/button';
 import * as CompactButton from '@/components/ui/compact-button';
 import * as Dropdown from '@/components/ui/dropdown';
-import * as HorizontalStepper from '@/components/ui/horizontal-stepper';
+import * as Input from '@/components/ui/input';
+import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
@@ -23,8 +24,6 @@ import {
   type Integration,
   type IntegrationStatus,
 } from './mock-data';
-
-const WIZARD_STEPS = ['Sign In', 'Entity Checklist'];
 
 export function IntegrationsSection() {
   const [statuses, setStatuses] = React.useState<
@@ -95,8 +94,8 @@ export function IntegrationsSection() {
         }}
       />
 
-      {/* Connect wizard */}
-      <ConnectWizard
+      {/* Connect modal */}
+      <ConnectModal
         key={connectId ?? 'none'}
         open={connectId !== null}
         name={connectTarget?.name ?? ''}
@@ -209,10 +208,10 @@ function IntegrationRow({
 }
 
 /* ------------------------------------------------------------------ */
-/* Connect wizard                                                      */
+/* Connect modal (single step)                                         */
 /* ------------------------------------------------------------------ */
 
-function ConnectWizard({
+function ConnectModal({
   open,
   name,
   onOpenChange,
@@ -223,42 +222,44 @@ function ConnectWizard({
   onOpenChange: (open: boolean) => void;
   onConnected: () => void;
 }) {
-  const [step, setStep] = React.useState(0);
-  const isLast = step === WIZARD_STEPS.length - 1;
-
-  const stepState = (index: number) => {
-    if (index < step) return 'completed' as const;
-    if (index === step) return 'active' as const;
-    return 'default' as const;
-  };
-
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
-      <Modal.Content className='max-w-[480px]'>
+      <Modal.Content className='max-w-[440px]'>
         <Modal.Header
           title={`Connect ${name}`}
-          description='Follow the steps to link your account.'
+          description={`Sign in to link your ${name} account to SpotGov.`}
         />
-        <Modal.Body className='flex flex-col gap-5'>
-          <HorizontalStepper.Root className='justify-start'>
-            {WIZARD_STEPS.map((label, index) => (
-              <React.Fragment key={label}>
-                {index > 0 && <HorizontalStepper.SeparatorIcon />}
-                <HorizontalStepper.Item state={stepState(index)}>
-                  <HorizontalStepper.ItemIndicator>
-                    {index + 1}
-                  </HorizontalStepper.ItemIndicator>
-                  {label}
-                </HorizontalStepper.Item>
-              </React.Fragment>
-            ))}
-          </HorizontalStepper.Root>
+        <Modal.Body className='flex flex-col gap-4'>
+          <p className='text-paragraph-sm text-text-sub-600'>
+            Use your {name} credentials to link this organization. SpotGov
+            then syncs tender notices automatically.
+          </p>
 
-          <div className='rounded-xl bg-bg-weak-50 p-4 text-paragraph-sm text-text-sub-600'>
-            {step === 0
-              ? `Sign in to your ${name} account to authorize SpotGov to read your tender notices.`
-              : `Confirm which registered entities should sync from ${name}.`}
+          <div className='flex flex-col gap-1'>
+            <Label.Root htmlFor='connect-username'>Username</Label.Root>
+            <Input.Root>
+              <Input.Wrapper>
+                <Input.Input
+                  id='connect-username'
+                  placeholder='acme.procurement'
+                />
+              </Input.Wrapper>
+            </Input.Root>
           </div>
+
+          <div className='flex flex-col gap-1'>
+            <Label.Root htmlFor='connect-password'>Password</Label.Root>
+            <Input.Root>
+              <Input.Wrapper>
+                <Input.Input id='connect-password' type='password' />
+              </Input.Wrapper>
+            </Input.Root>
+          </div>
+
+          <DemoNote>
+            Sign-in methods vary per provider and aren&apos;t finalized, so
+            these fields are placeholders for the demo.
+          </DemoNote>
         </Modal.Body>
         <Modal.Footer>
           <Button.Root
@@ -266,29 +267,17 @@ function ConnectWizard({
             mode='stroke'
             size='small'
             className='w-full'
-            onClick={() => {
-              if (step === 0) {
-                onOpenChange(false);
-              } else {
-                setStep((s) => s - 1);
-              }
-            }}
+            onClick={() => onOpenChange(false)}
           >
-            {step === 0 ? 'Cancel' : 'Back'}
+            Cancel
           </Button.Root>
           <Button.Root
             variant='primary'
             size='small'
             className='w-full'
-            onClick={() => {
-              if (isLast) {
-                onConnected();
-              } else {
-                setStep((s) => s + 1);
-              }
-            }}
+            onClick={onConnected}
           >
-            {isLast ? 'Connect' : 'Continue'}
+            Connect
           </Button.Root>
         </Modal.Footer>
       </Modal.Content>

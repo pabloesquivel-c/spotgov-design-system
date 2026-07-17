@@ -1,8 +1,9 @@
 'use client';
 
-import { RiBriefcaseLine } from '@remixicon/react';
+import { RiArrowRightUpLine, RiBriefcaseLine } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
+import * as Divider from '@/components/ui/divider';
 import { notification } from '@/hooks/use-notification';
 
 import { SettingsCard } from './settings-card';
@@ -15,12 +16,18 @@ const DETAILS = [
   { label: 'Primary sector', value: 'IT & Consulting Services' },
 ];
 
+const EXPECTED_ITEMS = [
+  'Legal name, address, and registration details',
+  'Certifications and compliance documents',
+  'Licenses required for specific tender categories',
+];
+
 export function BusinessProfileSection() {
   return (
     <SettingsCard
       icon={RiBriefcaseLine}
       title='Business Profile'
-      description='Company details reused across tenders, analyses, and submissions.'
+      description='Company details, certifications, and licenses used across bids.'
     >
       <div className='flex flex-col gap-6'>
         <dl className='grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2'>
@@ -36,10 +43,27 @@ export function BusinessProfileSection() {
           ))}
         </dl>
 
+        <Divider.Root />
+
+        <div className='flex flex-col gap-2'>
+          <span className='text-label-sm text-text-strong-950'>
+            Inside Business Profile you can view and update:
+          </span>
+          <ul className='flex flex-col gap-1'>
+            {EXPECTED_ITEMS.map((item) => (
+              <li
+                key={item}
+                className='text-paragraph-sm text-text-sub-600'
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className='flex flex-col gap-1.5'>
           <Button.Root
-            variant='neutral'
-            mode='stroke'
+            variant='primary'
             size='small'
             className='w-fit'
             onClick={() =>
@@ -52,6 +76,7 @@ export function BusinessProfileSection() {
             }
           >
             Manage Business Profile
+            <Button.Icon as={RiArrowRightUpLine} />
           </Button.Root>
           <DemoNote>
             The dedicated Business Profile screen isn&apos;t designed yet, so

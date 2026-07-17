@@ -8,7 +8,6 @@ import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
-import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 import { mockSessionSingleOrg } from '@/components/blocks/sidebar/skeleton/skeleton-mock-session';
@@ -26,7 +25,6 @@ export function ProfileSection() {
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
-  const [changesOpen, setChangesOpen] = React.useState(false);
   const [disconnectOpen, setDisconnectOpen] = React.useState(false);
   const [googleConnected, setGoogleConnected] = React.useState(true);
 
@@ -53,13 +51,16 @@ export function ProfileSection() {
   };
 
   const handleApply = () => {
-    setChangesOpen(true);
-  };
-
-  const confirmApply = () => {
+    const fields = changedFields;
     setSaved({ name, email });
     resetPasswordFields();
-    setChangesOpen(false);
+    if (fields.length) {
+      notification({
+        status: 'success',
+        title: 'Profile updated',
+        description: `Changes to ${fields.join(' and ')} were saved.`,
+      });
+    }
   };
 
   return (
@@ -227,40 +228,6 @@ export function ProfileSection() {
           </div>
         </div>
       </SettingsCard>
-
-      {/* Changes-saved echo modal — lists only the fields that actually changed */}
-      <Modal.Root open={changesOpen} onOpenChange={setChangesOpen}>
-        <Modal.Content className='max-w-[440px]'>
-          <Modal.Header
-            title='Save changes?'
-            description={
-              changedFields.length
-                ? `Changes to ${changedFields.join(' and ')} will be applied.`
-                : 'No changes to apply.'
-            }
-          />
-          <Modal.Footer>
-            <Modal.Close asChild>
-              <Button.Root
-                variant='neutral'
-                mode='stroke'
-                size='small'
-                className='w-full'
-              >
-                Cancel
-              </Button.Root>
-            </Modal.Close>
-            <Button.Root
-              variant='primary'
-              size='small'
-              className='w-full'
-              onClick={confirmApply}
-            >
-              Save changes
-            </Button.Root>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal.Root>
 
       <DestructiveConfirmModal
         open={disconnectOpen}
