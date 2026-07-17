@@ -46,7 +46,7 @@ export function SettingsCard({
   return (
     <section
       className={cn(
-        'w-full overflow-hidden rounded-2xl bg-bg-white-0 shadow-regular-xs ring-1 ring-stroke-soft-200',
+        'w-full overflow-hidden rounded-20 bg-bg-white-0 shadow-regular-xs ring-1 ring-stroke-soft-200',
         className,
       )}
     >

@@ -3,6 +3,7 @@
 import * as React from 'react';
 import {
   RiAddLine,
+  RiAlertLine,
   RiArrowLeftSLine,
   RiArrowRightSLine,
   RiCloseLine,
@@ -22,6 +23,7 @@ import * as Select from '@/components/ui/select';
 import * as Switch from '@/components/ui/switch';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
+import { cn } from '@/utils/cn';
 
 import { SettingsCard } from './settings-card';
 import { DemoNote } from './demo-note';
@@ -35,15 +37,8 @@ import {
 } from './mock-data';
 
 const PAGE_SIZE = 6;
-const ROLE_ORDER: Record<MemberRole, number> = { owner: 0, admin: 1, member: 2 };
-
-function sortRoster(members: Member[]) {
-  return [...members].sort((a, b) => {
-    // active before pending, then by role, then keep original order
-    if (a.status !== b.status) return a.status === 'pending' ? 1 : -1;
-    return ROLE_ORDER[a.role] - ROLE_ORDER[b.role];
-  });
-}
+const ORG_DOMAIN = 'acmecorp.com';
+const ORG_NAME = 'Acme Corporation';
 
 type Invitee = { id: number; email: string; role: MemberRole };
 
@@ -64,10 +59,16 @@ export function MembersSection() {
     setPage(1);
   };
 
-  const roster = React.useMemo(() => sortRoster(members), [members]);
-  const totalPages = Math.max(1, Math.ceil(roster.length / PAGE_SIZE));
+  const owner = members.find((m) => m.role === 'owner');
+  const admins = members.filter((m) => m.role === 'admin');
+  const activeMembers = members.filter(
+    (m) => m.role === 'member' && m.status === 'active',
+  );
+  const pending = members.filter((m) => m.status === 'pending');
+
+  const totalPages = Math.max(1, Math.ceil(activeMembers.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
-  const pageItems = roster.slice(
+  const pageItems = activeMembers.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
@@ -95,7 +96,7 @@ export function MembersSection() {
       <SettingsCard
         icon={RiTeamLine}
         title='Members'
-        description='Manage who has access to this organization.'
+        description={`${members.length} people have access to this organization.`}
         headerAction={
           <Button.Root
             variant='primary'
@@ -107,7 +108,7 @@ export function MembersSection() {
           </Button.Root>
         }
       >
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-5'>
           {/* Simulate-larger-team demo control */}
           <div className='flex flex-col gap-1.5 rounded-xl bg-bg-weak-50 p-3'>
             <label className='flex items-center justify-between gap-4'>
@@ -127,59 +128,113 @@ export function MembersSection() {
             </DemoNote>
           </div>
 
-          {/* Member list */}
-          <ul className='flex flex-col divide-y divide-stroke-soft-200'>
-            {pageItems.map((member) => (
+          {owner && (
+            <RoleGroup label='Owner'>
               <MemberRow
-                key={member.id}
-                member={member}
+                member={owner}
                 onChangeRole={changeRole}
                 onRequestRemoval={setPendingRemoval}
-                onResend={() =>
-                  notification({
-                    status: 'success',
-                    title: `Invitation resent to ${member.email}`,
-                  })
-                }
+                onResend={() => {}}
               />
-            ))}
-          </ul>
+            </RoleGroup>
+          )}
 
-          {/* Pagination */}
-          <div className='flex flex-col items-center gap-2'>
-            <Pagination.Root variant='basic'>
-              <Pagination.NavButton
-                aria-label='Previous page'
-                disabled={currentPage === 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                <Pagination.NavIcon as={RiArrowLeftSLine} />
-              </Pagination.NavButton>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Pagination.Item
-                  key={p}
-                  current={p === currentPage}
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </Pagination.Item>
+          {admins.length > 0 && (
+            <RoleGroup label='Admins'>
+              {admins.map((member, index) => (
+                <React.Fragment key={member.id}>
+                  {index > 0 && (
+                    <div className='h-px shrink-0 bg-stroke-soft-200' />
+                  )}
+                  <MemberRow
+                    member={member}
+                    onChangeRole={changeRole}
+                    onRequestRemoval={setPendingRemoval}
+                    onResend={() => {}}
+                  />
+                </React.Fragment>
               ))}
-              <Pagination.NavButton
-                aria-label='Next page'
-                disabled={currentPage === totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                <Pagination.NavIcon as={RiArrowRightSLine} />
-              </Pagination.NavButton>
-            </Pagination.Root>
-            {!largeTeam && (
-              <DemoNote className='justify-center text-center'>
-                Only {DEFAULT_MEMBERS.length} members exist at this size, so
-                there&apos;s a single page. Turn on &ldquo;Simulate larger
-                team&rdquo; to page through more.
-              </DemoNote>
-            )}
-          </div>
+            </RoleGroup>
+          )}
+
+          {activeMembers.length > 0 && (
+            <RoleGroup label='Members'>
+              {pageItems.map((member, index) => (
+                <React.Fragment key={member.id}>
+                  {index > 0 && (
+                    <div className='h-px shrink-0 bg-stroke-soft-200' />
+                  )}
+                  <MemberRow
+                    member={member}
+                    onChangeRole={changeRole}
+                    onRequestRemoval={setPendingRemoval}
+                    onResend={() => {}}
+                  />
+                </React.Fragment>
+              ))}
+            </RoleGroup>
+          )}
+
+          {pending.length > 0 && (
+            <RoleGroup label='Pending Invitations' dashed>
+              {pending.map((member, index) => (
+                <React.Fragment key={member.id}>
+                  {index > 0 && (
+                    <div className='h-px shrink-0 bg-stroke-soft-200' />
+                  )}
+                  <MemberRow
+                    member={member}
+                    onChangeRole={changeRole}
+                    onRequestRemoval={setPendingRemoval}
+                    onResend={() =>
+                      notification({
+                        status: 'success',
+                        title: `Invitation resent to ${member.email}`,
+                      })
+                    }
+                  />
+                </React.Fragment>
+              ))}
+            </RoleGroup>
+          )}
+
+          {/* Pagination — only the Members group grows unbounded */}
+          {activeMembers.length > PAGE_SIZE && (
+            <div className='flex flex-col items-center gap-2 border-t border-stroke-soft-200 pt-3.5'>
+              <Pagination.Root variant='basic'>
+                <Pagination.NavButton
+                  aria-label='Previous page'
+                  disabled={currentPage === 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  <Pagination.NavIcon as={RiArrowLeftSLine} />
+                </Pagination.NavButton>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <Pagination.Item
+                    key={p}
+                    current={p === currentPage}
+                    onClick={() => setPage(p)}
+                  >
+                    {p}
+                  </Pagination.Item>
+                ))}
+                <Pagination.NavButton
+                  aria-label='Next page'
+                  disabled={currentPage === totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  <Pagination.NavIcon as={RiArrowRightSLine} />
+                </Pagination.NavButton>
+              </Pagination.Root>
+            </div>
+          )}
+          {!largeTeam && (
+            <DemoNote className='justify-center text-center'>
+              Only {DEFAULT_MEMBERS.length} members exist at this size, so
+              there&apos;s a single page. Turn on &ldquo;Simulate larger
+              team&rdquo; to page through more.
+            </DemoNote>
+          )}
         </div>
       </SettingsCard>
 
@@ -209,6 +264,38 @@ export function MembersSection() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Role group — bordered card wrapping one role's rows                */
+/* ------------------------------------------------------------------ */
+
+function RoleGroup({
+  label,
+  dashed,
+  children,
+}: {
+  label: string;
+  dashed?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className='flex flex-col gap-2'>
+      <span className='text-[12px] font-medium uppercase tracking-[0.04em] text-text-sub-600'>
+        {label}
+      </span>
+      <div
+        className={cn(
+          'flex flex-col overflow-hidden rounded-xl border',
+          dashed
+            ? 'border-dashed border-stroke-sub-300 bg-bg-weak-50'
+            : 'border-solid border-stroke-soft-200',
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Member row                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -233,8 +320,8 @@ function MemberRow({
   const isOwner = member.role === 'owner';
 
   return (
-    <li className='flex items-center gap-3 py-3'>
-      <Avatar.Root size='40' color={member.color as AvatarColor}>
+    <div className='flex items-center gap-3 px-3.5 py-3'>
+      <Avatar.Root size='32' color={member.color as AvatarColor}>
         {member.initials}
       </Avatar.Root>
 
@@ -266,7 +353,7 @@ function MemberRow({
 
         {/* Owner has no row actions */}
         {isOwner ? (
-          <div className='size-6' aria-hidden='true' />
+          <div className='size-7' aria-hidden='true' />
         ) : (
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
@@ -327,7 +414,7 @@ function MemberRow({
           </Dropdown.Root>
         )}
       </div>
-    </li>
+    </div>
   );
 }
 
@@ -339,6 +426,12 @@ const ROLE_OPTIONS: { value: MemberRole; label: string }[] = [
   { value: 'admin', label: 'Admin' },
   { value: 'member', label: 'Member' },
 ];
+
+function domainMismatch(email: string) {
+  const at = email.lastIndexOf('@');
+  if (at === -1) return false;
+  return email.slice(at + 1).toLowerCase() !== ORG_DOMAIN;
+}
 
 function InviteModal({
   open,
@@ -394,6 +487,7 @@ function InviteModal({
   };
 
   const canSend = invitees.length > 0 || draft.trim().length > 0;
+  const draftMismatch = draft.trim().length > 0 && domainMismatch(draft.trim());
 
   return (
     <Modal.Root
@@ -405,54 +499,71 @@ function InviteModal({
     >
       <Modal.Content className='max-w-[480px]'>
         <Modal.Header
-          title='Invite people'
+          title='Invite members'
           description='Add email addresses and pick a role for each person.'
         />
         <Modal.Body className='flex flex-col gap-4'>
-          <Input.Root>
-            <Input.Wrapper>
-              <Input.Input
-                ref={inputRef}
-                placeholder='name@company.com'
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-            </Input.Wrapper>
-          </Input.Root>
+          <div className='flex flex-col gap-1'>
+            <Input.Root>
+              <Input.Wrapper>
+                <Input.Input
+                  ref={inputRef}
+                  placeholder='name@company.com'
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+              </Input.Wrapper>
+            </Input.Root>
+            {draftMismatch && (
+              <span className='flex items-start gap-1 text-paragraph-xs text-warning-base'>
+                <RiAlertLine className='mt-px size-3.5 shrink-0' />
+                This address doesn&apos;t match {ORG_DOMAIN} — double check
+                before sending.
+              </span>
+            )}
+          </div>
 
           {invitees.length > 0 && (
             <ul className='flex flex-col gap-2'>
               {invitees.map((invitee) => (
-                <li key={invitee.id} className='flex items-center gap-2'>
-                  <span className='min-w-0 flex-1 truncate text-paragraph-sm text-text-strong-950'>
-                    {invitee.email}
-                  </span>
-                  <Select.Root
-                    size='xsmall'
-                    variant='compact'
-                    value={invitee.role}
-                    onValueChange={(v) => setRole(invitee.id, v as MemberRole)}
-                  >
-                    <Select.Trigger className='w-[110px]'>
-                      <Select.Value />
-                    </Select.Trigger>
-                    <Select.Content>
-                      {ROLE_OPTIONS.map((option) => (
-                        <Select.Item key={option.value} value={option.value}>
-                          {option.label}
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Root>
-                  <CompactButton.Root
-                    variant='ghost'
-                    size='large'
-                    aria-label={`Remove ${invitee.email}`}
-                    onClick={() => removeInvitee(invitee.id)}
-                  >
-                    <CompactButton.Icon as={RiCloseLine} />
-                  </CompactButton.Root>
+                <li key={invitee.id} className='flex flex-col gap-1'>
+                  <div className='flex items-center gap-2'>
+                    <span className='min-w-0 flex-1 truncate text-paragraph-sm text-text-strong-950'>
+                      {invitee.email}
+                    </span>
+                    <Select.Root
+                      size='xsmall'
+                      variant='compact'
+                      value={invitee.role}
+                      onValueChange={(v) => setRole(invitee.id, v as MemberRole)}
+                    >
+                      <Select.Trigger className='w-[110px]'>
+                        <Select.Value />
+                      </Select.Trigger>
+                      <Select.Content>
+                        {ROLE_OPTIONS.map((option) => (
+                          <Select.Item key={option.value} value={option.value}>
+                            {option.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Root>
+                    <CompactButton.Root
+                      variant='ghost'
+                      size='large'
+                      aria-label={`Remove ${invitee.email}`}
+                      onClick={() => removeInvitee(invitee.id)}
+                    >
+                      <CompactButton.Icon as={RiCloseLine} />
+                    </CompactButton.Root>
+                  </div>
+                  {domainMismatch(invitee.email) && (
+                    <span className='flex items-start gap-1 pl-0.5 text-paragraph-xs text-warning-base'>
+                      <RiAlertLine className='mt-px size-3.5 shrink-0' />
+                      This address doesn&apos;t match {ORG_DOMAIN}.
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -469,6 +580,11 @@ function InviteModal({
             <RiAddLine className='size-4' />
             Add another person
           </button>
+
+          <p className='text-paragraph-xs text-text-soft-400'>
+            They&apos;ll get an email invite to join {ORG_NAME}. Invite links
+            expire after 7 days.
+          </p>
         </Modal.Body>
         <Modal.Footer>
           <Modal.Close asChild>

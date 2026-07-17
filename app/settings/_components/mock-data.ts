@@ -234,36 +234,48 @@ export const DEFAULT_TEMPLATES: AnalysisTemplate[] = [
 /* Notifications                                                       */
 /* ------------------------------------------------------------------ */
 
+export type NotificationGroup = 'activity' | 'mentions';
+
 export type NotificationSetting = {
   id: string;
+  group: NotificationGroup;
   label: string;
   description: string;
   defaultOn: boolean;
 };
 
+export const NOTIFICATION_GROUP_LABEL: Record<NotificationGroup, string> = {
+  activity: 'Activity',
+  mentions: 'Mentions',
+};
+
 export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
   {
     id: 'analysis-completed',
+    group: 'activity',
     label: 'Analysis Completed',
-    description: 'When an analysis you started finishes running.',
+    description: 'Notify me when a reviewer finishes an analysis.',
     defaultOn: true,
   },
   {
     id: 'in-a-comment',
+    group: 'mentions',
     label: 'In a Comment',
-    description: 'When someone mentions you in a comment.',
+    description: 'Someone @mentions you on a tender or contract.',
     defaultOn: true,
   },
   {
     id: 'in-a-tender-note',
+    group: 'mentions',
     label: 'In a Tender Note',
-    description: 'When someone mentions you in a tender note.',
+    description: 'Someone @mentions you in a shared note.',
     defaultOn: false,
   },
   {
     id: 'in-an-analysis',
+    group: 'mentions',
     label: 'In an Analysis',
-    description: 'When someone mentions you inside an analysis.',
+    description: 'Someone @mentions you in an AI analysis thread.',
     defaultOn: true,
   },
 ];

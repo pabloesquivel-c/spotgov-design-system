@@ -6,9 +6,11 @@ import {
   RiArrowDownSLine,
   RiDraggable,
   RiFileTextLine,
+  RiInformationLine,
   RiSparkling2Line,
 } from '@remixicon/react';
 
+import * as Alert from '@/components/ui/alert';
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
@@ -79,7 +81,7 @@ export function AnalysisTemplatesSection() {
       <SettingsCard
         icon={RiFileTextLine}
         title='Analysis Templates'
-        description='Reusable question sets applied when analysing a tender.'
+        description="These categories control what SpotGov's AI looks for in every tender analysis across your organization."
         headerAction={
           <div className='flex items-center gap-2'>
             <Button.Root
@@ -178,6 +180,17 @@ export function AnalysisTemplatesSection() {
             );
           })}
         </ul>
+
+        <Alert.Root
+          variant='lighter'
+          status='information'
+          size='xsmall'
+          className='mt-3'
+        >
+          <Alert.Icon as={RiInformationLine} />
+          Reordering or turning a category off updates every tender&apos;s
+          analysis org-wide, including tenders already analyzed.
+        </Alert.Root>
 
         <DemoNote className='mt-3'>
           Drag the handle to reorder templates. Reordering is stored in local
