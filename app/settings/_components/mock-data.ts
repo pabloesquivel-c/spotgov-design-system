@@ -193,12 +193,9 @@ export const DEFAULT_INTEGRATIONS: Integration[] = [
 /* Analysis templates                                                  */
 /* ------------------------------------------------------------------ */
 
-export type TemplateLanguage = 'EN' | 'PT';
-
 export type AnalysisTemplate = {
   id: string;
   name: string;
-  language: TemplateLanguage;
   active: boolean;
   question: string;
 };
@@ -207,7 +204,6 @@ export const DEFAULT_TEMPLATES: AnalysisTemplate[] = [
   {
     id: 'standard-review',
     name: 'Standard Review',
-    language: 'EN',
     active: true,
     question:
       'Summarise the scope, eligibility requirements, and submission deadline. Flag any mandatory certifications the bidder must hold.',
@@ -215,18 +211,16 @@ export const DEFAULT_TEMPLATES: AnalysisTemplate[] = [
   {
     id: 'compliance-check',
     name: 'Compliance Check',
-    language: 'EN',
     active: true,
     question:
       'List every compliance clause in the tender and note which supporting documents are required to satisfy each one.',
   },
   {
-    id: 'revisao-padrao',
-    name: 'Revisão Padrão',
-    language: 'PT',
+    id: 'deadline-scope',
+    name: 'Deadline & Scope',
     active: false,
     question:
-      'Resuma o objeto do concurso, os critérios de adjudicação e o prazo de entrega das propostas. Assinale requisitos obrigatórios.',
+      'Identify the submission deadline, scope of work, and any milestone dates the bidder must plan around.',
   },
 ];
 

@@ -67,14 +67,17 @@ export default function SettingsPreviewPage() {
               </div>
 
               <div className='flex flex-col gap-1.5'>
-                <div className='w-[240px]'>
+                <span className='text-subheading-2xs uppercase text-text-soft-400'>
+                  Preview as
+                </span>
+                <div className='w-[200px]'>
                   <SegmentedControl.Root
                     value={role}
                     onValueChange={(v) => handleRoleChange(v as ViewerRole)}
                   >
                     <SegmentedControl.List>
                       <SegmentedControl.Trigger value='owner-admin'>
-                        Owner/Admin
+                        Admin
                       </SegmentedControl.Trigger>
                       <SegmentedControl.Trigger value='member'>
                         Member
