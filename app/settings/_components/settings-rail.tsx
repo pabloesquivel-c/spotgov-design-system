@@ -12,6 +12,7 @@
 // designed variants of the Shell's core interaction as one real control.
 
 import {
+  RiBankCardLine,
   RiBriefcaseLine,
   RiCheckLine,
   RiEqualizer2Line,
@@ -20,6 +21,7 @@ import {
   RiNotification3Line,
   RiPlugLine,
   RiSettings3Line,
+  RiShieldLine,
   RiTeamLine,
   RiUserLine,
   type RemixiconComponentType,
@@ -32,11 +34,13 @@ export type SectionId =
   | 'profile'
   | 'preferences'
   | 'notifications'
+  | 'security'
   | 'general'
   | 'members'
   | 'business-profile'
   | 'integrations'
-  | 'analysis-templates';
+  | 'analysis-templates'
+  | 'billing';
 
 type SectionDef = { id: SectionId; label: string; icon: RemixiconComponentType };
 
@@ -44,6 +48,7 @@ export const PERSONAL_SECTIONS: SectionDef[] = [
   { id: 'profile', label: 'Profile', icon: RiUserLine },
   { id: 'preferences', label: 'Preferences', icon: RiEqualizer2Line },
   { id: 'notifications', label: 'Notifications', icon: RiNotification3Line },
+  { id: 'security', label: 'Security', icon: RiShieldLine },
 ];
 
 export const ORG_SECTIONS: SectionDef[] = [
@@ -52,9 +57,14 @@ export const ORG_SECTIONS: SectionDef[] = [
   { id: 'business-profile', label: 'Business Profile', icon: RiBriefcaseLine },
   { id: 'integrations', label: 'Integrations', icon: RiPlugLine },
   { id: 'analysis-templates', label: 'Analysis Templates', icon: RiFileTextLine },
+  { id: 'billing', label: 'Billing', icon: RiBankCardLine },
 ];
 
 export const ORG_SECTION_IDS = ORG_SECTIONS.map((s) => s.id);
+
+// Members stays reachable (read-only) even when the rest of the
+// Organization group is locked behind admin access.
+const ORG_SECTIONS_ALWAYS_VISIBLE: SectionId[] = ['members'];
 
 export type SettingsRailProps = {
   activeSection: SectionId;
@@ -109,7 +119,7 @@ export function SettingsRail({
                 <span>Organization</span>
               </div>
               <span className='text-paragraph-xs text-text-sub-600'>
-                Visible to admins only
+                Other settings are visible to admins only
               </span>
               {requested ? (
                 <span className='flex items-center gap-1 text-paragraph-xs font-medium text-success-base'>
@@ -133,14 +143,14 @@ export function SettingsRail({
 
         {ORG_SECTIONS.map((section) => {
           const Icon = section.icon;
+          const locked =
+            orgLocked && !ORG_SECTIONS_ALWAYS_VISIBLE.includes(section.id);
           return (
             <TabMenuVertical.Trigger
               key={section.id}
               value={section.id}
-              disabled={orgLocked}
-              className={cn(
-                orgLocked && 'cursor-not-allowed opacity-40',
-              )}
+              disabled={locked}
+              className={cn(locked && 'cursor-not-allowed opacity-40')}
             >
               <TabMenuVertical.Icon as={Icon} />
               <span>{section.label}</span>

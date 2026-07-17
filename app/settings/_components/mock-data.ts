@@ -8,6 +8,20 @@
 import { mockSessionSingleOrg } from '@/components/blocks/sidebar/skeleton/skeleton-mock-session';
 
 /* ------------------------------------------------------------------ */
+/* Organization identity                                               */
+/* ------------------------------------------------------------------ */
+
+export const ORG_LANGUAGES = [
+  { value: 'en', label: 'English' },
+  { value: 'pt', label: 'Português' },
+];
+
+export const DEFAULT_ORG = {
+  name: 'Acme Corporation',
+  language: 'en',
+};
+
+/* ------------------------------------------------------------------ */
 /* Members                                                             */
 /* ------------------------------------------------------------------ */
 
@@ -23,6 +37,8 @@ export type Member = {
   role: MemberRole;
   status: MemberStatus;
   color: AvatarColor;
+  /** Pending invites only — days until the invite link expires. */
+  expiresInDays?: number;
 };
 
 const owner = mockSessionSingleOrg.user;
@@ -85,6 +101,7 @@ export const DEFAULT_MEMBERS: Member[] = [
     role: 'member',
     status: 'pending',
     color: 'gray',
+    expiresInDays: 5,
   },
 ];
 
@@ -148,6 +165,7 @@ export const LARGE_MEMBERS: Member[] = [
       role: 'member',
       status: pending ? 'pending' : 'active',
       color: AVATAR_COLORS[i % AVATAR_COLORS.length],
+      expiresInDays: pending ? [7, 3, 1, 6][i % 4] : undefined,
     };
   }),
   DEFAULT_MEMBERS[2],
@@ -228,19 +246,22 @@ export const DEFAULT_TEMPLATES: AnalysisTemplate[] = [
 /* Notifications                                                       */
 /* ------------------------------------------------------------------ */
 
-export type NotificationGroup = 'activity' | 'mentions';
+export type NotificationGroup = 'activity' | 'mentions' | 'tenders';
+
+export type NotificationChannels = { inApp: boolean; email: boolean };
 
 export type NotificationSetting = {
   id: string;
   group: NotificationGroup;
   label: string;
   description: string;
-  defaultOn: boolean;
+  defaultChannels: NotificationChannels;
 };
 
 export const NOTIFICATION_GROUP_LABEL: Record<NotificationGroup, string> = {
   activity: 'Activity',
   mentions: 'Mentions',
+  tenders: 'Tenders',
 };
 
 export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
@@ -249,27 +270,120 @@ export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
     group: 'activity',
     label: 'Analysis Completed',
     description: 'Notify me when a reviewer finishes an analysis.',
-    defaultOn: true,
+    defaultChannels: { inApp: true, email: true },
   },
   {
     id: 'in-a-comment',
     group: 'mentions',
     label: 'In a Comment',
     description: 'Someone @mentions you on a tender or contract.',
-    defaultOn: true,
+    defaultChannels: { inApp: true, email: true },
   },
   {
     id: 'in-a-tender-note',
     group: 'mentions',
     label: 'In a Tender Note',
     description: 'Someone @mentions you in a shared note.',
-    defaultOn: false,
+    defaultChannels: { inApp: false, email: false },
   },
   {
     id: 'in-an-analysis',
     group: 'mentions',
     label: 'In an Analysis',
     description: 'Someone @mentions you in an AI analysis thread.',
-    defaultOn: true,
+    defaultChannels: { inApp: true, email: false },
+  },
+  {
+    id: 'deadline-approaching',
+    group: 'tenders',
+    label: 'Deadline Approaching',
+    description: "A tracked tender's submission deadline is coming up.",
+    defaultChannels: { inApp: true, email: true },
+  },
+  {
+    id: 'new-matching-tender',
+    group: 'tenders',
+    label: 'New Matching Tender',
+    description: 'A new tender matches your saved search criteria.',
+    defaultChannels: { inApp: true, email: false },
+  },
+  {
+    id: 'award-published',
+    group: 'tenders',
+    label: 'Award Published',
+    description: 'The award decision for a tracked tender is published.',
+    defaultChannels: { inApp: true, email: true },
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Billing                                                             */
+/* ------------------------------------------------------------------ */
+
+export type BillingPlan = {
+  name: string;
+  price: string;
+  seatsUsed: number;
+  seatsTotal: number;
+};
+
+export const DEFAULT_BILLING_PLAN: BillingPlan = {
+  name: 'Team',
+  price: '$49 / seat / month',
+  seatsUsed: 6,
+  seatsTotal: 8,
+};
+
+export type PaymentMethod = {
+  brand: string;
+  last4: string;
+  expiry: string;
+};
+
+export const DEFAULT_PAYMENT_METHOD: PaymentMethod = {
+  brand: 'Visa',
+  last4: '4242',
+  expiry: '08/27',
+};
+
+export type Invoice = {
+  id: string;
+  date: string;
+  amount: string;
+  status: 'paid' | 'due';
+};
+
+export const MOCK_INVOICES: Invoice[] = [
+  { id: 'INV-2026-006', date: 'Jun 1, 2026', amount: '$294.00', status: 'paid' },
+  { id: 'INV-2026-005', date: 'May 1, 2026', amount: '$294.00', status: 'paid' },
+  { id: 'INV-2026-004', date: 'Apr 1, 2026', amount: '$245.00', status: 'paid' },
+];
+
+/* ------------------------------------------------------------------ */
+/* Security                                                            */
+/* ------------------------------------------------------------------ */
+
+export type Session = {
+  id: string;
+  device: string;
+  location: string;
+  lastActive: string;
+  current: boolean;
+};
+
+export const DEFAULT_SESSIONS: Session[] = [
+  {
+    id: 'current',
+    device: 'Chrome on macOS',
+    location: 'São Paulo, Brazil',
+    lastActive: 'Active now',
+    current: true,
+  },
+  {
+    id: 'mobile',
+    device: 'Safari on iPhone',
+    location: 'São Paulo, Brazil',
+    lastActive: '2 hours ago',
+    current: false,
   },
 ];
