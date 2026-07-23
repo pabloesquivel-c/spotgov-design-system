@@ -1,6 +1,6 @@
 # Component patterns
 
-Agent-facing pattern catalog for SpotGov product UI. Use with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md), and [`component-conventions.md`](./component-conventions.md) (imports and file layout).
+Agent-facing pattern catalog for SpotGov product UI. Use with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md), [`screen-composition.md`](./screen-composition.md) for full-screen work, and [`component-conventions.md`](./component-conventions.md) (imports and file layout).
 
 **Primitives:** `@/components/ui/*` · **Composed patterns:** `components/blocks/*` · **Catalog:** `/storybook`
 
@@ -34,7 +34,9 @@ For each pattern document:
 | Choose from many items | Searchable list / command menu | Giant dropdown |
 | Explain missing data | Empty state | Blank page |
 | Prevent dangerous action | Confirmation dialog | Disabled button with no reason |
-| Compare records | Table | Card grid |
+| Compare records | Page-level data index or embedded table block | Card grid |
+| Prioritize active work | Operational dashboard | Generic metric-card wall |
+| Plan around deadlines | Calendar / pipeline workbench | Decorative calendar |
 | Guide first setup | Setup flow | Tooltip tour |
 | Filter a large dataset | Filter panel + table | Inline filter wall on page load |
 | Quick contextual edit (2–4 fields) | Drawer | Full-page form |
@@ -72,13 +74,13 @@ For each pattern document:
 7. Footer — **Discard** or **Cancel** + **Apply Changes**
 
 **Layout rules**
-- Page: `max-w-[1440px]`, `gap-8`, `px-6 py-8` — see `design-system.md` §4.5
+- Page: `max-w-[1440px]`, `gap-8`, `px-8 py-8` — see `design-system.md` §4.5
 - Two-column body: nav `lg:w-[224px]`, main `flex-1 min-w-0 gap-6`
 - Card: `max-w-[440px]`, `rounded-20`, `p-5`, `gap-5`, `shadow-regular-md`
 - Labels specific; nest at most **two levels** (page → card → control row)
 
 **Responsive / desktop adaptability**
-- Nav stacks above content below `lg`; single column on `< md`
+- Nav stacks above content whenever the combined rail and form minimums do not fit; single column on `< md`
 - Card stays `max-w-[440px]` — do not stretch settings forms full bleed
 
 **States**
@@ -236,12 +238,18 @@ For each pattern document:
 - Primary task is editing one record's fields → detail form, not grid
 
 **Anatomy**
-1. `TableBlock` wrapper (`rounded-20`, ring, `shadow-regular-xs`)
-2. Optional `TableBlockTabs`
-3. `TableBlockToolbar` — search, Filter, Sort by
-4. `BlockDataTable` — header row + dense rows
-5. `TableBlockFooter` — pagination
-6. Optional row selection column + bulk action bar (only when selection exists)
+1. Page or section title and actions
+2. Optional tabs or segmented mode switch
+3. Search, Filter, and Sort by controls
+4. Semantic table with dense rows
+5. Pagination
+6. Optional row selection column + bulk action bar, only when selection exists
+
+**Enclosure**
+- Page-dominant dataset: compose the regions flat on the page canvas.
+- Embedded dataset: use `TableBlock`, optional `TableBlockTabs`,
+  `TableBlockToolbar`, `BlockDataTable`, and `TableBlockFooter`.
+- Fewer than five static rows: use `Table.Root` only.
 
 **Layout rules**
 - Rows dense: default cell `h-16 px-3` (`components/ui/table.tsx`)
@@ -250,8 +258,9 @@ For each pattern document:
 - `overflow-x-auto` on table wrapper — horizontal scroll OK for data, not for page shell
 
 **Responsive / desktop adaptability**
-- Desktop-first; table scrolls horizontally before crushing column readability
-- Below `md`: avoid side-by-side data widgets; toolbar wraps
+- Desktop-first; table scrolls inside its own region before crushing column readability
+- Toolbar and pagination wrap at narrow desktop
+- Page shell never gains horizontal overflow
 
 **States**
 - Default, loading skeleton (preserve column layout), empty, error, selected rows, sorted column, disabled row actions
@@ -275,10 +284,108 @@ For each pattern document:
 
 **Anti-patterns**
 - Card grid for comparable records
+- Rounded `TableBlock` around a dataset that already dominates the page
 - Bulk action bar always visible with zero selection
 - Loading spinner that collapses table layout
 - Generous row padding that wastes tender/procurement viewport
 - Decorative icons per row without meaning
+
+---
+
+### Operational dashboard
+
+**Purpose** — Help bid teams prioritize active opportunities, reviews, and deadlines without turning the page into generic analytics.
+
+**When to use**
+- Several independent operational queues need simultaneous visibility
+- A schedule or deadline region materially affects prioritization
+
+**When not to use**
+- One dataset dominates the task → page-level data index
+- Metrics do not lead to a decision or action
+
+**Anatomy**
+1. Page title, context, and one primary action
+2. Optional mode or date controls
+3. Three-track baseline grid
+4. Focused widgets with one job each
+5. Optional tall schedule or priority region
+
+**Layout rules**
+- `32px` desktop canvas inset and `gap-6` between widgets
+- Dense operational widgets may use `p-4`; standard summaries use `p-6`
+- No nested cards; use flat rows inside widgets
+
+**Responsive / desktop adaptability**
+- Three tracks at the 1440px baseline
+- Two tracks at narrow desktop; tall schedule spans both or moves below
+- At 1728px, cap the grid instead of stretching it
+
+**States**
+- Default, loading, empty, recoverable error, disabled, and permission-limited
+- Preserve widget dimensions while loading
+
+**Accessibility**
+- Widget titles label regions
+- Status is text plus icon or shape
+- Truncated tender names expose their full value on hover, focus, and to assistive technology
+
+**Good examples in repo**
+- Playground reference: `components/playground/screen-references/bid-operations-dashboard.tsx`
+- Shell: `components/blocks/sidebar/app-sidebar.tsx`
+
+**Anti-patterns**
+- Decorative metrics
+- Generic card wall
+- Chart without a procurement decision
+
+---
+
+### Calendar / pipeline workbench
+
+**Purpose** — Let users understand deadline placement, conflicts, reviews, and submission work over time.
+
+**When to use**
+- Time placement is central to the task
+- Users compare deadlines or scheduled work across days
+
+**When not to use**
+- Users only need a sortable deadline list → data index
+- A date picker alone solves the task
+
+**Anatomy**
+1. Range and filter toolbar
+2. View tabs
+3. Optional deadline summary row
+4. Time gutter and labelled day columns
+5. Event blocks with title, time, and status
+
+**Layout rules**
+- `32px` desktop canvas inset and `gap-6` between major regions
+- Timeline owns horizontal overflow
+- Production height scrolls intentionally; never clip to a screenshot height
+
+**Responsive / desktop adaptability**
+- Four summary items at the baseline, two at narrow desktop
+- Keep a readable timeline minimum width and scroll internally
+- Never scale product type or controls
+
+**States**
+- Selected view, conflict, cancelled, disabled time, loading, empty, and error
+
+**Accessibility**
+- Events expose day, time, title, and state as text
+- Icon-only navigation has accessible names
+- Color is never the only event category or conflict cue
+
+**Good examples in repo**
+- Playground reference: `components/playground/screen-references/pipeline-workbench.tsx`
+- Date selection: `components/ui/datepicker.tsx`
+
+**Anti-patterns**
+- Color-only events
+- Non-semantic unlabeled time grid
+- Page-level horizontal scrolling
 
 ---
 
@@ -447,5 +554,5 @@ For each pattern document:
 
 1. Copy the **pattern template** section above into a PR or new subsection here.
 2. Link canonical block files — do not document patterns with no repo anchor unless marked *planned*.
-3. Cross-check `design-system.md` §7 and Storybook `Blocks/*` before inventing layout.
+3. Cross-check `design-system.md` §7, `screen-composition.md`, and Storybook `Blocks/*` before inventing layout.
 4. Update the **pattern selection guide** table if the pattern changes common routing decisions.

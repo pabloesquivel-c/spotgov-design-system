@@ -12,9 +12,10 @@
 
 1. **Import from code, not from generated markup.** Map Figma components to repo imports in [`component-manifest.md`](./component-manifest.md).
 2. **Prefer canonical blocks** for composed patterns (`EmptyState`, `DestructiveConfirmModal`, `ProductAnnouncementBanner`, `FilterPanelShell`, `ContractsTable`).
-3. **Ignore** AlignUI marketing/custom/crypto/AI-template components unless explicitly requested.
-4. **Icons:** `@remixicon/react` Line only — do not use AlignUI Figma custom icon components or `*Fill` icons.
-5. **Variants:** Figma variant axes should match code props (e.g. Button `variant` + `mode` + `size`). Token *values* may differ by design (SpotGov curation).
+3. **Read [`screen-composition.md`](./screen-composition.md)** before translating a full page, dashboard, data index, workbench, or settings screen.
+4. **Ignore** AlignUI marketing/custom/crypto/AI-template components unless explicitly requested.
+5. **Icons:** `@remixicon/react` Line only — do not use AlignUI Figma custom icon components or `*Fill` icons.
+6. **Variants:** Figma variant axes should match code props (e.g. Button `variant` + `mode` + `size`). Token *values* may differ by design (SpotGov curation).
 
 ---
 

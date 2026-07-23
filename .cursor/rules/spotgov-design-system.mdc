@@ -15,6 +15,8 @@ alwaysApply: true
 
 **Which-one-when:** [`docs/design-system.md`](../../docs/design-system.md) §8 · [`docs/component-patterns.md`](../../docs/component-patterns.md)
 
+**Full-screen composition:** Read [`docs/screen-composition.md`](../../docs/screen-composition.md) before creating or materially redesigning a page, dashboard, data index, workbench, or settings screen.
+
 ## Non-negotiables (summary)
 
 - Semantic tokens only — `bg-bg-*`, `text-text-*`, `primary-base`; no raw hex
