@@ -7,7 +7,7 @@ import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import { DEFAULT_BILLING_PLAN, DEFAULT_PAYMENT_METHOD, MOCK_INVOICES } from './mock-data';
 
@@ -15,11 +15,34 @@ export function BillingSection() {
   const seatsRemaining =
     DEFAULT_BILLING_PLAN.seatsTotal - DEFAULT_BILLING_PLAN.seatsUsed;
 
+  // TODO(connect): open the plan comparison / upgrade flow (not designed yet).
+  const handleChangePlan = () =>
+    notification({
+      status: 'information',
+      title: 'Change plan',
+      description: 'Plan comparison and upgrade flow isn’t designed yet.',
+    });
+
+  // TODO(connect): open the payment method entry flow (Stripe Elements or equivalent).
+  const handleUpdatePaymentMethod = () =>
+    notification({
+      status: 'information',
+      title: 'Update payment method',
+      description: 'Card entry isn’t wired up in this prototype.',
+    });
+
+  // TODO(connect): GET the invoice PDF from the billing provider and download it.
+  const handleDownloadInvoice = (invoiceId: string) =>
+    notification({
+      status: 'information',
+      title: `Downloading ${invoiceId}`,
+      description: 'Invoice PDFs are mocked in this preview.',
+    });
+
   return (
-    <SettingsCard
-      icon={RiBankCardLine}
+    <SettingsSection
       title='Billing'
-      description='Manage your plan, payment method, and invoice history.'
+      description='Plan, payment method, and invoice history.'
     >
       <div className='flex flex-col gap-6'>
         <div className='flex flex-col gap-3'>
@@ -48,14 +71,7 @@ export function BillingSection() {
             mode='stroke'
             size='small'
             className='w-fit'
-            onClick={() =>
-              notification({
-                status: 'information',
-                title: 'Change plan',
-                description:
-                  'Plan comparison and upgrade flow isn’t designed yet.',
-              })
-            }
+            onClick={handleChangePlan}
           >
             Change plan
           </Button.Root>
@@ -85,13 +101,7 @@ export function BillingSection() {
               variant='neutral'
               mode='stroke'
               size='xsmall'
-              onClick={() =>
-                notification({
-                  status: 'information',
-                  title: 'Update payment method',
-                  description: 'Card entry isn’t wired up in this prototype.',
-                })
-              }
+              onClick={handleUpdatePaymentMethod}
             >
               Update
             </Button.Root>
@@ -132,13 +142,7 @@ export function BillingSection() {
                   variant='neutral'
                   mode='ghost'
                   size='xsmall'
-                  onClick={() =>
-                    notification({
-                      status: 'information',
-                      title: `Downloading ${invoice.id}`,
-                      description: 'Invoice PDFs are mocked in this preview.',
-                    })
-                  }
+                  onClick={() => handleDownloadInvoice(invoice.id)}
                 >
                   <Button.Icon as={RiDownloadLine} />
                 </Button.Root>
@@ -153,6 +157,6 @@ export function BillingSection() {
           downloaded.
         </DemoNote>
       </div>
-    </SettingsCard>
+    </SettingsSection>
   );
 }

@@ -18,7 +18,7 @@ import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import { DEFAULT_SESSIONS, type Session } from './mock-data';
 
@@ -30,6 +30,7 @@ export function SecuritySection() {
   const [sessions, setSessions] = React.useState<Session[]>(DEFAULT_SESSIONS);
   const [signOutAllOpen, setSignOutAllOpen] = React.useState(false);
 
+  // TODO(connect): call the revoke-session mutation for this device.
   const signOutSession = (id: string) => {
     const session = sessions.find((s) => s.id === id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
@@ -41,10 +42,40 @@ export function SecuritySection() {
     }
   };
 
+  // TODO(connect): verify the TOTP code against the server-generated secret,
+  // then enable 2FA on the account.
+  const handleTwoFactorEnabled = () => {
+    setTwoFactorEnabled(true);
+    setSetupOpen(false);
+    notification({
+      status: 'success',
+      title: 'Two-factor authentication enabled',
+    });
+  };
+
+  // TODO(connect): call the disable-2FA mutation.
+  const handleDisableTwoFactor = () => {
+    setTwoFactorEnabled(false);
+    setDisableOpen(false);
+    notification({
+      status: 'information',
+      title: 'Two-factor authentication disabled',
+    });
+  };
+
+  // TODO(connect): call the revoke-all-other-sessions mutation.
+  const handleSignOutAllOtherSessions = () => {
+    setSessions((prev) => prev.filter((s) => s.current));
+    setSignOutAllOpen(false);
+    notification({
+      status: 'information',
+      title: 'Signed out of all other devices',
+    });
+  };
+
   return (
     <>
-      <SettingsCard
-        icon={RiShieldLine}
+      <SettingsSection
         title='Security'
         description='Two-factor authentication and active sessions.'
       >
@@ -150,20 +181,13 @@ export function SecuritySection() {
             )}
           </div>
         </div>
-      </SettingsCard>
+      </SettingsSection>
 
       <TwoFactorSetupModal
         key={setupOpen ? 'open' : 'closed'}
         open={setupOpen}
         onOpenChange={setSetupOpen}
-        onEnabled={() => {
-          setTwoFactorEnabled(true);
-          setSetupOpen(false);
-          notification({
-            status: 'success',
-            title: 'Two-factor authentication enabled',
-          });
-        }}
+        onEnabled={handleTwoFactorEnabled}
       />
 
       <DestructiveConfirmModal
@@ -172,14 +196,7 @@ export function SecuritySection() {
         title='Disable two-factor authentication?'
         description='Your account will only require a password to sign in.'
         confirmLabel='Disable'
-        onConfirm={() => {
-          setTwoFactorEnabled(false);
-          setDisableOpen(false);
-          notification({
-            status: 'information',
-            title: 'Two-factor authentication disabled',
-          });
-        }}
+        onConfirm={handleDisableTwoFactor}
       />
 
       <DestructiveConfirmModal
@@ -188,14 +205,7 @@ export function SecuritySection() {
         title='Sign out of all other devices?'
         description="Every session except this one will be signed out immediately."
         confirmLabel='Sign out all'
-        onConfirm={() => {
-          setSessions((prev) => prev.filter((s) => s.current));
-          setSignOutAllOpen(false);
-          notification({
-            status: 'information',
-            title: 'Signed out of all other devices',
-          });
-        }}
+        onConfirm={handleSignOutAllOtherSessions}
       />
     </>
   );

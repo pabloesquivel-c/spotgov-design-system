@@ -1,127 +1,195 @@
 'use client';
 
 import * as React from 'react';
-import { RiNotification3Line } from '@remixicon/react';
 
-import * as Switch from '@/components/ui/switch';
 import * as Divider from '@/components/ui/divider';
+import * as Label from '@/components/ui/label';
+import * as LinkButton from '@/components/ui/link-button';
+import * as Select from '@/components/ui/select';
+import * as Switch from '@/components/ui/switch';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import {
-  NOTIFICATION_GROUP_LABEL,
-  NOTIFICATION_SETTINGS,
-  type NotificationChannels,
-  type NotificationGroup,
+  DEFAULT_EMAIL_NOTIFICATION_PREFERENCES,
+  type EmailNotificationPreferences,
 } from './mock-data';
 
-const GROUP_ORDER: NotificationGroup[] = ['activity', 'mentions', 'tenders'];
+const DEADLINE_REMINDER_VALUES = {
+  off: null,
+  '1': 1,
+  '3': 3,
+  '7': 7,
+} as const;
 
-function initialState(): Record<string, NotificationChannels> {
-  return Object.fromEntries(
-    NOTIFICATION_SETTINGS.map((s) => [s.id, { ...s.defaultChannels }]),
+const DEADLINE_REMINDER_OPTIONS = [
+  { value: 'off', label: 'Off' },
+  { value: '1', label: '1 day before' },
+  { value: '3', label: '3 days before' },
+  { value: '7', label: '7 days before' },
+] as const;
+
+function preferencesEqual(
+  a: EmailNotificationPreferences,
+  b: EmailNotificationPreferences,
+) {
+  return (
+    a.dailyTenderDigest === b.dailyTenderDigest &&
+    a.deadlineReminderDays === b.deadlineReminderDays &&
+    a.workUpdates === b.workUpdates
   );
-}
-
-function channelsEqual(a: NotificationChannels, b: NotificationChannels) {
-  return a.inApp === b.inApp && a.email === b.email;
 }
 
 export function NotificationsSection({
   onDirtyChange,
+  onNavigateToProfile,
 }: {
   onDirtyChange?: (dirty: boolean) => void;
+  onNavigateToProfile?: () => void;
 }) {
-  const [state, setState] =
-    React.useState<Record<string, NotificationChannels>>(initialState);
-  const [saved, setSaved] = React.useState(state);
+  const [preferences, setPreferences] =
+    React.useState<EmailNotificationPreferences>(
+      DEFAULT_EMAIL_NOTIFICATION_PREFERENCES,
+    );
+  const [savedPreferences, setSavedPreferences] =
+    React.useState<EmailNotificationPreferences>(preferences);
 
-  const dirty = Object.keys(state).some(
-    (id) => !channelsEqual(state[id], saved[id]),
-  );
+  const dirty = !preferencesEqual(preferences, savedPreferences);
 
   React.useEffect(() => {
     onDirtyChange?.(dirty);
   }, [dirty, onDirtyChange]);
 
-  const setChannel = (id: string, channel: keyof NotificationChannels, value: boolean) => {
-    setState((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], [channel]: value },
-    }));
+  const handleDiscard = () => {
+    setPreferences(savedPreferences);
+  };
+
+  // TODO(connect): PATCH the user's notification preferences.
+  const handleApply = () => {
+    setSavedPreferences(preferences);
   };
 
   return (
-    <SettingsCard
-      icon={RiNotification3Line}
-      title='Notification Preferences'
-      description='Choose what notifications you want to receive, and where.'
+    <SettingsSection
+      title='Email notifications'
       dirty={dirty}
-      onDiscard={() => setState(saved)}
-      onApply={() => setSaved(state)}
+      onDiscard={handleDiscard}
+      onApply={handleApply}
     >
-      <div className='flex flex-col gap-4'>
-        <div className='flex items-center justify-end gap-6'>
-          <span className='w-11 shrink-0 text-center text-subheading-2xs uppercase text-text-soft-400'>
-            In-app
-          </span>
-          <span className='w-11 shrink-0 text-center text-subheading-2xs uppercase text-text-soft-400'>
-            Email
-          </span>
+      <div className='flex flex-col gap-6'>
+        <p className='text-paragraph-sm text-text-sub-600'>
+          Updates are sent to user@example.com.{' '}
+          <LinkButton.Root
+            type='button'
+            variant='primary'
+            onClick={onNavigateToProfile}
+          >
+            Profile
+          </LinkButton.Root>{' '}
+          to change the address.
+        </p>
+
+        <Divider.Root variant='line-spacing' />
+
+        <div className='flex items-start justify-between gap-4'>
+          <Label.Root
+            htmlFor='daily-tender-digest'
+            className='min-w-0 flex-1 flex-col items-start gap-0.5'
+          >
+            <span className='text-label-sm text-text-strong-950'>
+              Daily tender digest
+            </span>
+            <span className='text-paragraph-sm text-text-sub-600'>
+              One morning email for matching tenders and awards.
+            </span>
+          </Label.Root>
+          <Switch.Root
+            id='daily-tender-digest'
+            checked={preferences.dailyTenderDigest}
+            onCheckedChange={(checked) =>
+              setPreferences((previous) => ({
+                ...previous,
+                dailyTenderDigest: checked,
+              }))
+            }
+            className='mt-0.5 shrink-0'
+          />
         </div>
 
-        {GROUP_ORDER.map((group, groupIndex) => {
-          const settings = NOTIFICATION_SETTINGS.filter(
-            (s) => s.group === group,
-          );
-          return (
-            <React.Fragment key={group}>
-              {groupIndex > 0 && <Divider.Root variant='line-spacing' />}
-              <div className='flex flex-col gap-3.5'>
-                <span className='text-[12px] font-medium uppercase tracking-[0.04em] text-text-sub-600'>
-                  {NOTIFICATION_GROUP_LABEL[group]}
-                </span>
-                {settings.map((setting) => (
-                  <div
-                    key={setting.id}
-                    className='flex items-start justify-between gap-4'
-                  >
-                    <span className='flex min-w-0 flex-1 flex-col gap-0.5'>
-                      <span className='text-label-sm text-text-strong-950'>
-                        {setting.label}
-                      </span>
-                      <span className='text-paragraph-xs text-text-sub-600'>
-                        {setting.description}
-                      </span>
-                    </span>
-                    <div className='flex shrink-0 items-center gap-6'>
-                      <div className='flex w-11 shrink-0 justify-center'>
-                        <Switch.Root
-                          aria-label={`${setting.label} — in-app`}
-                          checked={state[setting.id].inApp}
-                          onCheckedChange={(checked) =>
-                            setChannel(setting.id, 'inApp', checked)
-                          }
-                          className='mt-0.5'
-                        />
-                      </div>
-                      <div className='flex w-11 shrink-0 justify-center'>
-                        <Switch.Root
-                          aria-label={`${setting.label} — email`}
-                          checked={state[setting.id].email}
-                          onCheckedChange={(checked) =>
-                            setChannel(setting.id, 'email', checked)
-                          }
-                          className='mt-0.5'
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </React.Fragment>
-          );
-        })}
+        <Divider.Root variant='line-spacing' />
+
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4'>
+          <Label.Root
+            htmlFor='deadline-reminders'
+            className='min-w-0 flex-1 flex-col items-start gap-0.5'
+          >
+            <span className='text-label-sm text-text-strong-950'>
+              Deadline reminders
+            </span>
+            <span className='text-paragraph-sm text-text-sub-600'>
+              Get an email before a tracked tender&apos;s deadline.
+            </span>
+          </Label.Root>
+          <Select.Root
+            value={
+              preferences.deadlineReminderDays === null
+                ? 'off'
+                : String(preferences.deadlineReminderDays)
+            }
+            onValueChange={(value) =>
+              setPreferences((previous) => ({
+                ...previous,
+                deadlineReminderDays:
+                  DEADLINE_REMINDER_VALUES[
+                    value as keyof typeof DEADLINE_REMINDER_VALUES
+                  ],
+              }))
+            }
+            size='small'
+          >
+            <Select.Trigger
+              id='deadline-reminders'
+              aria-label='Deadline reminder timing'
+              className='w-full sm:w-[180px]'
+            >
+              <Select.Value />
+            </Select.Trigger>
+            <Select.Content>
+              {DEADLINE_REMINDER_OPTIONS.map((option) => (
+                <Select.Item key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Item>
+              ))}
+            </Select.Content>
+          </Select.Root>
+        </div>
+
+        <Divider.Root variant='line-spacing' />
+
+        <div className='flex items-start justify-between gap-4'>
+          <Label.Root
+            htmlFor='work-updates'
+            className='min-w-0 flex-1 flex-col items-start gap-0.5'
+          >
+            <span className='text-label-sm text-text-strong-950'>
+              Work updates
+            </span>
+            <span className='text-paragraph-sm text-text-sub-600'>
+              Timely emails for @mentions and completed analyses.
+            </span>
+          </Label.Root>
+          <Switch.Root
+            id='work-updates'
+            checked={preferences.workUpdates}
+            onCheckedChange={(checked) =>
+              setPreferences((previous) => ({
+                ...previous,
+                workUpdates: checked,
+              }))
+            }
+            className='mt-0.5 shrink-0'
+          />
+        </div>
       </div>
-    </SettingsCard>
+    </SettingsSection>
   );
 }

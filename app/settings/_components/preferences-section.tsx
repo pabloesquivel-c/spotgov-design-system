@@ -1,13 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { RiEqualizer2Line } from '@remixicon/react';
 
 import * as Select from '@/components/ui/select';
 import * as Divider from '@/components/ui/divider';
 import { cn } from '@/utils/cn';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 
 type Appearance = 'light' | 'dark' | 'system';
@@ -92,17 +91,21 @@ export function PreferencesSection({
     onDirtyChange?.(dirty);
   }, [dirty, onDirtyChange]);
 
+  const handleDiscard = () => {
+    setAppearance(saved.appearance);
+    setCurrency(saved.currency);
+  };
+
+  // TODO(connect): PATCH the user's display preferences.
+  const handleApply = () => setSaved({ appearance, currency });
+
   return (
-    <SettingsCard
-      icon={RiEqualizer2Line}
+    <SettingsSection
       title='Preferences'
       description='Personal display preferences.'
       dirty={dirty}
-      onDiscard={() => {
-        setAppearance(saved.appearance);
-        setCurrency(saved.currency);
-      }}
-      onApply={() => setSaved({ appearance, currency })}
+      onDiscard={handleDiscard}
+      onApply={handleApply}
     >
       <div className='flex flex-col gap-5'>
         <div className='flex items-center justify-between gap-4'>
@@ -192,6 +195,6 @@ export function PreferencesSection({
           </DemoNote>
         </div>
       </div>
-    </SettingsCard>
+    </SettingsSection>
   );
 }

@@ -7,10 +7,14 @@
 // that composes existing components and mock data without touching production
 // code, components/ui/, components/blocks/, or the manifest. Everything under
 // _components/ is opted out of App Router routing by the underscore prefix.
+//
+// No global app shell: this prototype hides the decorative AppSidebar so the
+// page stands on its own. `max-w-[960px]` (rather than the standard
+// `max-w-[1440px]` from design-system.md §4.5) is an intentional deviation —
+// that width assumes surrounding app chrome, which doesn't exist here.
 
 import * as React from 'react';
 
-import { AppSidebar } from '@/components/blocks/sidebar/app-sidebar';
 import * as SegmentedControl from '@/components/ui/segmented-control';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 
@@ -38,8 +42,7 @@ type ViewerRole = 'owner-admin' | 'member';
 // confirm dialog, since the section unmounts on navigation and would
 // otherwise silently drop the edit.
 type PendingNav =
-  | { type: 'section'; section: SectionId }
-  | { type: 'role'; role: ViewerRole };
+  { type: 'section'; section: SectionId } | { type: 'role'; role: ViewerRole };
 
 export default function SettingsPreviewPage() {
   const [activeSection, setActiveSection] =
@@ -96,70 +99,65 @@ export default function SettingsPreviewPage() {
   };
 
   return (
-    <div className='flex h-screen gap-4 bg-bg-weak-50 p-4'>
-      {/* Decorative/mock global sidebar — reuses the real, already-interactive
-          AppSidebar as-is; no changes needed to make it a preview mock. */}
-      <AppSidebar defaultActiveKey='' />
+    <div className='min-h-screen bg-bg-weak-50'>
+      <div className='mx-auto flex max-w-[960px] flex-col gap-8 px-6 py-8'>
+        {/* Header */}
+        <header className='flex items-start justify-between gap-6'>
+          <div className='flex flex-col gap-1'>
+            <h1 className='text-title-h6 text-text-strong-950'>Settings</h1>
+            <p className='text-paragraph-sm text-text-sub-600'>
+              Account and organization preferences.
+            </p>
+          </div>
 
-      <div className='min-h-0 flex-1 overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0'>
-        <div className='h-full overflow-y-auto'>
-          <div className='mx-auto flex max-w-[1440px] flex-col gap-8 px-6 py-8'>
-            {/* Header */}
-            <header className='flex flex-col gap-4'>
-              <div className='flex flex-col gap-1'>
-                <h1 className='text-title-h6 text-text-strong-950'>Settings</h1>
-                <p className='text-paragraph-sm text-text-sub-600'>
-                  Manage your account and organization preferences.
-                </p>
-              </div>
+          {/* Demo-only control, demoted to a small, muted affordance so it
+              doesn't read as a real product setting. */}
+          <div className='flex shrink-0 flex-col items-end gap-1.5'>
+            <span className='text-subheading-2xs uppercase text-text-sub-600'>
+              Preview as
+            </span>
+            <div className='w-[160px]'>
+              <SegmentedControl.Root
+                value={role}
+                onValueChange={(v) => requestRoleChange(v as ViewerRole)}
+              >
+                <SegmentedControl.List>
+                  <SegmentedControl.Trigger value='owner-admin'>
+                    Admin
+                  </SegmentedControl.Trigger>
+                  <SegmentedControl.Trigger value='member'>
+                    Member
+                  </SegmentedControl.Trigger>
+                </SegmentedControl.List>
+              </SegmentedControl.Root>
+            </div>
+            <DemoNote className='max-w-[220px]'>
+              Switch to preview what a Member without organization access sees.
+              The Organization group locks behind a request-access affordance.
+            </DemoNote>
+          </div>
+        </header>
 
-              <div className='flex flex-col gap-1.5'>
-                <span className='text-subheading-2xs uppercase text-text-soft-400'>
-                  Preview as
-                </span>
-                <div className='w-[200px]'>
-                  <SegmentedControl.Root
-                    value={role}
-                    onValueChange={(v) => requestRoleChange(v as ViewerRole)}
-                  >
-                    <SegmentedControl.List>
-                      <SegmentedControl.Trigger value='owner-admin'>
-                        Admin
-                      </SegmentedControl.Trigger>
-                      <SegmentedControl.Trigger value='member'>
-                        Member
-                      </SegmentedControl.Trigger>
-                    </SegmentedControl.List>
-                  </SegmentedControl.Root>
-                </div>
-                <DemoNote>
-                  Switch to preview what a Member without organization access
-                  sees. The Organization group locks behind a request-access
-                  affordance.
-                </DemoNote>
-              </div>
-            </header>
+        {/* Two-column body */}
+        <div className='flex flex-col gap-6 lg:flex-row lg:gap-8'>
+          <div className='lg:w-[224px] lg:shrink-0'>
+            <SettingsRail
+              activeSection={activeSection}
+              onSectionChange={requestSectionChange}
+              orgLocked={orgLocked}
+              requested={requested}
+              onRequestAccess={() => setRequested(true)}
+            />
+          </div>
 
-            {/* Two-column body */}
-            <div className='flex flex-col gap-6 lg:flex-row lg:gap-8'>
-              <div className='lg:w-[224px] lg:shrink-0'>
-                <SettingsRail
-                  activeSection={activeSection}
-                  onSectionChange={requestSectionChange}
-                  orgLocked={orgLocked}
-                  requested={requested}
-                  onRequestAccess={() => setRequested(true)}
-                />
-              </div>
-
-              <div className='min-w-0 flex-1'>
-                <SectionContent
-                  section={activeSection}
-                  onNavigate={requestSectionChange}
-                  onDirtyChange={setActiveDirty}
-                  readOnlyMembers={orgLocked}
-                />
-              </div>
+          <div className='min-w-0 flex-1'>
+            <div className='max-w-[640px]'>
+              <SectionContent
+                section={activeSection}
+                onNavigate={requestSectionChange}
+                onDirtyChange={setActiveDirty}
+                readOnlyMembers={orgLocked}
+              />
             </div>
           </div>
         </div>
@@ -169,7 +167,7 @@ export default function SettingsPreviewPage() {
         open={pendingNav !== null}
         onOpenChange={(open) => !open && setPendingNav(null)}
         title='Discard unsaved changes?'
-        description="You have unsaved changes in this section. Leaving now will discard them."
+        description='You have unsaved changes in this section. Leaving now will discard them.'
         confirmLabel='Discard changes'
         cancelLabel='Keep editing'
         onConfirm={confirmDiscardNav}
@@ -195,7 +193,12 @@ function SectionContent({
     case 'preferences':
       return <PreferencesSection onDirtyChange={onDirtyChange} />;
     case 'notifications':
-      return <NotificationsSection onDirtyChange={onDirtyChange} />;
+      return (
+        <NotificationsSection
+          onDirtyChange={onDirtyChange}
+          onNavigateToProfile={() => onNavigate('profile')}
+        />
+      );
     case 'security':
       return <SecuritySection />;
     case 'general':
@@ -203,7 +206,12 @@ function SectionContent({
         <GeneralSection onNavigate={onNavigate} onDirtyChange={onDirtyChange} />
       );
     case 'members':
-      return <MembersSection readOnly={readOnlyMembers} />;
+      return (
+        <MembersSection
+          readOnly={readOnlyMembers}
+          onNavigateGeneral={() => onNavigate('general')}
+        />
+      );
     case 'business-profile':
       return <BusinessProfileSection />;
     case 'integrations':
