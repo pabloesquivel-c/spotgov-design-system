@@ -246,18 +246,79 @@ export const DEFAULT_TEMPLATES: AnalysisTemplate[] = [
 /* Notifications                                                       */
 /* ------------------------------------------------------------------ */
 
-export type EmailNotificationPreferences = {
-  dailyTenderDigest: boolean;
-  deadlineReminderDays: 1 | 3 | 7 | null;
-  workUpdates: boolean;
+export type NotificationGroup = 'activity' | 'mentions' | 'tenders';
+
+export type NotificationChannels = { inApp: boolean; email: boolean };
+
+export type NotificationSetting = {
+  id: string;
+  group: NotificationGroup;
+  label: string;
+  description: string;
+  defaultChannels: NotificationChannels;
 };
 
-export const DEFAULT_EMAIL_NOTIFICATION_PREFERENCES: EmailNotificationPreferences =
+export type TenderNotificationPrefs = {
+  deadlineLeadDays: number[];
+  dailyDigest: boolean;
+};
+
+export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
   {
-    dailyTenderDigest: true,
-    deadlineReminderDays: 3,
-    workUpdates: true,
-  };
+    id: 'analysis-completed',
+    group: 'activity',
+    label: 'Analysis Completed',
+    description: 'Notify me when a reviewer finishes an analysis.',
+    defaultChannels: { inApp: true, email: true },
+  },
+  {
+    id: 'in-a-comment',
+    group: 'mentions',
+    label: 'In a Comment',
+    description: 'Someone @mentions you on a tender or contract.',
+    defaultChannels: { inApp: true, email: true },
+  },
+  {
+    id: 'in-a-tender-note',
+    group: 'mentions',
+    label: 'In a Tender Note',
+    description: 'Someone @mentions you in a shared note.',
+    defaultChannels: { inApp: false, email: false },
+  },
+  {
+    id: 'in-an-analysis',
+    group: 'mentions',
+    label: 'In an Analysis',
+    description: 'Someone @mentions you in an AI analysis thread.',
+    defaultChannels: { inApp: true, email: false },
+  },
+  {
+    id: 'deadline-approaching',
+    group: 'tenders',
+    label: 'Deadline Approaching',
+    description: "A tracked tender's submission deadline is coming up.",
+    defaultChannels: { inApp: true, email: true },
+  },
+  {
+    id: 'new-matching-tender',
+    group: 'tenders',
+    label: 'New Matching Tender',
+    description: 'A new tender matches your saved search criteria.',
+    defaultChannels: { inApp: true, email: false },
+  },
+  {
+    id: 'award-published',
+    group: 'tenders',
+    label: 'Award Published',
+    description: 'The award decision for a tracked tender is published.',
+    defaultChannels: { inApp: true, email: true },
+  },
+];
+
+export const DEFAULT_TENDER_NOTIFICATION_PREFS: TenderNotificationPrefs = {
+  deadlineLeadDays: [3, 1],
+  dailyDigest: false,
+};
 
 /* ------------------------------------------------------------------ */
 /* Billing                                                             */

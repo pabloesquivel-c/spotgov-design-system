@@ -193,12 +193,7 @@ function SectionContent({
     case 'preferences':
       return <PreferencesSection onDirtyChange={onDirtyChange} />;
     case 'notifications':
-      return (
-        <NotificationsSection
-          onDirtyChange={onDirtyChange}
-          onNavigateToProfile={() => onNavigate('profile')}
-        />
-      );
+      return <NotificationsSection onDirtyChange={onDirtyChange} />;
     case 'security':
       return <SecuritySection />;
     case 'general':
