@@ -7,7 +7,6 @@ import {
   RiErrorWarningLine,
   RiExchange2Line,
   RiInformationLine,
-  RiSettings3Line,
 } from '@remixicon/react';
 
 import * as Alert from '@/components/ui/alert';
@@ -21,7 +20,7 @@ import * as Select from '@/components/ui/select';
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import type { SectionId } from './settings-rail';
 import { DEFAULT_MEMBERS, DEFAULT_ORG, ORG_LANGUAGES } from './mock-data';
@@ -63,6 +62,7 @@ export function GeneralSection({
     setLanguage(saved.language);
   };
 
+  // TODO(connect): PATCH the organization's name and default language.
   const handleApply = () => {
     setSaved({ name, language });
     notification({
@@ -71,10 +71,17 @@ export function GeneralSection({
     });
   };
 
+  // TODO(connect): open the logo upload flow and persist to org storage.
+  const handleUploadLogo = () =>
+    notification({
+      status: 'information',
+      title: 'Logo upload',
+      description: 'Uploading a custom logo isn’t wired up in this prototype.',
+    });
+
   return (
     <>
-      <SettingsCard
-        icon={RiSettings3Line}
+      <SettingsSection
         title='General'
         description='Organization identity and irreversible actions.'
         dirty={dirty}
@@ -95,14 +102,7 @@ export function GeneralSection({
             <div className='flex flex-col gap-1'>
               <button
                 type='button'
-                onClick={() =>
-                  notification({
-                    status: 'information',
-                    title: 'Logo upload',
-                    description:
-                      'Uploading a custom logo isn’t wired up in this prototype.',
-                  })
-                }
+                onClick={handleUploadLogo}
                 className='w-fit text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
               >
                 Change logo
@@ -113,7 +113,7 @@ export function GeneralSection({
             </div>
           </div>
 
-          <div className='flex max-w-[440px] flex-col gap-4'>
+          <div className='flex flex-col gap-4'>
             <div className='flex flex-col gap-1'>
               <Label.Root htmlFor='org-name'>Organization Name</Label.Root>
               <Input.Root>
@@ -236,7 +236,7 @@ export function GeneralSection({
             </DemoNote>
           </div>
         </div>
-      </SettingsCard>
+      </SettingsSection>
 
       <TransferOwnershipModal
         key={transferOpen ? 'open' : 'closed'}
@@ -275,6 +275,17 @@ function TransferOwnershipModal({
 
   const selected = ACTIVE_ADMINS.find((a) => a.id === selectedId);
 
+  // TODO(connect): call the transfer-ownership mutation, then refresh the
+  // members list and current-user role.
+  const handleConfirmTransfer = () => {
+    if (!selected) return;
+    onOpenChange(false);
+    notification({
+      status: 'success',
+      title: `Ownership transferred to ${selected.name}`,
+    });
+  };
+
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
       <Modal.Content className='max-w-[440px]'>
@@ -310,13 +321,7 @@ function TransferOwnershipModal({
                 variant='error'
                 size='small'
                 className='w-full'
-                onClick={() => {
-                  onOpenChange(false);
-                  notification({
-                    status: 'success',
-                    title: `Ownership transferred to ${selected.name}`,
-                  });
-                }}
+                onClick={handleConfirmTransfer}
               >
                 Transfer ownership
               </Button.Root>
@@ -416,6 +421,17 @@ function DeleteOrgModal({
   const [value, setValue] = React.useState('');
   const matches = value.trim() === orgName;
 
+  // TODO(connect): call the delete-organization mutation, then sign the user
+  // out and redirect to the marketing site.
+  const handleConfirmDelete = () => {
+    onOpenChange(false);
+    notification({
+      status: 'information',
+      title: `${orgName} deleted`,
+      description: 'Demo only — no data was actually removed.',
+    });
+  };
+
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
       <Modal.Content showClose={false} className='max-w-[440px]'>
@@ -468,14 +484,7 @@ function DeleteOrgModal({
             size='small'
             className='w-full'
             disabled={!matches}
-            onClick={() => {
-              onOpenChange(false);
-              notification({
-                status: 'information',
-                title: `${orgName} deleted`,
-                description: 'Demo only — no data was actually removed.',
-              });
-            }}
+            onClick={handleConfirmDelete}
           >
             Delete organization
           </Button.Root>

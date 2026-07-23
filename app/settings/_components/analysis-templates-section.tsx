@@ -7,7 +7,6 @@ import {
   RiArrowUpLine,
   RiCheckboxCircleFill,
   RiDraggable,
-  RiFileTextLine,
   RiInformationLine,
   RiMore2Line,
   RiSparkling2Line,
@@ -25,7 +24,7 @@ import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-c
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import { DEFAULT_TEMPLATES, type AnalysisTemplate } from './mock-data';
 
@@ -42,11 +41,13 @@ export function AnalysisTemplatesSection() {
   const [deleteTarget, setDeleteTarget] =
     React.useState<AnalysisTemplate | null>(null);
 
+  // TODO(connect): PATCH the template's active flag org-wide.
   const toggleActive = (id: string) =>
     setTemplates((prev) =>
       prev.map((t) => (t.id === id ? { ...t, active: !t.active } : t)),
     );
 
+  // TODO(connect): PATCH the org-wide template order.
   const moveTemplate = (from: number, to: number) => {
     if (to < 0 || to >= templates.length || from === to) return;
     setTemplates((prev) => {
@@ -70,6 +71,7 @@ export function AnalysisTemplatesSection() {
         t.name.trim().toLowerCase() === name.trim().toLowerCase(),
     );
 
+  // TODO(connect): POST the new template and use the server-assigned id.
   const handleCreate = (draft: Omit<AnalysisTemplate, 'id' | 'active'>) => {
     setTemplates((prev) => [
       ...prev,
@@ -79,6 +81,7 @@ export function AnalysisTemplatesSection() {
     notification({ status: 'success', title: `${draft.name} created` });
   };
 
+  // TODO(connect): PATCH the template's name/prompt.
   const handleSaveEdit = (
     id: string,
     draft: Omit<AnalysisTemplate, 'id' | 'active'>,
@@ -94,8 +97,7 @@ export function AnalysisTemplatesSection() {
 
   return (
     <>
-      <SettingsCard
-        icon={RiFileTextLine}
+      <SettingsSection
         title='Analysis Templates'
         description="These categories control what SpotGov's AI looks for in every tender analysis across your organization."
         headerAction={
@@ -243,7 +245,7 @@ export function AnalysisTemplatesSection() {
           templates. Reordering is stored in local state only for this
           preview.
         </DemoNote>
-      </SettingsCard>
+      </SettingsSection>
 
       <TemplateModal
         key={
@@ -267,6 +269,7 @@ export function AnalysisTemplatesSection() {
         title='Reset templates to defaults?'
         description='Any templates you added or reordered will be replaced by the original set.'
         confirmLabel='Reset'
+        // TODO(connect): call the reset-templates-to-defaults mutation.
         onConfirm={() => {
           setTemplates(DEFAULT_TEMPLATES);
           setResetOpen(false);
@@ -283,6 +286,7 @@ export function AnalysisTemplatesSection() {
         title={`Delete "${deleteTarget?.name ?? ''}"?`}
         description={`${deleteTarget?.name ?? 'This template'} will no longer be applied to any tender analysis across your organization. This can't be undone.`}
         confirmLabel='Delete template'
+        // TODO(connect): call the delete-template mutation.
         onConfirm={() => {
           if (!deleteTarget) return;
           setTemplates((prev) => prev.filter((t) => t.id !== deleteTarget.id));
@@ -336,6 +340,7 @@ function TemplateModal({
   const canSubmit =
     name.trim().length > 0 && question.trim().length > 0 && !duplicate;
 
+  // TODO(connect): call the AI refine-prompt endpoint instead of the local mock.
   const handleRefine = () => {
     setRefining(true);
     setTimeout(() => {

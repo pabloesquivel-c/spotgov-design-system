@@ -258,10 +258,9 @@ export type NotificationSetting = {
   defaultChannels: NotificationChannels;
 };
 
-export const NOTIFICATION_GROUP_LABEL: Record<NotificationGroup, string> = {
-  activity: 'Activity',
-  mentions: 'Mentions',
-  tenders: 'Tenders',
+export type TenderNotificationPrefs = {
+  deadlineLeadDays: number[];
+  dailyDigest: boolean;
 };
 
 export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
@@ -315,6 +314,11 @@ export const NOTIFICATION_SETTINGS: NotificationSetting[] = [
     defaultChannels: { inApp: true, email: true },
   },
 ];
+
+export const DEFAULT_TENDER_NOTIFICATION_PREFS: TenderNotificationPrefs = {
+  deadlineLeadDays: [3, 1],
+  dailyDigest: false,
+};
 
 /* ------------------------------------------------------------------ */
 /* Billing                                                             */

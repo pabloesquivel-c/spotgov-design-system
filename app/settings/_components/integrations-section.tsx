@@ -17,7 +17,7 @@ import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import {
   DEFAULT_INTEGRATIONS,
@@ -45,8 +45,7 @@ export function IntegrationsSection() {
 
   return (
     <>
-      <SettingsCard
-        icon={RiPlugLine}
+      <SettingsSection
         title='Integrations'
         description='Connect e-procurement platforms to sync tenders automatically.'
       >
@@ -59,6 +58,7 @@ export function IntegrationsSection() {
               onConnect={() => setConnectId(integration.id)}
               onDisconnect={() => setDisconnectId(integration.id)}
               onSimulateFailure={() => setStatus(integration.id, 'failed')}
+              // TODO(connect): re-run the OAuth/API-key handshake for this integration.
               onReconnect={() => {
                 setStatus(integration.id, 'connected');
                 notification({
@@ -75,7 +75,7 @@ export function IntegrationsSection() {
           (demo)&rdquo; to preview the failed / reconnect state. This control
           isn&apos;t part of the shipped design.
         </DemoNote>
-      </SettingsCard>
+      </SettingsSection>
 
       {/* Disconnect confirm */}
       <DestructiveConfirmModal
@@ -84,6 +84,7 @@ export function IntegrationsSection() {
         title={`Disconnect ${disconnectTarget?.name ?? 'integration'}?`}
         description={`Tenders will stop syncing from ${disconnectTarget?.name ?? 'this platform'} until you reconnect.`}
         confirmLabel='Disconnect'
+        // TODO(connect): call the disconnect-integration mutation and revoke stored credentials.
         onConfirm={() => {
           if (disconnectId) setStatus(disconnectId, 'not-connected');
           notification({
@@ -100,6 +101,7 @@ export function IntegrationsSection() {
         open={connectId !== null}
         name={connectTarget?.name ?? ''}
         onOpenChange={(open) => !open && setConnectId(null)}
+        // TODO(connect): submit these credentials to the integration's OAuth/API-key flow.
         onConnected={() => {
           if (connectId) setStatus(connectId, 'connected');
           notification({

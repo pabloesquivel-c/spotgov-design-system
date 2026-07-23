@@ -1,19 +1,18 @@
 'use client';
 
-// Shared card shell for every Settings section: icon + title + description
-// header, a divider, the section body, and an optional Discard / Apply Changes
-// footer. Follows the "Settings section" pattern in docs/component-patterns.md
-// (Apply Changes / Discard verbs, one primary action, footer enabled only when
-// there are unsaved changes).
-
-import type { RemixiconComponentType } from '@remixicon/react';
+// Shared section shell for every Settings section: title + description
+// header, the section body, and an optional Discard / Apply Changes footer.
+// No outer card — the section sits directly on the page background, per the
+// Linear/Notion-style layout decided for Settings v2 (see docs/design-system.md
+// §4.5 deviation note in app/settings/page.tsx). Bordered/ringed sub-containers
+// stay scoped to list groups (members, sessions, integrations, danger zone),
+// not the section shell itself.
 
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import { cn } from '@/utils/cn';
 
-export type SettingsCardProps = {
-  icon?: RemixiconComponentType;
+export type SettingsSectionProps = {
   title: string;
   description?: string;
   /** Optional element rendered on the right of the header (e.g. an action). */
@@ -28,8 +27,7 @@ export type SettingsCardProps = {
   applyLabel?: string;
 };
 
-export function SettingsCard({
-  icon: Icon,
+export function SettingsSection({
   title,
   description,
   headerAction,
@@ -40,22 +38,12 @@ export function SettingsCard({
   onDiscard,
   onApply,
   applyLabel = 'Apply Changes',
-}: SettingsCardProps) {
+}: SettingsSectionProps) {
   const showFooter = Boolean(onApply || onDiscard);
 
   return (
-    <section
-      className={cn(
-        'w-full overflow-hidden rounded-20 bg-bg-white-0 shadow-regular-xs ring-1 ring-stroke-soft-200',
-        className,
-      )}
-    >
-      <div className='flex items-start gap-3.5 p-5'>
-        {Icon && (
-          <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-            <Icon className='size-5 text-text-sub-600' />
-          </div>
-        )}
+    <section className={cn('flex w-full flex-col gap-6', className)}>
+      <div className='flex items-start gap-3.5'>
         <div className='min-w-0 flex-1'>
           <h2 className='text-label-md text-text-strong-950'>{title}</h2>
           {description && (
@@ -67,14 +55,12 @@ export function SettingsCard({
         {headerAction && <div className='shrink-0'>{headerAction}</div>}
       </div>
 
-      <Divider.Root />
-
-      <div className={cn('p-5', bodyClassName)}>{children}</div>
+      <div className={cn(bodyClassName)}>{children}</div>
 
       {showFooter && (
         <>
           <Divider.Root />
-          <div className='flex items-center justify-end gap-3 p-5'>
+          <div className='flex items-center justify-end gap-3'>
             {onDiscard && (
               <Button.Root
                 variant='neutral'

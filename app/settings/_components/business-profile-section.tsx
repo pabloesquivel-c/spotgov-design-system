@@ -1,12 +1,12 @@
 'use client';
 
-import { RiArrowRightUpLine, RiBriefcaseLine } from '@remixicon/react';
+import { RiArrowRightUpLine } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 
 const DETAILS = [
@@ -23,9 +23,17 @@ const EXPECTED_ITEMS = [
 ];
 
 export function BusinessProfileSection() {
+  // TODO(connect): route to the dedicated Business Profile screen (not designed yet).
+  const handleManageBusinessProfile = () =>
+    notification({
+      status: 'information',
+      title: 'Business Profile',
+      description:
+        'The full Business Profile screen isn’t designed yet, so this button has no destination in the prototype.',
+    });
+
   return (
-    <SettingsCard
-      icon={RiBriefcaseLine}
+    <SettingsSection
       title='Business Profile'
       description='Company details, certifications, and licenses used across bids.'
     >
@@ -66,14 +74,7 @@ export function BusinessProfileSection() {
             variant='primary'
             size='small'
             className='w-fit'
-            onClick={() =>
-              notification({
-                status: 'information',
-                title: 'Business Profile',
-                description:
-                  'The full Business Profile screen isn’t designed yet, so this button has no destination in the prototype.',
-              })
-            }
+            onClick={handleManageBusinessProfile}
           >
             Manage Business Profile
             <Button.Icon as={RiArrowRightUpLine} />
@@ -84,6 +85,6 @@ export function BusinessProfileSection() {
           </DemoNote>
         </div>
       </div>
-    </SettingsCard>
+    </SettingsSection>
   );
 }

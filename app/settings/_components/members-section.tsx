@@ -9,7 +9,6 @@ import {
   RiCloseLine,
   RiMore2Line,
   RiSearchLine,
-  RiTeamLine,
 } from '@remixicon/react';
 
 import * as Avatar from '@/components/ui/avatar';
@@ -26,7 +25,7 @@ import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-c
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsCard } from './settings-card';
+import { SettingsSection } from './settings-card';
 import { DemoNote } from './demo-note';
 import {
   DEFAULT_BILLING_PLAN,
@@ -60,6 +59,12 @@ export function MembersSection({
 
   // confirm-remove / confirm-cancel state
   const [pendingRemoval, setPendingRemoval] = React.useState<Member | null>(null);
+
+  // confirm-role-change state
+  const [pendingRoleChange, setPendingRoleChange] = React.useState<{
+    member: Member;
+    role: MemberRole;
+  } | null>(null);
 
   // invite modal state
   const [inviteOpen, setInviteOpen] = React.useState(false);
@@ -100,7 +105,8 @@ export function MembersSection({
     DEFAULT_BILLING_PLAN.seatsTotal - members.length,
   );
 
-  const changeRole = (id: string, role: MemberRole) => {
+  // TODO(connect): call the change-member-role mutation.
+  const applyRoleChange = (id: string, role: MemberRole) => {
     const member = members.find((m) => m.id === id);
     setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, role } : m)));
     if (member) {
@@ -111,6 +117,22 @@ export function MembersSection({
     }
   };
 
+  // Role changes are consequential (they grant or revoke access to billing,
+  // integrations, and org settings) so they're confirmed before applying,
+  // naming what the target role can or can't do — see RoleChangeConfirmModal.
+  const requestRoleChange = (id: string, role: MemberRole) => {
+    const member = members.find((m) => m.id === id);
+    if (!member || member.role === role) return;
+    setPendingRoleChange({ member, role });
+  };
+
+  const confirmRoleChange = () => {
+    if (!pendingRoleChange) return;
+    applyRoleChange(pendingRoleChange.member.id, pendingRoleChange.role);
+    setPendingRoleChange(null);
+  };
+
+  // TODO(connect): call the remove-member / cancel-invite mutation.
   const confirmRemoval = () => {
     if (!pendingRemoval) return;
     const removed = pendingRemoval;
@@ -125,6 +147,14 @@ export function MembersSection({
     });
   };
 
+  // TODO(connect): call the resend-invitation mutation.
+  const resendInvite = (member: Member) =>
+    notification({
+      status: 'success',
+      title: `Invitation resent to ${member.email}`,
+    });
+
+  // TODO(connect): call the send-invitations mutation.
   const handleSend = (invitees: Invitee[]) => {
     const nextMembers: Member[] = invitees.map((invitee) => ({
       id: `invite-${invitee.email.toLowerCase()}`,
@@ -154,8 +184,7 @@ export function MembersSection({
 
   return (
     <>
-      <SettingsCard
-        icon={RiTeamLine}
+      <SettingsSection
         title='Members'
         description={headerDescription}
         headerAction={
@@ -218,9 +247,8 @@ export function MembersSection({
               <MemberRow
                 member={owner}
                 readOnly={readOnly}
-                onChangeRole={changeRole}
+                onChangeRole={requestRoleChange}
                 onRequestRemoval={setPendingRemoval}
-                onResend={() => {}}
                 footnote={
                   !readOnly && onNavigateGeneral ? (
                     <button
@@ -246,9 +274,8 @@ export function MembersSection({
                   <MemberRow
                     member={member}
                     readOnly={readOnly}
-                    onChangeRole={changeRole}
+                    onChangeRole={requestRoleChange}
                     onRequestRemoval={setPendingRemoval}
-                    onResend={() => {}}
                   />
                 </React.Fragment>
               ))}
@@ -265,9 +292,8 @@ export function MembersSection({
                   <MemberRow
                     member={member}
                     readOnly={readOnly}
-                    onChangeRole={changeRole}
+                    onChangeRole={requestRoleChange}
                     onRequestRemoval={setPendingRemoval}
-                    onResend={() => {}}
                   />
                 </React.Fragment>
               ))}
@@ -284,14 +310,9 @@ export function MembersSection({
                   <MemberRow
                     member={member}
                     readOnly={readOnly}
-                    onChangeRole={changeRole}
+                    onChangeRole={requestRoleChange}
                     onRequestRemoval={setPendingRemoval}
-                    onResend={() =>
-                      notification({
-                        status: 'success',
-                        title: `Invitation resent to ${member.email}`,
-                      })
-                    }
+                    onResend={() => resendInvite(member)}
                   />
                 </React.Fragment>
               ))}
@@ -342,7 +363,7 @@ export function MembersSection({
             </DemoNote>
           )}
         </div>
-      </SettingsCard>
+      </SettingsSection>
 
       <DestructiveConfirmModal
         open={pendingRemoval !== null}
@@ -362,6 +383,12 @@ export function MembersSection({
         }
         cancelLabel='Keep'
         onConfirm={confirmRemoval}
+      />
+
+      <RoleChangeConfirmModal
+        pending={pendingRoleChange}
+        onOpenChange={(open) => !open && setPendingRoleChange(null)}
+        onConfirm={confirmRoleChange}
       />
 
       <InviteModal
@@ -429,7 +456,8 @@ function MemberRow({
   readOnly: boolean;
   onChangeRole: (id: string, role: MemberRole) => void;
   onRequestRemoval: (member: Member) => void;
-  onResend: () => void;
+  /** Only invoked for pending invitations — see the Dropdown menu below. */
+  onResend?: () => void;
   footnote?: React.ReactNode;
 }) {
   const isPending = member.status === 'pending';
@@ -539,6 +567,61 @@ function MemberRow({
       </div>
       {footnote && <div className='pl-11'>{footnote}</div>}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Role change confirm — neutral (not destructive), names the outcome */
+/* ------------------------------------------------------------------ */
+
+function RoleChangeConfirmModal({
+  pending,
+  onOpenChange,
+  onConfirm,
+}: {
+  pending: { member: Member; role: MemberRole } | null;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  const isEscalation = pending?.role === 'admin';
+
+  return (
+    <Modal.Root open={pending !== null} onOpenChange={onOpenChange}>
+      <Modal.Content className='max-w-[440px]'>
+        <Modal.Header
+          title={
+            isEscalation
+              ? `Make ${pending?.member.name} an Admin?`
+              : `Change ${pending?.member.name} to Member?`
+          }
+          description={
+            isEscalation
+              ? 'Admins can manage members, billing, integrations, and organization settings.'
+              : "They'll lose access to members, billing, and settings."
+          }
+        />
+        <Modal.Footer>
+          <Modal.Close asChild>
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              size='small'
+              className='w-full'
+            >
+              Cancel
+            </Button.Root>
+          </Modal.Close>
+          <Button.Root
+            variant='primary'
+            size='small'
+            className='w-full'
+            onClick={onConfirm}
+          >
+            {isEscalation ? 'Make Admin' : 'Change to Member'}
+          </Button.Root>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal.Root>
   );
 }
 
@@ -768,7 +851,7 @@ function InviteModal({
               Add another person
             </button>
 
-            <p className='text-paragraph-xs text-text-soft-400'>
+            <p className='text-paragraph-xs text-text-sub-600'>
               They&apos;ll get an email invite to join {ORG_NAME}. Invite links
               expire after 7 days.
             </p>
