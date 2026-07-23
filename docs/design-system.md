@@ -10,8 +10,9 @@ Agent-facing guide for building product UI from this repo. **Existing system onl
 | 4 | [`component-manifest.md`](./component-manifest.md) (live inventory) |
 | 5 | [`design-tokens.md`](./design-tokens.md) (token values) |
 | 6 | [`component-patterns.md`](./component-patterns.md) |
-| 7 | [`copy.md`](./copy.md) |
-| 8 | [`accessibility.md`](./accessibility.md) |
+| 7 | [`screen-composition.md`](./screen-composition.md) (full-screen work) |
+| 8 | [`copy.md`](./copy.md) |
+| 9 | [`accessibility.md`](./accessibility.md) |
 | — | [`component-conventions.md`](./component-conventions.md) (imports and file layout) |
 
 **Live:** `/` token preview · `/storybook` catalog  
@@ -25,7 +26,7 @@ Agent-facing guide for building product UI from this repo. **Existing system onl
 | Principle | Exact rule |
 |-----------|------------|
 | Restrained B2B | One accent: `bg-primary-base` / `text-primary-base`. No extra blues in chrome. |
-| Soft container, flat data | Surfaces `rounded-2xl` + `p-6`; table **wrapper** `rounded-20` (see `table-shared.tsx`); rows flat inside. |
+| Soft container, flat data | Surfaces use the context density in `screen-composition.md`; embedded table **wrapper** `rounded-20`, page-level data index flat; rows flat inside. |
 | Semantic classes only | Never raw hex in product UI. |
 | Native type roles | Use AlignUI type utilities: `text-title-h6`, `text-label-md`, `text-paragraph-sm`, `text-label-sm`, `text-paragraph-xs`, `text-label-xs`. |
 | Ring + one shadow | `ring-1 ring-inset ring-stroke-soft-200` + `shadow-regular-xs` OR `shadow-regular-md` — not both tiers on one element. |
@@ -92,7 +93,9 @@ Spacing has **no custom CSS variables**. Grid constants are **not** spacing vars
 |---------|---------|
 | Widget gap | `gap-6` |
 | Section gap | `gap-8` |
-| Card padding | `p-6` |
+| Standard card padding | `p-6` |
+| Dense operational widget | `p-4` |
+| Settings card | Existing `p-5` canonical shell |
 | Form field stack | `gap-4` |
 | Label → field | `gap-1` or `gap-2` |
 | Table toolbar | `gap-3`, `px-4 py-3.5` (`table-shared.tsx`) |
@@ -160,6 +163,9 @@ Larger `title-h1`–`h5`, `doc-*`, and `subheading-*` utilities are for marketin
 
 ## 4. Layout & responsive
 
+Full-screen and archetype-specific rules:
+[`screen-composition.md`](./screen-composition.md).
+
 ### 4.1 AlignUI grid (from `design-tokens.md`)
 
 1440px max · 12 columns · `gap-6` gutter · 170px page safe area · sidebar→content `gap-8`.
@@ -176,7 +182,7 @@ Test at **1024, 1280, 1440, 1728**, and wide. Tailwind refs: `lg` 1024px · `xl`
 | 1280px (`xl`) | Default layout |
 | 1440px+ | Breathing room; **content capped** at 1440px grid — not full-bleed stretch |
 | Wide | Secondary context or `max-w-*`; never full-width forms |
-| Sidebar open/closed | Content reflows; no horizontal scroll on primary task flow |
+| Sidebar open/closed | Content reflows; no horizontal scroll on primary task flow. Current `AppSidebar` implements expanded only; do not patch collapse per screen. |
 | `< md` (768px) | Single column; side-by-side data widgets forbidden |
 | `md`–`lg` | Two columns only if both panels readable |
 
@@ -195,9 +201,10 @@ Test at **1024, 1280, 1440, 1728**, and wide. Tailwind refs: `lg` 1024px · `xl`
 
 ```
 Page          → gap-8, bg-bg-white-0
-  Card        → rounded-2xl, p-6
-    TableBlock → rounded-20, ring-1 ring-stroke-soft-200, shadow-regular-xs
-      rows     → dense; Table.Cell default h-16 px-3 (components/ui/table.tsx)
+  Widget      → rounded-2xl, p-4 dense or p-6 standard
+  TableBlock  → embedded data only; rounded-20, ring, shadow-regular-xs
+  Flat table  → page-level data index; no outer card enclosure
+    rows      → dense; Table.Cell default h-16 px-3 (components/ui/table.tsx)
 ```
 
 ### 4.5 Product page scaffold (no app shell yet)
@@ -207,7 +214,7 @@ There is **no** `DashboardShell` or settings layout component. Build pages in `a
 **Default page wrapper** (grid cap + breathable spacing):
 
 ```tsx
-<div className='mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-6 py-8'>
+<div className='mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-8 py-8'>
   {/* page header */}
   {/* page body */}
 </div>
@@ -236,7 +243,7 @@ There is **no** `DashboardShell` or settings layout component. Build pages in `a
 | Piece | Class / rule | Ref |
 |-------|--------------|-----|
 | Max page width | `max-w-[1440px]` | `design-tokens.md` § Grid |
-| Page padding | `px-6 py-8` | Breathable |
+| Page padding | `px-8 py-8` | 32px desktop canvas inset |
 | Section nav width | `lg:w-[224px]` | `filter-sidebar.tsx` |
 | Content column | `flex-1 min-w-0` | Prevents flex overflow |
 | Settings card width | `max-w-[440px] w-full` | `checkbox-card-shell.tsx` |
@@ -409,9 +416,13 @@ Storybook: `UI/<Name>`. Import: `@/components/ui/<file>`.
 
 Storybook: `Blocks/<Category>`.
 
-### 7.1 Table block
+### 7.1 Data tables
 
-**When:** Sortable/filterable/paginated data.  
+Choose enclosure from the table's job.
+
+#### Embedded table block
+
+**When:** Sortable/filterable/paginated data is one self-contained region among other page content.
 **When not:** &lt;5 static rows — use `Table.Root` only.
 
 **Compose (exact exports from `table-shared.tsx`):**
@@ -428,6 +439,20 @@ Storybook: `Blocks/<Category>`.
 **Also use:** `createSelectColumn`, `createActionsColumn`, `SortableHeader`, `getSortingIcon`.
 
 **Canonical:** `documents-table.tsx` · `contracts-table.tsx` · Storybook `Blocks/Table`.
+
+#### Page-level data index
+
+**When:** The dataset is the primary page task, such as Saved Tenders.
+
+Compose `Table.Root`, existing toolbar controls, selection, status, row actions,
+and `Pagination` directly in the page work region. Keep rows flat and do not
+wrap the complete dataset in `TableBlock`.
+
+The table region owns horizontal overflow. Toolbar and pagination controls wrap
+at narrow desktop. Preserve semantic table markup, named controls, and
+`aria-sort`.
+
+See [`screen-composition.md`](./screen-composition.md#page-level-data-index).
 
 ### 7.2 Filter panel
 
@@ -629,8 +654,11 @@ Import paths and child patterns: copy remaining markup from the canonical block 
 | Simple dialog | `Modal` `max-w-[440px]` | `Drawer` |
 | Side panel | `Drawer` + `drawerPanelClassName` | `Modal` |
 | Global search | Command menu block | Raw `<input>` |
-| Data table | Table block recipe | Div grid |
+| Embedded data table | Table block recipe | Div grid |
+| Page-dominant dataset | Flat page-level data index composition | Rounded `TableBlock` around the whole page task |
 | Static few rows | `Table.Root` only | Empty toolbar block |
+| Operational overview | Dashboard archetype in `screen-composition.md` | Generic metric-card wall |
+| Time-based pipeline | Calendar/workbench archetype in `screen-composition.md` | Fixed-height clipped calendar |
 | Settings full page | §4.5 scaffold + §7.7 card shells | `TableBlock`, centered auth card, `FilterPanelShell` |
 | Settings nav | `FilterNavItem` or `TabMenuVertical` | `TabMenuHorizontal`, app dropdown |
 | One boolean pref | `Switch` | `Checkbox` |
@@ -739,11 +767,12 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 
 ### Do
 
-- Read `AGENTS.md` → `product-principles.md` → this doc → `design-tokens.md` → `component-patterns.md` → `copy.md` → `accessibility.md`.
+- Read `AGENTS.md` → `product-principles.md` → this doc → `design-tokens.md` → `component-patterns.md` → `screen-composition.md` for full screens → `copy.md` → `accessibility.md`.
 - Use full token classes: `bg-bg-white-0`, `text-text-sub-600`, `ring-stroke-soft-200`.
 - Copy structure from canonical files (§7), not from scratch.
 - Specify grid shell + column spans for dashboards.
-- Nest density: page (`gap-8`) → card (`p-6`) → table block.
+- Select density by context: page (`gap-8`) → dense widget (`p-4`) or standard surface (`p-6`).
+- Use transform scaling only in a documented reference presenter, never in product layout.
 - Cap forms: `max-w-[400px]`–`max-w-[440px]`; tables may scroll horizontally.
 - Include hover, focus-visible, disabled, loading, error states.
 - Run anti-slop checklist (§15) before finishing.
@@ -776,11 +805,11 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | Icons | `*Fill`; icon libraries other than Remix Line (+ documented exceptions) |
 | Radius | `rounded-full` on rectangular cards/CTAs/rows; changing a primitive's built-in radius per-instance |
 | Shadow | `shadow-regular-xs` + `shadow-regular-md` on same element; `shadow-fancy-buttons-*` in product UI |
-| Spacing | `gap-5` between widgets; dense table directly on page canvas without card/block wrapper |
+| Spacing | `gap-5` between widgets; arbitrary density that overrides primitive defaults |
 | Layout | Fixed `w-screen` forms; center marketing column; infinite stretch on wide monitors |
 | Components | One-off `<button>`/`<input>` styled ad hoc when primitive exists |
 | A11y | Icon-only without `aria-label`; status without text; focus removed without replacement |
-| Data | Rounded table rows — round **wrapper** only (`TableBlock`) |
+| Data | Rounded data rows; use `TableBlock` enclosure only for embedded datasets |
 | Settings | `TableBlock` or filter panel for settings; `FilterPanelFooter` Clear/Apply; dark/system theme controls; drawer as entire settings app; shadcn `<Form>` / invented `SettingsLayout` |
 | Pages | Marketing/article layouts or `max-w-2xl` marketing columns for app UI |
 
@@ -798,7 +827,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 - [ ] Labels wired with `htmlFor` / `id`; errors use `Hint hasError` or `Alert`
 - [ ] Radius: controls `rounded-10`, surfaces `rounded-2xl`, overlays/table block `rounded-20`
 - [ ] One shadow tier per element
-- [ ] Density nested: page → card → table block
+- [ ] Density matches context; page-level data indexes are not nested in cards
 - [ ] Layout OK at 1024 / 1280 / 1440 / wide
 - [ ] Forms capped; tables use `overflow-x-auto`
 - [ ] Primitives imported from `@/components/ui/*`
@@ -808,6 +837,9 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 - [ ] Settings: card shell matches `checkbox-card-shell.tsx`; footer is Discard/Cancel + Apply Changes
 - [ ] Settings: correct control (`Switch` vs `Checkbox` vs `Select`); no theme/dark mode controls
 - [ ] Settings page uses §4.5 scaffold — not auth-card-centered or table block
+- [ ] Full-screen work follows `screen-composition.md`
+- [ ] Page-level data index and embedded `TableBlock` enclosure are not confused
+- [ ] 1024, 1280, 1440, and 1728px reviewed without page-level horizontal overflow
 
 ---
 
@@ -834,6 +866,8 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 | Settings card shell | `components/blocks/checkbox/checkbox-card-shell.tsx` |
 | Settings nav item | `components/blocks/filter/filter-sidebar.tsx` (`FilterNavItem`) |
 | Settings drawer demo | `components/blocks/drawer/general-settings-drawer.tsx` (select/radio body only) |
+| Full-screen composition | `docs/screen-composition.md` |
+| Screen evidence | `docs/screen-references/alignui-hr-management.md` |
 
 ---
 

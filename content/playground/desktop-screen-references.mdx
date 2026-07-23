@@ -1,0 +1,84 @@
+---
+title: Desktop screen references
+summary: Three procurement-native screen compositions derived from the AlignUI HR Management references without changing SpotGov tokens, primitives, or shell behavior.
+order: 3
+---
+
+These screens test how the existing SpotGov system composes at full desktop
+scale. The references contribute hierarchy, density, and rhythm. SpotGov keeps
+its own sidebar, semantic tokens, procurement language, and accessible
+interaction patterns.
+
+Each example has a logical 1440 x 900 canvas. **Fit** keeps the complete
+reference visible inside this article. **100%** preserves readable product
+dimensions and lets the frame scroll inside its own presenter. Product screens
+must reflow rather than copy this scaling behavior.
+
+## Construction rules
+
+The three examples share a 32px main-canvas inset and a 24px grid rhythm. They
+reuse the existing `AppSidebar`, AlignUI type utilities, Remix Line icons, and
+semantic SpotGov state tokens.
+
+No primitive, token, global style, dependency, or production data contract was
+added for these examples. The flat table and pipeline timeline are page
+compositions, not new components in the product system.
+
+## Bid operations dashboard
+
+The dashboard is for prioritization, not generic metrics. Four focused widgets
+cover urgency, bid readiness, reviews, and notes. The tall schedule region
+keeps deadlines in the same scan path.
+
+Try the review items, note checkboxes, schedule dates, and create action. The
+empty schedule state is available on 25 July.
+
+<ExampleContainer className='w-full'>
+  <DesktopReferenceFrame label='Bid operations dashboard'>
+    <BidOperationsDashboard />
+  </DesktopReferenceFrame>
+</ExampleContainer>
+
+## Saved tenders data index
+
+Saved tenders is a page-level dataset, so its toolbar, table, and pagination
+form one continuous work region. It deliberately does not use the rounded
+`TableBlock` enclosure reserved for embedded datasets.
+
+Search, switch views, sort columns, filter to urgent work, select rows, and
+change pages. A zero-results search exposes the recoverable empty state.
+
+<ExampleContainer className='w-full'>
+  <DesktopReferenceFrame label='Saved tenders data index'>
+    <SavedTendersDataIndex />
+  </DesktopReferenceFrame>
+</ExampleContainer>
+
+## Pipeline workbench
+
+The workbench treats time placement as the primary task. Range controls and
+view tabs lead into deadline summaries, then a semantic schedule table with
+labelled event controls.
+
+Filter the view, move between weeks, search events, select a summary, or add the
+mock bid-decision milestone. Conflicts and submissions keep text and icons in
+addition to semantic color.
+
+<ExampleContainer className='w-full'>
+  <DesktopReferenceFrame label='Pipeline calendar and workbench'>
+    <PipelineWorkbench />
+  </DesktopReferenceFrame>
+</ExampleContainer>
+
+## Responsive inspection
+
+The article presenter is tested at 1024, 1280, 1440, and 1728px. It must never
+create page-level horizontal overflow. At narrower widths, Fit provides a
+complete visual comparison and 100% keeps controls readable inside an internal
+scroll region.
+
+This presenter is not the responsive product contract. Production dashboards
+reflow from three tracks to two, table toolbars wrap while table overflow stays
+internal, calendar summaries move from four columns to two, and settings stack
+when their rail and form no longer fit. The complete rules live in
+`docs/screen-composition.md`.

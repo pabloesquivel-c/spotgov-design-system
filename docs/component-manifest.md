@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit by hand. Run `npm run generate:manifest` after adding primitives or blocks.
 >
-> Generated: 2026-07-14 · 58 primitives · 22 block categories · 25 canonical block exports
+> Generated: 2026-07-23 · 58 primitives · 22 block categories · 25 canonical block exports
 
 Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md) §8 (which-one-when), and [`component-patterns.md`](./component-patterns.md).
 

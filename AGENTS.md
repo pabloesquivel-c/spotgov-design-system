@@ -113,6 +113,7 @@ Read these before UI work:
 - [`docs/design-system.md`](docs/design-system.md)
 - [`docs/design-tokens.md`](docs/design-tokens.md)
 - [`docs/component-patterns.md`](docs/component-patterns.md)
+- [`docs/screen-composition.md`](docs/screen-composition.md) — required for new or materially redesigned full-screen UI
 - [`docs/copy.md`](docs/copy.md)
 - [`docs/accessibility.md`](docs/accessibility.md)
 
@@ -142,6 +143,7 @@ If these conflict with code, prefer existing production code and mention the mis
 - **Spacing:** Tailwind's 4px grid; no custom spacing variables. Trust component defaults; set spacing at layout level — widget gap `gap-6`, section gap `gap-8`, card padding `p-6`.
 - **States:** Interactive components need hover, pressed/active, focus-visible, disabled, and loading guidance where relevant. Buttons must expose disabled/loading accessibly.
 - **Components:** Import from `@/components/ui/*`. Compose patterns in `components/blocks/`. See `docs/component-patterns.md`.
+- **Screens:** For pages, dashboards, data indexes, workbenches, and settings screens, follow `docs/screen-composition.md`. Reference scaling is Playground-only; production layouts reflow.
 
 ## Surfaces
 

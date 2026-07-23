@@ -11,6 +11,12 @@ import { DemoFrame } from '@/components/playground/demo-frame';
 import { PulseDemo } from '@/components/playground/demo-content/pulse-demo';
 import { AppSidebar } from '@/components/blocks/sidebar/app-sidebar';
 import {
+  BidOperationsDashboard,
+  DesktopReferenceFrame,
+  PipelineWorkbench,
+  SavedTendersDataIndex,
+} from '@/components/playground/screen-references';
+import {
   articleH2,
   articleH3,
   articleBody,
@@ -53,4 +59,8 @@ export const playgroundMdxComponents: MDXComponents = {
   Badge,
   PulseDemo,
   AppSidebar,
+  DesktopReferenceFrame,
+  BidOperationsDashboard,
+  SavedTendersDataIndex,
+  PipelineWorkbench,
 };

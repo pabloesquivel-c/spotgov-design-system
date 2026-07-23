@@ -19,6 +19,8 @@ const REQUIRED_FILES = [
   'docs/figma-agent-rules.md',
   'docs/design-system.md',
   'docs/component-patterns.md',
+  'docs/screen-composition.md',
+  'docs/screen-references/alignui-hr-management.md',
   'docs/design-tokens.md',
   'scripts/generate-manifest.mjs',
   'scripts/manifest-overrides.json',
@@ -26,24 +28,58 @@ const REQUIRED_FILES = [
 
 const CROSS_LINK_CHECKS = [
   {
+    file: 'AGENTS.md',
+    mustContain: ['docs/screen-composition.md'],
+  },
+  {
     file: 'CLAUDE.md',
-    mustContain: ['AGENTS.md', 'docs/component-manifest.md'],
+    mustContain: [
+      'AGENTS.md',
+      'docs/component-manifest.md',
+      'docs/screen-composition.md',
+    ],
   },
   {
     file: '.cursor/rules/spotgov-design-system.mdc',
-    mustContain: ['AGENTS.md', 'docs/component-manifest.md'],
+    mustContain: [
+      'AGENTS.md',
+      'docs/component-manifest.md',
+      'docs/screen-composition.md',
+    ],
   },
   {
     file: '.claude/skills/spotgov-design-system/SKILL.md',
-    mustContain: ['AGENTS.md', 'docs/component-manifest.md', 'docs/design-system.md'],
+    mustContain: [
+      'AGENTS.md',
+      'docs/component-manifest.md',
+      'docs/design-system.md',
+      'docs/screen-composition.md',
+    ],
   },
   {
     file: '.cursor/skills/spotgov-design-system/SKILL.md',
-    mustContain: ['AGENTS.md', 'docs/component-manifest.md'],
+    mustContain: [
+      'AGENTS.md',
+      'docs/component-manifest.md',
+      'docs/screen-composition.md',
+    ],
   },
   {
     file: 'docs/figma-agent-rules.md',
-    mustContain: ['AGENTS.md', 'component-manifest.md', 'zTiVrKUV6Isp2fdWjl2dg3'],
+    mustContain: [
+      'AGENTS.md',
+      'component-manifest.md',
+      'screen-composition.md',
+      'zTiVrKUV6Isp2fdWjl2dg3',
+    ],
+  },
+  {
+    file: 'docs/screen-composition.md',
+    mustContain: [
+      'component-manifest.md',
+      'design-tokens.md',
+      'screen-references/alignui-hr-management.md',
+    ],
   },
 ];
 

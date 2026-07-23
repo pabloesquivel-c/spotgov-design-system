@@ -14,7 +14,8 @@ description: >-
 2. [`docs/component-manifest.md`](../../../docs/component-manifest.md) — fast inventory
 3. [`docs/design-system.md`](../../../docs/design-system.md) §8 — which-one-when
 4. [`docs/component-patterns.md`](../../../docs/component-patterns.md)
-5. [`docs/design-tokens.md`](../../../docs/design-tokens.md) · [`docs/copy.md`](../../../docs/copy.md) · [`docs/accessibility.md`](../../../docs/accessibility.md)
+5. [`docs/screen-composition.md`](../../../docs/screen-composition.md) for new or materially redesigned full-screen UI
+6. [`docs/design-tokens.md`](../../../docs/design-tokens.md) · [`docs/copy.md`](../../../docs/copy.md) · [`docs/accessibility.md`](../../../docs/accessibility.md)
 
 ## Non-negotiables (summary — full rules in AGENTS.md)
 
@@ -30,9 +31,10 @@ description: >-
 
 1. **Inspect** — search manifest and canonical blocks before inventing markup
 2. **Compose** — copy structure from canonical block files in `design-system.md` §16
-3. **Token-check** — semantic classes only; run anti-slop checklist (`design-system.md` §15)
-4. **States** — hover, focus-visible, disabled, loading, empty, error where applicable
-5. **Verify** — Storybook story or token preview if adding a primitive
+3. **Screen-check** — for full screens, select the archetype and responsive contract in `screen-composition.md`
+4. **Token-check** — semantic classes only; run anti-slop checklist (`design-system.md` §15)
+5. **States** — hover, focus-visible, disabled, loading, empty, error where applicable
+6. **Verify** — Storybook story or token preview if adding a primitive
 
 ## Canonical blocks (prefer over demo blocks)
 
