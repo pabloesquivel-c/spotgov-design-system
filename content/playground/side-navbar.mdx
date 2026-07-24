@@ -1,0 +1,21 @@
+---
+title: Side navbar
+summary: A brand-new expanded-state side navigation, built from AlignUI primitives — org switcher, tool list, and account menu.
+order: 4
+---
+
+This is a ground-up side navigation, separate from the existing sidebar. It's composed only from shared `components/ui/*` primitives (Avatar, Badge, CompactButton) — nothing here is copied from `AppSidebar` or the skeleton sidebar.
+
+<DemoFrame>
+  <div className='h-[720px]'>
+    <SideNavbar />
+  </div>
+</DemoFrame>
+
+## Three regions
+
+The panel is a flat, full-height column with a right border only — not a floating card. **Header** is a clickable org card that opens the switch-organization flow. **Content** holds a "Tools" divider and six navigation rows, with "Search Agent" selected by default: the selected row gets a weak background, strong text, and a trailing chevron. The "Frameworks" row shows a "UK" badge instead of the chevron since it isn't the active row. **Footer** is a clickable account card matching the header's pattern.
+
+## Wired for later phases
+
+The org card and account card call `onSwitchOrgClick` and `onAccountMenuClick` respectively. Those callbacks are stubbed here — the Switch Organization modal and the account Options modal (Settings, Help, Learn More, Docs, Contact Us, Sign Out) slot in against them in a later phase, along with a Collapsed State for the rail itself.

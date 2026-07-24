@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-23T15:38:46.942Z",
+  "generatedAt": "2026-07-24T14:58:26.780Z",
   "counts": {
     "primitives": 58,
-    "blockCategories": 22,
-    "blockExports": 141,
+    "blockCategories": 25,
+    "blockExports": 144,
     "canonicalBlockExports": 25
   },
   "primitives": [
@@ -1901,6 +1901,18 @@
     },
     {
       "layer": "block",
+      "category": "organization-switcher",
+      "slug": "organization-switcher",
+      "name": "OrganizationSwitcher",
+      "exportName": "OrganizationSwitcher",
+      "importPath": "@/components/blocks/organization-switcher",
+      "purpose": "Composed block — reference demo in Storybook",
+      "canonical": false,
+      "referenceOnly": true,
+      "storybook": "Blocks/OrganizationSwitcher"
+    },
+    {
+      "layer": "block",
       "category": "profile-card",
       "slug": "profile-card",
       "name": "ProfileCard",
@@ -1910,6 +1922,18 @@
       "canonical": false,
       "referenceOnly": true,
       "storybook": "Blocks/ProfileCard"
+    },
+    {
+      "layer": "block",
+      "category": "profile-options-menu",
+      "slug": "profile-options-menu",
+      "name": "ProfileOptionsMenu",
+      "exportName": "ProfileOptionsMenu",
+      "importPath": "@/components/blocks/profile-options-menu",
+      "purpose": "Composed block — reference demo in Storybook",
+      "canonical": false,
+      "referenceOnly": true,
+      "storybook": "Blocks/ProfileOptionsMenu"
     },
     {
       "layer": "block",
@@ -1958,6 +1982,18 @@
       "canonical": false,
       "referenceOnly": true,
       "storybook": "Blocks/Radio"
+    },
+    {
+      "layer": "block",
+      "category": "side-navbar",
+      "slug": "side-navbar",
+      "name": "SideNavbar",
+      "exportName": "SideNavbar",
+      "importPath": "@/components/blocks/side-navbar",
+      "purpose": "Composed block — reference demo in Storybook",
+      "canonical": false,
+      "referenceOnly": true,
+      "storybook": "Blocks/SideNavbar"
     },
     {
       "layer": "block",

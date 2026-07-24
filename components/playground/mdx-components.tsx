@@ -10,6 +10,7 @@ import { SwatchGrid } from '@/components/playground/swatch-grid';
 import { DemoFrame } from '@/components/playground/demo-frame';
 import { PulseDemo } from '@/components/playground/demo-content/pulse-demo';
 import { AppSidebar } from '@/components/blocks/sidebar/app-sidebar';
+import { SideNavbar } from '@/components/blocks/side-navbar';
 import {
   BidOperationsDashboard,
   DesktopReferenceFrame,
@@ -59,6 +60,7 @@ export const playgroundMdxComponents: MDXComponents = {
   Badge,
   PulseDemo,
   AppSidebar,
+  SideNavbar,
   DesktopReferenceFrame,
   BidOperationsDashboard,
   SavedTendersDataIndex,

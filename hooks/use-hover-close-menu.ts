@@ -19,8 +19,8 @@ import * as React from 'react';
 // plain clearTimeout race can lose that ordering and close the menu out from
 // under the user mid-transition. Counting instead, and only closing if the
 // count is still zero when the timer fires, is immune to that ordering.
-export function useHoverCloseMenu(closeDelayMs = 300) {
-  const [open, setOpen] = React.useState(false);
+export function useHoverCloseMenu(closeDelayMs = 300, defaultOpen = false) {
+  const [open, setOpen] = React.useState(defaultOpen);
   const hoverCount = React.useRef(0);
   const engaged = React.useRef(false);
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
