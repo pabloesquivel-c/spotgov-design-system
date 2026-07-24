@@ -188,7 +188,7 @@ export function SideNavbar({
                   onClick={() => setSelected(item.key)}
                   aria-current={isSelected ? 'page' : undefined}
                   className={cn(
-                    'relative flex items-center gap-2 rounded-lg px-3 py-2 text-left outline-none transition-colors hover:bg-bg-weak-50 focus-visible:bg-bg-weak-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:focus-visible:bg-transparent',
+                    'group relative flex items-center gap-2 rounded-lg px-3 py-2 text-left outline-none transition-colors hover:bg-bg-weak-50 focus-visible:bg-bg-weak-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:focus-visible:bg-transparent',
                     isUnavailable && 'opacity-50',
                     isSelected ? 'bg-bg-weak-50' : 'bg-transparent',
                   )}
@@ -200,7 +200,7 @@ export function SideNavbar({
                         ? 'text-text-strong-950'
                         : isComingSoon
                           ? 'text-text-soft-400'
-                          : 'text-text-sub-600',
+                          : 'text-text-sub-600 group-hover:text-text-strong-950 group-focus-visible:text-text-strong-950',
                     )}
                   />
                   <span
@@ -210,7 +210,7 @@ export function SideNavbar({
                         ? 'text-text-strong-950'
                         : isComingSoon
                           ? 'text-text-soft-400'
-                          : 'text-text-sub-600',
+                          : 'text-text-sub-600 group-hover:text-text-strong-950 group-focus-visible:text-text-strong-950',
                     )}
                   >
                     {item.label}
@@ -239,7 +239,7 @@ export function SideNavbar({
                   : 'Notifications'
               }
               className={cn(
-                'relative flex items-center gap-2 rounded-lg px-3 py-2 text-left outline-none transition-colors hover:bg-bg-weak-50 focus-visible:bg-bg-weak-50',
+                'group relative flex items-center gap-2 rounded-lg px-3 py-2 text-left outline-none transition-colors hover:bg-bg-weak-50 focus-visible:bg-bg-weak-50',
                 selected === 'notifications'
                   ? 'bg-bg-weak-50'
                   : 'bg-transparent',
@@ -250,7 +250,7 @@ export function SideNavbar({
                   'size-5 shrink-0',
                   selected === 'notifications'
                     ? 'text-text-strong-950'
-                    : 'text-text-sub-600',
+                    : 'text-text-sub-600 group-hover:text-text-strong-950 group-focus-visible:text-text-strong-950',
                 )}
               />
               <span
@@ -258,7 +258,7 @@ export function SideNavbar({
                   'text-label-sm',
                   selected === 'notifications'
                     ? 'text-text-strong-950'
-                    : 'text-text-sub-600',
+                    : 'text-text-sub-600 group-hover:text-text-strong-950 group-focus-visible:text-text-strong-950',
                 )}
               >
                 Notifications

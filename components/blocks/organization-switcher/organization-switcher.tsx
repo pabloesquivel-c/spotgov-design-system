@@ -81,7 +81,7 @@ export function OrganizationSwitcher({
                 aria-current={isCurrent ? 'true' : undefined}
                 onSelect={() => onOrganizationChange(organization.id)}
                 className={cn(
-                  'min-h-9 gap-2 rounded-lg p-2 text-text-sub-600',
+                  'min-h-9 gap-2 rounded-lg p-2 text-text-sub-600 data-[highlighted]:text-text-strong-950',
                   isCurrent &&
                     'bg-bg-weak-50 text-text-strong-950 data-[highlighted]:bg-bg-weak-50',
                 )}

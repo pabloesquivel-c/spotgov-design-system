@@ -12,7 +12,6 @@ import {
 
 import * as Dropdown from '@/components/ui/dropdown';
 import { useHoverCloseMenu } from '@/hooks/use-hover-close-menu';
-import { cn } from '@/utils/cn';
 
 export type ProfileOptionsAction =
   'settings' | 'help' | 'learn-more' | 'docs' | 'contact';
@@ -112,7 +111,7 @@ export function ProfileOptionsMenu({
           onSelect={onSignOut}
           className='min-h-9 gap-2 p-2 text-text-strong-950'
         >
-          <RiLogoutCircleRLine className='size-5 shrink-0 text-text-strong-950' />
+          <RiLogoutCircleRLine className='size-5 shrink-0 text-error-base' />
           <span className='text-label-sm'>Sign out</span>
         </Dropdown.Item>
         <a
@@ -136,10 +135,8 @@ function ProfileOptionsItem({
   onAction?: (action: ProfileOptionsAction) => void;
 }) {
   const Icon = item.icon;
-  const className = cn(
-    'min-h-9 gap-2 p-2 text-text-sub-600',
-    item.action === 'help' && 'data-[highlighted]:text-text-strong-950',
-  );
+  const className =
+    'min-h-9 gap-2 p-2 text-text-sub-600 data-[highlighted]:text-text-strong-950';
 
   if (href) {
     const isExternal =
