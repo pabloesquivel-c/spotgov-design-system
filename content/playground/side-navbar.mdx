@@ -1,0 +1,21 @@
+---
+title: Side navbar
+summary: Expanded side navigation with organization switching, product capabilities, and account options.
+order: 4
+---
+
+This is a ground-up side navigation, separate from the existing sidebar. It composes shared `components/ui/*` primitives including Avatar, Badge, CompactButton, and Dropdown.
+
+<DemoFrame>
+  <div className='h-[900px]'>
+    <SideNavbar />
+  </div>
+</DemoFrame>
+
+## Three regions
+
+The panel is a flat, full-height column with a right border only. **Header** is a clickable organization card that opens the workspace switcher. **Content** holds a Tools divider and six capability rows, with Search Agent selected by default; Notifications is always last. **Footer** is a clickable account card that opens settings, support, documentation, sign-out, version, and terms links.
+
+## Wired for later phases
+
+The consuming app owns navigation. `onOrganizationChange` receives a workspace ID. Account links can be passed via `accountMenuLinks`; actions use `onAccountMenuAction`, and sign-out uses `onSignOut`. `organizationPlan` provides the plan label shown in the header.

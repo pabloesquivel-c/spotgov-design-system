@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit by hand. Run `npm run generate:manifest` after adding primitives or blocks.
 >
-> Generated: 2026-07-23 · 58 primitives · 22 block categories · 25 canonical block exports
+> Generated: 2026-07-24 · 58 primitives · 25 block categories · 25 canonical block exports
 
 Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md) §8 (which-one-when), and [`component-patterns.md`](./component-patterns.md).
 
@@ -202,11 +202,14 @@ AlignUI catalog demos. Replace placeholder copy and prefer **canonical blocks** 
 | `ServerMaintenanceModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `UploadWorkModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `NotificationsPopover` | `notification` | `@/components/blocks/notification` | Notification popover demos (reference) |
+| `OrganizationSwitcher` | `organization-switcher` | `@/components/blocks/organization-switcher` | Composed block — reference demo in Storybook |
 | `ProfileCard` | `profile-card` | `@/components/blocks/profile-card` | Profile card demos (reference) |
+| `ProfileOptionsMenu` | `profile-options-menu` | `@/components/blocks/profile-options-menu` | Composed block — reference demo in Storybook |
 | `DietaryPreferenceRadio` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
 | `ReportMessageRadio` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
 | `SecurityPrivacyRadio` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
 | `SelectableRadioCards` | `radio` | `@/components/blocks/radio` | Radio card demos (reference) |
+| `SideNavbar` | `side-navbar` | `@/components/blocks/side-navbar` | Composed block — reference demo in Storybook |
 | `AppSidebar` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
 | `SkeletonAccountFooter` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
 | `SkeletonHomeMock` | `sidebar` | `@/components/blocks/sidebar` | Primary app navigation shell |
