@@ -20,11 +20,13 @@ import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as Switch from '@/components/ui/switch';
+import * as Textarea from '@/components/ui/textarea';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsSection } from './settings-card';
+import { LinkButton } from './link-button';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
 import { DEFAULT_TEMPLATES, type AnalysisTemplate } from './mock-data';
 
@@ -156,7 +158,7 @@ export function AnalysisTemplatesSection() {
                     moveTemplate(index, index + 1);
                   }
                 }}
-                className='shrink-0 cursor-grab rounded-md text-text-soft-400 outline-none transition-colors hover:text-text-sub-600 focus-visible:ring-2 focus-visible:ring-primary-base active:cursor-grabbing'
+                className='shrink-0 cursor-grab rounded-md text-text-sub-600 outline-none transition-colors hover:text-text-strong-950 focus-visible:ring-2 focus-visible:ring-primary-base active:cursor-grabbing'
               >
                 <RiDraggable className='size-5' />
               </button>
@@ -171,9 +173,7 @@ export function AnalysisTemplatesSection() {
               </div>
 
               <label className='flex shrink-0 items-center gap-2'>
-                <span className='sr-only'>
-                  Toggle {template.name} active
-                </span>
+                <span className='sr-only'>Toggle {template.name} active</span>
                 <Switch.Root
                   checked={template.active}
                   onCheckedChange={() => toggleActive(template.id)}
@@ -182,7 +182,11 @@ export function AnalysisTemplatesSection() {
 
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <CompactButton.Root variant='ghost' size='large'>
+                  <CompactButton.Root
+                    variant='ghost'
+                    size='large'
+                    aria-label={`Actions for ${template.name}`}
+                  >
                     <CompactButton.Icon as={RiMore2Line} />
                   </CompactButton.Root>
                 </Dropdown.Trigger>
@@ -242,8 +246,7 @@ export function AnalysisTemplatesSection() {
 
         <DemoNote className='mt-3'>
           Drag the handle (or focus it and press Arrow Up/Down) to reorder
-          templates. Reordering is stored in local state only for this
-          preview.
+          templates. Reordering is stored in local state only for this preview.
         </DemoNote>
       </SettingsSection>
 
@@ -334,16 +337,28 @@ function TemplateModal({
   const [preRefine, setPreRefine] = React.useState<string | null>(null);
   const [refining, setRefining] = React.useState(false);
   const [created, setCreated] = React.useState(false);
+  const refineTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const duplicate =
     name.trim().length > 0 && isDuplicateName(name, initial?.id);
   const canSubmit =
     name.trim().length > 0 && question.trim().length > 0 && !duplicate;
 
+  React.useEffect(() => {
+    return () => {
+      if (refineTimerRef.current !== null) {
+        clearTimeout(refineTimerRef.current);
+      }
+    };
+  }, []);
+
   // TODO(connect): call the AI refine-prompt endpoint instead of the local mock.
   const handleRefine = () => {
     setRefining(true);
-    setTimeout(() => {
+    refineTimerRef.current = setTimeout(() => {
+      refineTimerRef.current = null;
       setPreRefine(question);
       setQuestion(refineQuestion(question));
       setRefining(false);
@@ -418,15 +433,15 @@ function TemplateModal({
                 </Input.Root>
                 {duplicate && (
                   <span className='text-paragraph-xs text-error-base'>
-                    A template named &ldquo;{name.trim()}&rdquo; already
-                    exists.
+                    A template named &ldquo;{name.trim()}&rdquo; already exists.
                   </span>
                 )}
               </div>
 
               <div className='flex flex-col gap-1'>
                 <Label.Root htmlFor='template-question'>Prompt</Label.Root>
-                <textarea
+                <Textarea.Root
+                  simple
                   id='template-question'
                   rows={4}
                   placeholder='Describe what this template should look for in every tender…'
@@ -435,7 +450,6 @@ function TemplateModal({
                     setQuestion(e.target.value);
                     setPreRefine(null);
                   }}
-                  className='w-full resize-none rounded-10 bg-bg-white-0 p-3 text-paragraph-sm text-text-strong-950 shadow-regular-xs outline-none ring-1 ring-inset ring-stroke-soft-200 transition placeholder:text-text-soft-400 focus:shadow-button-important-focus focus:ring-stroke-strong-950'
                 />
 
                 <div className='mt-1 flex items-center gap-3'>
@@ -457,13 +471,12 @@ function TemplateModal({
                   {preRefine !== null && (
                     <span className='flex items-center gap-1.5 text-paragraph-xs text-text-sub-600'>
                       Refined with AI
-                      <button
-                        type='button'
+                      <LinkButton
                         onClick={handleRevert}
-                        className='text-label-xs text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                        className='text-label-xs'
                       >
                         Revert
-                      </button>
+                      </LinkButton>
                     </span>
                   )}
                 </div>

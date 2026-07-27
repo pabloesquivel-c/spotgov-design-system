@@ -7,6 +7,7 @@ import {
   FeatureAnnouncementModal,
   PaymentReceivedModal,
   ServerMaintenanceModal,
+  SettingsModal,
   UploadWorkModal,
 } from './index';
 
@@ -50,4 +51,20 @@ export const FeatureAnnouncement: Story = {
 
 export const DeleteSavedSearch: Story = {
   render: () => <DeleteSavedSearchModal />,
+};
+
+export const UserSettings: Story = {
+  render: () => <SettingsModal />,
+};
+
+export const AdminSettings: Story = {
+  render: () => <SettingsModal isAdmin defaultSection='general' />,
+};
+
+export const MembersSettings: Story = {
+  render: () => <SettingsModal isAdmin defaultSection='members' />,
+};
+
+export const AnalysisTemplatesSettings: Story = {
+  render: () => <SettingsModal isAdmin defaultSection='analysis-templates' />,
 };

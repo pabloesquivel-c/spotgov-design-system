@@ -6,8 +6,9 @@ import * as Select from '@/components/ui/select';
 import * as Divider from '@/components/ui/divider';
 import { cn } from '@/utils/cn';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
+import { SettingRow } from './setting-row';
 
 type Appearance = 'light' | 'dark' | 'system';
 
@@ -35,12 +36,12 @@ function AppearancePreview({ appearance }: { appearance: Appearance }) {
     return (
       <div className='flex h-16 w-full shrink-0 overflow-hidden rounded-lg ring-1 ring-inset ring-stroke-soft-200'>
         <div className='flex h-full grow flex-col gap-1 bg-bg-white-0 p-2'>
-          <div className='h-1.5 w-[70%] rounded-[3px] bg-bg-soft-200' />
-          <div className='h-1.5 w-full rounded-[3px] bg-bg-weak-50' />
+          <div className='h-1.5 w-2/3 rounded-full bg-bg-soft-200' />
+          <div className='h-1.5 w-full rounded-full bg-bg-weak-50' />
         </div>
-        <div className='flex h-full grow flex-col gap-1 bg-[#171717] p-2'>
-          <div className='h-1.5 w-[70%] rounded-[3px] bg-[#3A3A3A]' />
-          <div className='h-1.5 w-full rounded-[3px] bg-[#2A2A2A]' />
+        <div className='flex h-full grow flex-col gap-1 bg-bg-strong-950 p-2'>
+          <div className='h-1.5 w-2/3 rounded-full bg-bg-surface-800' />
+          <div className='h-1.5 w-full rounded-full bg-bg-sub-300' />
         </div>
       </div>
     );
@@ -50,26 +51,26 @@ function AppearancePreview({ appearance }: { appearance: Appearance }) {
   return (
     <div
       className={cn(
-        'flex h-16 w-full shrink-0 flex-col gap-1.25 rounded-lg p-2 ring-1 ring-inset ring-stroke-soft-200',
-        dark ? 'bg-[#171717]' : 'bg-bg-white-0',
+        'flex h-16 w-full shrink-0 flex-col gap-1 rounded-lg p-2 ring-1 ring-inset ring-stroke-soft-200',
+        dark ? 'bg-bg-strong-950' : 'bg-bg-white-0',
       )}
     >
       <div
         className={cn(
-          'h-1.5 w-[40%] rounded-[3px]',
-          dark ? 'bg-[#3A3A3A]' : 'bg-bg-soft-200',
+          'h-1.5 w-2/5 rounded-full',
+          dark ? 'bg-bg-surface-800' : 'bg-bg-soft-200',
         )}
       />
       <div
         className={cn(
-          'h-1.5 w-[70%] rounded-[3px]',
-          dark ? 'bg-[#2A2A2A]' : 'bg-bg-weak-50',
+          'h-1.5 w-2/3 rounded-full',
+          dark ? 'bg-bg-sub-300' : 'bg-bg-weak-50',
         )}
       />
       <div
         className={cn(
-          'h-1.5 w-[55%] rounded-[3px]',
-          dark ? 'bg-[#2A2A2A]' : 'bg-bg-weak-50',
+          'h-1.5 w-1/2 rounded-full',
+          dark ? 'bg-bg-sub-300' : 'bg-bg-weak-50',
         )}
       />
     </div>
@@ -108,33 +109,28 @@ export function PreferencesSection({
       onApply={handleApply}
     >
       <div className='flex flex-col gap-5'>
-        <div className='flex items-center justify-between gap-4'>
-          <div className='flex flex-col gap-0.5'>
-            <span className='text-label-sm text-text-strong-950'>
-              Display Currency
-            </span>
-            <span className='text-paragraph-xs text-text-sub-600'>
-              Converted for display only — official tender values stay in
-              their original currency.
-            </span>
-          </div>
-          <Select.Root
-            value={currency}
-            onValueChange={setCurrency}
-            size='xsmall'
-          >
-            <Select.Trigger className='w-[140px]'>
-              <Select.Value />
-            </Select.Trigger>
-            <Select.Content>
-              {CURRENCIES.map((option) => (
-                <Select.Item key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        </div>
+        <SettingRow
+          title='Display Currency'
+          description='Converted for display only. Official tender values stay in their original currency.'
+          control={
+            <Select.Root
+              value={currency}
+              onValueChange={setCurrency}
+              size='xsmall'
+            >
+              <Select.Trigger className='w-[140px]'>
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Content>
+                {CURRENCIES.map((option) => (
+                  <Select.Item key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+          }
+        />
 
         <Divider.Root />
 
@@ -154,7 +150,7 @@ export function PreferencesSection({
                 <label
                   key={option.value}
                   className={cn(
-                    'flex cursor-pointer flex-col gap-2 rounded-xl p-2.5 ring-1 ring-inset transition-colors',
+                    'flex cursor-pointer flex-col gap-2 rounded-xl p-2.5 ring-1 ring-inset transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary-base',
                     selected
                       ? 'bg-primary-alpha-10 ring-2 ring-primary-base'
                       : 'ring-stroke-soft-200 hover:bg-bg-weak-50',
@@ -162,7 +158,7 @@ export function PreferencesSection({
                 >
                   <AppearancePreview appearance={option.value} />
                   <span className='flex items-center justify-between'>
-                    <span className='text-[13px] font-medium text-text-strong-950'>
+                    <span className='text-label-xs text-text-strong-950'>
                       {option.label}
                     </span>
                     <span

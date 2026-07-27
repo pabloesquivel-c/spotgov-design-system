@@ -8,7 +8,8 @@ import * as Divider from '@/components/ui/divider';
 import * as Label from '@/components/ui/label';
 import * as Switch from '@/components/ui/switch';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
+import { SettingRow } from './setting-row';
 import {
   DEFAULT_TENDER_NOTIFICATION_PREFS,
   NOTIFICATION_SETTINGS,
@@ -140,7 +141,7 @@ export function NotificationsSection({
       onDiscard={handleDiscard}
       onApply={handleApply}
     >
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-5'>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-col gap-0.5'>
             <h3 className='text-label-sm text-text-strong-950'>
@@ -165,7 +166,10 @@ export function NotificationsSection({
                       option.value,
                     )}
                     onCheckedChange={(checked) =>
-                      handleDeadlineLeadDayChange(option.value, checked === true)
+                      handleDeadlineLeadDayChange(
+                        option.value,
+                        checked === true,
+                      )
                     }
                   />
                   {option.label}
@@ -177,26 +181,19 @@ export function NotificationsSection({
 
         <Divider.Root variant='line-spacing' />
 
-        <div className='flex items-start justify-between gap-4'>
-          <Label.Root
-            htmlFor='daily-tender-digest'
-            className='min-w-0 flex-1 flex-col items-start gap-0.5'
-          >
-            <span className='text-label-sm text-text-strong-950'>
-              Tender email digest
-            </span>
-            <span className='text-paragraph-sm text-text-sub-600'>
-              One morning email with matching tenders, direct invitations,
-              awards, and upcoming deadlines.
-            </span>
-          </Label.Root>
-          <Switch.Root
-            id='daily-tender-digest'
-            checked={tenderPreferences.dailyDigest}
-            onCheckedChange={handleDailyDigestChange}
-            className='mt-0.5 shrink-0'
-          />
-        </div>
+        <SettingRow
+          title='Tender email digest'
+          description='One morning email with matching tenders, direct invitations, awards, and upcoming deadlines.'
+          control={
+            <Switch.Root
+              id='daily-tender-digest'
+              aria-label='Tender email digest'
+              checked={tenderPreferences.dailyDigest}
+              onCheckedChange={handleDailyDigestChange}
+              className='mt-0.5'
+            />
+          }
+        />
 
         <Divider.Root variant='line-spacing' />
 
@@ -269,8 +266,10 @@ function NotificationRow({
 }) {
   return (
     <div className='flex items-start justify-between gap-4'>
-      <div className='min-w-0 flex-1 flex flex-col gap-0.5'>
-        <span className='text-label-sm text-text-strong-950'>{setting.label}</span>
+      <div className='flex min-w-0 flex-1 flex-col gap-0.5'>
+        <span className='text-label-sm text-text-strong-950'>
+          {setting.label}
+        </span>
         <span className='text-paragraph-xs text-text-sub-600'>
           {setting.description}
         </span>

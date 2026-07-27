@@ -1,15 +1,20 @@
 'use client';
 
-import { RiBankCardLine, RiDownloadLine } from '@remixicon/react';
+import { RiCheckLine, RiDownloadLine, RiTimeLine } from '@remixicon/react';
 
 import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
-import { DEFAULT_BILLING_PLAN, DEFAULT_PAYMENT_METHOD, MOCK_INVOICES } from './mock-data';
+import {
+  DEFAULT_BILLING_PLAN,
+  DEFAULT_PAYMENT_METHOD,
+  MOCK_INVOICES,
+} from './mock-data';
+import { SettingRow } from './setting-row';
 
 export function BillingSection() {
   const seatsRemaining =
@@ -44,37 +49,37 @@ export function BillingSection() {
       title='Billing'
       description='Plan, payment method, and invoice history.'
     >
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-5'>
         <div className='flex flex-col gap-3'>
           <span className='text-label-sm text-text-strong-950'>Plan</span>
-          <div className='flex items-center justify-between gap-4 rounded-xl p-4 ring-1 ring-inset ring-stroke-soft-200'>
-            <div className='flex flex-col gap-0.5'>
-              <span className='text-label-sm text-text-strong-950'>
-                {DEFAULT_BILLING_PLAN.name} plan
-              </span>
-              <span className='text-paragraph-xs text-text-sub-600'>
-                {DEFAULT_BILLING_PLAN.price}
-              </span>
-            </div>
-            <div className='flex flex-col items-end gap-0.5'>
-              <span className='text-label-sm text-text-strong-950'>
-                {DEFAULT_BILLING_PLAN.seatsUsed}/{DEFAULT_BILLING_PLAN.seatsTotal}{' '}
-                seats used
-              </span>
-              <span className='text-paragraph-xs text-text-sub-600'>
-                {seatsRemaining} remaining
-              </span>
+          <div className='rounded-xl ring-1 ring-inset ring-stroke-soft-200'>
+            <SettingRow
+              className='p-4'
+              title={`${DEFAULT_BILLING_PLAN.name} plan`}
+              description={DEFAULT_BILLING_PLAN.price}
+              control={
+                <span className='flex flex-col items-end gap-0.5 text-right'>
+                  <span className='text-label-sm text-text-strong-950'>
+                    {DEFAULT_BILLING_PLAN.seatsUsed}/
+                    {DEFAULT_BILLING_PLAN.seatsTotal} seats used
+                  </span>
+                  <span className='text-paragraph-xs text-text-sub-600'>
+                    {seatsRemaining} remaining
+                  </span>
+                </span>
+              }
+            />
+            <div className='border-t border-stroke-soft-200 px-4 py-3'>
+              <Button.Root
+                variant='neutral'
+                mode='stroke'
+                size='small'
+                onClick={handleChangePlan}
+              >
+                Change plan
+              </Button.Root>
             </div>
           </div>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            size='small'
-            className='w-fit'
-            onClick={handleChangePlan}
-          >
-            Change plan
-          </Button.Root>
         </div>
 
         <Divider.Root />
@@ -83,28 +88,22 @@ export function BillingSection() {
           <span className='text-label-sm text-text-strong-950'>
             Payment method
           </span>
-          <div className='flex items-center justify-between gap-4 rounded-xl p-4 ring-1 ring-inset ring-stroke-soft-200'>
-            <div className='flex items-center gap-3'>
-              <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
-                <RiBankCardLine className='size-5 text-text-sub-600' />
-              </div>
-              <div className='flex flex-col gap-0.5'>
-                <span className='text-label-sm text-text-strong-950'>
-                  {DEFAULT_PAYMENT_METHOD.brand} •••• {DEFAULT_PAYMENT_METHOD.last4}
-                </span>
-                <span className='text-paragraph-xs text-text-sub-600'>
-                  Expires {DEFAULT_PAYMENT_METHOD.expiry}
-                </span>
-              </div>
-            </div>
-            <Button.Root
-              variant='neutral'
-              mode='stroke'
-              size='xsmall'
-              onClick={handleUpdatePaymentMethod}
-            >
-              Update
-            </Button.Root>
+          <div className='rounded-xl ring-1 ring-inset ring-stroke-soft-200'>
+            <SettingRow
+              className='p-4'
+              title={`${DEFAULT_PAYMENT_METHOD.brand} ending in ${DEFAULT_PAYMENT_METHOD.last4}`}
+              description={`Expires ${DEFAULT_PAYMENT_METHOD.expiry}`}
+              control={
+                <Button.Root
+                  variant='neutral'
+                  mode='stroke'
+                  size='xsmall'
+                  onClick={handleUpdatePaymentMethod}
+                >
+                  Update
+                </Button.Root>
+              }
+            />
           </div>
         </div>
 
@@ -136,12 +135,18 @@ export function BillingSection() {
                   color={invoice.status === 'paid' ? 'green' : 'orange'}
                   size='medium'
                 >
+                  {invoice.status === 'paid' ? (
+                    <RiCheckLine className='size-4' aria-hidden='true' />
+                  ) : (
+                    <RiTimeLine className='size-4' aria-hidden='true' />
+                  )}
                   {invoice.status === 'paid' ? 'Paid' : 'Due'}
                 </Badge.Root>
                 <Button.Root
                   variant='neutral'
                   mode='ghost'
                   size='xsmall'
+                  aria-label={`Download ${invoice.id}`}
                   onClick={() => handleDownloadInvoice(invoice.id)}
                 >
                   <Button.Icon as={RiDownloadLine} />
@@ -152,9 +157,8 @@ export function BillingSection() {
         </div>
 
         <DemoNote>
-          Change plan, payment method updates, and invoice downloads are
-          stubbed for this preview — nothing is actually charged or
-          downloaded.
+          Change plan, payment method updates, and invoice downloads are stubbed
+          for this preview. Nothing is actually charged or downloaded.
         </DemoNote>
       </div>
     </SettingsSection>

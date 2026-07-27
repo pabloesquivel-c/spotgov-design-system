@@ -42,7 +42,7 @@ export function SettingsSection({
   const showFooter = Boolean(onApply || onDiscard);
 
   return (
-    <section className={cn('flex w-full flex-col gap-6', className)}>
+    <section className={cn('flex w-full flex-col gap-5', className)}>
       <div className='flex items-start gap-3.5'>
         <div className='min-w-0 flex-1'>
           <h2 className='text-label-md text-text-strong-950'>{title}</h2>

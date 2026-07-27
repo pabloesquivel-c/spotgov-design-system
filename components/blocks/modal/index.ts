@@ -5,4 +5,5 @@ export { ExploreSmartphonesModal } from './explore-smartphones-modal';
 export { FeatureAnnouncementModal } from './feature-announcement-modal';
 export { PaymentReceivedModal } from './payment-received-modal';
 export { ServerMaintenanceModal } from './server-maintenance-modal';
+export { SettingsModal } from './settings-modal/settings-modal';
 export { UploadWorkModal } from './upload-work-modal';

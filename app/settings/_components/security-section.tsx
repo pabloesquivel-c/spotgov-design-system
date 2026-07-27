@@ -18,7 +18,7 @@ import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
 import { DEFAULT_SESSIONS, type Session } from './mock-data';
 
@@ -79,7 +79,7 @@ export function SecuritySection() {
         title='Security'
         description='Two-factor authentication and active sessions.'
       >
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-5'>
           <div className='flex items-center justify-between gap-4 rounded-xl p-4 ring-1 ring-inset ring-stroke-soft-200'>
             <div className='flex items-start gap-3'>
               <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
@@ -203,7 +203,7 @@ export function SecuritySection() {
         open={signOutAllOpen}
         onOpenChange={setSignOutAllOpen}
         title='Sign out of all other devices?'
-        description="Every session except this one will be signed out immediately."
+        description='Every session except this one will be signed out immediately.'
         confirmLabel='Sign out all'
         onConfirm={handleSignOutAllOtherSessions}
       />
@@ -236,13 +236,11 @@ function TwoFactorSetupModal({
         />
         <Modal.Body className='flex flex-col gap-4'>
           <div className='flex items-center justify-center rounded-xl bg-bg-weak-50 p-6'>
-            <RiQrCodeLine className='size-28 text-text-soft-400' />
+            <RiQrCodeLine className='size-28 text-text-sub-600' />
           </div>
 
           <div className='flex flex-col gap-1'>
-            <Label.Root htmlFor='two-factor-code'>
-              Verification code
-            </Label.Root>
+            <Label.Root htmlFor='two-factor-code'>Verification code</Label.Root>
             <Input.Root>
               <Input.Wrapper>
                 <Input.Input
@@ -260,8 +258,8 @@ function TwoFactorSetupModal({
           </div>
 
           <DemoNote>
-            This is a mock QR code — any 6-digit value verifies successfully
-            in this preview.
+            This is a mock QR code — any 6-digit value verifies successfully in
+            this preview.
           </DemoNote>
         </Modal.Body>
         <Modal.Footer>

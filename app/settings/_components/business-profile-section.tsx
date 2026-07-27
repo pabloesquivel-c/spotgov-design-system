@@ -6,7 +6,7 @@ import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
 
 const DETAILS = [
@@ -37,7 +37,7 @@ export function BusinessProfileSection() {
       title='Business Profile'
       description='Company details, certifications, and licenses used across bids.'
     >
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-5'>
         <dl className='grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2'>
           {DETAILS.map((detail) => (
             <div key={detail.label} className='flex flex-col gap-0.5'>
@@ -59,10 +59,7 @@ export function BusinessProfileSection() {
           </span>
           <ul className='flex flex-col gap-1'>
             {EXPECTED_ITEMS.map((item) => (
-              <li
-                key={item}
-                className='text-paragraph-sm text-text-sub-600'
-              >
+              <li key={item} className='text-paragraph-sm text-text-sub-600'>
                 {item}
               </li>
             ))}
