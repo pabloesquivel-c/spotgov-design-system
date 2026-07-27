@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit by hand. Run `npm run generate:manifest` after adding primitives or blocks.
 >
-> Generated: 2026-07-23 · 58 primitives · 22 block categories · 25 canonical block exports
+> Generated: 2026-07-27 · 58 primitives · 22 block categories · 25 canonical block exports
 
 Agent-facing inventory for SpotGov product UI. Pair with [`AGENTS.md`](../AGENTS.md), [`design-system.md`](./design-system.md) §8 (which-one-when), and [`component-patterns.md`](./component-patterns.md).
 
@@ -200,6 +200,7 @@ AlignUI catalog demos. Replace placeholder copy and prefer **canonical blocks** 
 | `FeatureAnnouncementModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `PaymentReceivedModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `ServerMaintenanceModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
+| `SettingsModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `UploadWorkModal` | `modal` | `@/components/blocks/modal` | Dialogs and confirmations |
 | `NotificationsPopover` | `notification` | `@/components/blocks/notification` | Notification popover demos (reference) |
 | `ProfileCard` | `profile-card` | `@/components/blocks/profile-card` | Profile card demos (reference) |

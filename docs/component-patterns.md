@@ -445,6 +445,32 @@ For each pattern document:
 - Generic primary label (`OK`, `Submit`) when action is specific
 - Modal with no escape except destructive choice
 
+**Registered exception — Shell modal (settings)**
+
+`components/blocks/modal/settings-modal/` is a settings-as-modal shell and
+deliberately does both anti-patterns above (whole settings surface, nested
+confirm modals on top). The exception is scoped to this one component, not a
+license to build another:
+
+- Geometry: `flex h-[min(680px,calc(100dvh-64px))] w-full max-w-[960px]
+  overflow-hidden rounded-20 p-0`. `overflow-hidden` is load-bearing (a flex
+  child's automatic minimum height resolves to 0 only when overflow isn't
+  `visible` — removing it reopens a clipped-top trap where the header and
+  close button become unreachable).
+- Rail: `w-64` (256px), `min-h-0 overflow-y-auto` list.
+- Panes: `p-5` (20px), matching the header inset — not the default `p-6`.
+- Control axis: row controls sit in a fixed `w-80` (320px) column, right-aligned.
+- Row rhythm: `divide-y divide-stroke-soft-200` at 60px pitch, not
+  interleaved `Divider.Root`.
+- Footer always renders, at a constant height, on every section — either a
+  Discard / Save changes commit (deferred-save sections only) or contextual
+  copy + a `Done` button. The close (X) control lives in the header's
+  top-right; commit actions never sit next to it.
+- Nested confirm modals inside this shell cap at `max-w-[440px]`, per the
+  regular Modal pattern above.
+
+See `docs/component-manifest.md` for the manifest entry.
+
 ---
 
 ### Onboarding / setup step

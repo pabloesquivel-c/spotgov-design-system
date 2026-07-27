@@ -5,8 +5,6 @@
 // Acme Corporation) for the account owner so the prototype lines up with the
 // Skeleton sidebar preview instead of inventing a second identity.
 
-import { mockSessionSingleOrg } from '@/components/blocks/sidebar/skeleton/skeleton-mock-session';
-
 /* ------------------------------------------------------------------ */
 /* Organization identity                                               */
 /* ------------------------------------------------------------------ */
@@ -41,67 +39,54 @@ export type Member = {
   expiresInDays?: number;
 };
 
-const owner = mockSessionSingleOrg.user;
-
-// The at-rest roster the Paper design was drawn against: one owner, one admin,
-// three members, one pending invite = 6 people. Kept intentionally small so
-// the default view matches the design; the "Simulate larger team" toggle swaps
-// in `LARGE_MEMBERS` to exercise the paginated / at-scale states.
+// The at-rest roster mirrors the Members settings frame: one owner, one admin,
+// two members, and one pending invitation.
 export const DEFAULT_MEMBERS: Member[] = [
   {
-    id: 'owner',
-    name: owner.name,
-    email: owner.email,
-    initials: owner.initials,
+    id: 'arthur-taylor',
+    name: 'Arthur Taylor',
+    email: 'arthur@alignui.com',
+    initials: 'AT',
     role: 'owner',
-    status: 'active',
-    color: 'gray',
-  },
-  {
-    id: 'sarah-chen',
-    name: 'Sarah Chen',
-    email: 'sarah@acmecorp.com',
-    initials: 'SC',
-    role: 'admin',
-    status: 'active',
-    color: 'purple',
-  },
-  {
-    id: 'james-wright',
-    name: 'James Wright',
-    email: 'james@acmecorp.com',
-    initials: 'JW',
-    role: 'member',
     status: 'active',
     color: 'blue',
   },
   {
-    id: 'maria-lopez',
-    name: 'Maria Lopez',
-    email: 'maria@acmecorp.com',
-    initials: 'ML',
-    role: 'member',
-    status: 'active',
-    color: 'sky',
-  },
-  {
-    id: 'ana-ferreira',
-    name: 'Ana Ferreira',
-    email: 'ana@acmecorp.com',
-    initials: 'AF',
-    role: 'member',
+    id: 'sophia-williams',
+    name: 'Sophia Williams',
+    email: 'sophia@alignui.com',
+    initials: 'SW',
+    role: 'admin',
     status: 'active',
     color: 'yellow',
   },
   {
-    id: 'invite-david',
-    name: 'david@partnerfirm.com',
-    email: 'david@partnerfirm.com',
-    initials: 'D',
+    id: 'james-brown',
+    name: 'James Brown',
+    email: 'james@alignui.com',
+    initials: 'JB',
+    role: 'member',
+    status: 'active',
+    color: 'gray',
+  },
+  {
+    id: 'matthew-johnson',
+    name: 'Matthew Johnson',
+    email: 'matthew@alignui.com',
+    initials: 'MJ',
+    role: 'member',
+    status: 'active',
+    color: 'purple',
+  },
+  {
+    id: 'wei-chen',
+    name: 'Wei Chen',
+    email: 'wei@alignui.com',
+    initials: 'WC',
     role: 'member',
     status: 'pending',
     color: 'gray',
-    expiresInDays: 5,
+    expiresInDays: 7,
   },
 ];
 
@@ -143,7 +128,7 @@ function initialsFor(name: string) {
 
 export const LARGE_MEMBERS: Member[] = [
   DEFAULT_MEMBERS[0], // owner
-  DEFAULT_MEMBERS[1], // Sarah Chen (admin)
+  DEFAULT_MEMBERS[1], // Sophia Williams (admin)
   {
     id: 'nina-alvarez',
     name: 'Nina Alvarez',
@@ -358,9 +343,24 @@ export type Invoice = {
 };
 
 export const MOCK_INVOICES: Invoice[] = [
-  { id: 'INV-2026-006', date: 'Jun 1, 2026', amount: '$294.00', status: 'paid' },
-  { id: 'INV-2026-005', date: 'May 1, 2026', amount: '$294.00', status: 'paid' },
-  { id: 'INV-2026-004', date: 'Apr 1, 2026', amount: '$245.00', status: 'paid' },
+  {
+    id: 'INV-2026-006',
+    date: 'Jun 1, 2026',
+    amount: '$294.00',
+    status: 'paid',
+  },
+  {
+    id: 'INV-2026-005',
+    date: 'May 1, 2026',
+    amount: '$294.00',
+    status: 'paid',
+  },
+  {
+    id: 'INV-2026-004',
+    date: 'Apr 1, 2026',
+    amount: '$245.00',
+    status: 'paid',
+  },
 ];
 
 /* ------------------------------------------------------------------ */

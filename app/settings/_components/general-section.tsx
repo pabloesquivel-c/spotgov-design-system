@@ -20,8 +20,10 @@ import * as Select from '@/components/ui/select';
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsSection } from './settings-card';
+import { LinkButton } from './link-button';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
+import { SettingRow } from './setting-row';
 import type { SectionId } from './settings-rail';
 import { DEFAULT_MEMBERS, DEFAULT_ORG, ORG_LANGUAGES } from './mock-data';
 
@@ -88,25 +90,18 @@ export function GeneralSection({
         onDiscard={handleDiscard}
         onApply={handleApply}
       >
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-5'>
           <div className='flex items-center gap-4'>
-            <span
-              className='flex size-14 shrink-0 items-center justify-center rounded-xl text-label-lg font-semibold text-static-white'
-              style={{
-                backgroundImage:
-                  'linear-gradient(135deg, #4b6bff 0%, #2547d0 100%)',
-              }}
-            >
+            <span className='flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-base to-primary-dark text-label-lg font-semibold text-static-white'>
               {orgInitials(name)}
             </span>
             <div className='flex flex-col gap-1'>
-              <button
-                type='button'
+              <LinkButton
                 onClick={handleUploadLogo}
-                className='w-fit text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                className='w-fit text-label-sm'
               >
                 Change logo
-              </button>
+              </LinkButton>
               <span className='text-paragraph-xs text-text-sub-600'>
                 SVG or PNG, up to 2MB.
               </span>
@@ -178,60 +173,53 @@ export function GeneralSection({
 
           <Divider.Root />
 
-          <div className='flex flex-col gap-3 rounded-xl p-4 ring-1 ring-inset ring-error-lighter'>
+          <div className='overflow-hidden rounded-xl ring-1 ring-inset ring-error-lighter'>
             <div className='flex flex-col gap-0.5'>
-              <span className='text-label-sm text-text-strong-950'>
+              <span className='px-4 pt-4 text-label-sm text-text-strong-950'>
                 Danger Zone
               </span>
-              <span className='text-paragraph-xs text-text-sub-600'>
+              <span className='px-4 text-paragraph-xs text-text-sub-600'>
                 These actions are irreversible. Proceed with caution.
               </span>
             </div>
 
-            <div className='flex items-center justify-between gap-4 border-t border-stroke-soft-200 pt-3'>
-              <div className='flex flex-col gap-0.5'>
-                <span className='text-label-sm text-text-strong-950'>
-                  Transfer ownership
-                </span>
-                <span className='text-paragraph-xs text-text-sub-600'>
-                  Hand over the Owner role to an active admin.
-                </span>
-              </div>
-              <Button.Root
-                variant='neutral'
-                mode='stroke'
-                size='small'
-                className='shrink-0'
-                onClick={() => setTransferOpen(true)}
-              >
-                <Button.Icon as={RiExchange2Line} />
-                Transfer
-              </Button.Root>
+            <div className='mt-4 flex flex-col divide-y divide-error-lighter'>
+              <SettingRow
+                className='px-4 py-3'
+                title='Transfer ownership'
+                description='Hand over the Owner role to an active admin.'
+                control={
+                  <Button.Root
+                    variant='neutral'
+                    mode='stroke'
+                    size='small'
+                    onClick={() => setTransferOpen(true)}
+                  >
+                    <Button.Icon as={RiExchange2Line} />
+                    Transfer
+                  </Button.Root>
+                }
+              />
+              <SettingRow
+                className='px-4 py-3'
+                title='Delete organization'
+                description='Permanently deletes all tenders, contracts, and members.'
+                control={
+                  <Button.Root
+                    variant='error'
+                    mode='stroke'
+                    size='small'
+                    onClick={() => setDeleteOpen(true)}
+                  >
+                    <Button.Icon as={RiDeleteBinLine} />
+                    Delete
+                  </Button.Root>
+                }
+              />
             </div>
 
-            <div className='flex items-center justify-between gap-4 border-t border-stroke-soft-200 pt-3'>
-              <div className='flex flex-col gap-0.5'>
-                <span className='text-label-sm text-text-strong-950'>
-                  Delete organization
-                </span>
-                <span className='text-paragraph-xs text-text-sub-600'>
-                  Permanently deletes all tenders, contracts, and members.
-                </span>
-              </div>
-              <Button.Root
-                variant='error'
-                mode='stroke'
-                size='small'
-                className='shrink-0'
-                onClick={() => setDeleteOpen(true)}
-              >
-                <Button.Icon as={RiDeleteBinLine} />
-                Delete
-              </Button.Root>
-            </div>
-
-            <DemoNote>
-              Both actions are stubbed for this preview — no data is actually
+            <DemoNote className='px-4 pb-4 pt-1'>
+              Both actions are stubbed for this preview. No data is actually
               transferred or removed.
             </DemoNote>
           </div>
@@ -347,7 +335,7 @@ function TransferOwnershipModal({
                       <label
                         key={admin.id}
                         className={cn(
-                          'flex cursor-pointer items-center gap-3 rounded-xl p-3 ring-1 ring-inset transition-colors',
+                          'flex cursor-pointer items-center gap-3 rounded-xl p-3 ring-1 ring-inset transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary-base',
                           isSelected
                             ? 'bg-primary-alpha-10 ring-2 ring-primary-base'
                             : 'ring-stroke-soft-200 hover:bg-bg-weak-50',
@@ -451,8 +439,7 @@ function DeleteOrgModal({
 
               <div className='mt-4 flex flex-col gap-1'>
                 <Label.Root htmlFor='confirm-org-name'>
-                  Type <span className='font-medium'>{orgName}</span> to
-                  confirm
+                  Type <span className='font-medium'>{orgName}</span> to confirm
                 </Label.Root>
                 <Input.Root hasError={value.length > 0 && !matches}>
                   <Input.Wrapper>

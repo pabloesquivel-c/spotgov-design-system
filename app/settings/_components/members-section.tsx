@@ -1,64 +1,68 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import {
   RiAddLine,
   RiAlertLine,
-  RiArrowLeftSLine,
-  RiArrowRightSLine,
+  RiArrowUpDownLine,
   RiCloseLine,
+  RiFilter3Line,
   RiMore2Line,
   RiSearchLine,
+  RiUserAddLine,
 } from '@remixicon/react';
 
 import * as Avatar from '@/components/ui/avatar';
-import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
+import * as Checkbox from '@/components/ui/checkbox';
 import * as CompactButton from '@/components/ui/compact-button';
 import * as Dropdown from '@/components/ui/dropdown';
 import * as Input from '@/components/ui/input';
+import * as Kbd from '@/components/ui/kbd';
 import * as Modal from '@/components/ui/modal';
-import * as Pagination from '@/components/ui/pagination';
 import * as Select from '@/components/ui/select';
-import * as Switch from '@/components/ui/switch';
+import * as StatusBadge from '@/components/ui/status-badge';
+import * as Table from '@/components/ui/table';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 import { cn } from '@/utils/cn';
 
-import { SettingsSection } from './settings-card';
-import { DemoNote } from './demo-note';
+import { LinkButton } from './link-button';
 import {
   DEFAULT_BILLING_PLAN,
   DEFAULT_MEMBERS,
-  LARGE_MEMBERS,
   MEMBER_ROLE_LABEL,
-  type AvatarColor,
   type Member,
   type MemberRole,
 } from './mock-data';
 
-const PAGE_SIZE = 6;
 const ORG_DOMAIN = 'acmecorp.com';
 const ORG_NAME = 'Acme Corporation';
-const FILTER_THRESHOLD = 8;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Invitee = { id: number; email: string; role: MemberRole };
 
-export function MembersSection({
-  readOnly = false,
-  onNavigateGeneral,
-}: {
-  readOnly?: boolean;
-  onNavigateGeneral?: () => void;
-}) {
-  const [largeTeam, setLargeTeam] = React.useState(false);
+const MEMBER_AVATAR_IMAGES: Record<string, string> = {
+  'arthur-taylor': '/images/settings-members/arthur-taylor.png',
+  'sophia-williams': '/images/settings-members/sophia-williams.png',
+  'james-brown': '/images/settings-members/james-brown.png',
+  'matthew-johnson': '/images/settings-members/matthew-johnson.png',
+  'wei-chen': '/images/settings-members/wei-chen.png',
+};
+
+export function MembersSection() {
   const [members, setMembers] = React.useState<Member[]>(DEFAULT_MEMBERS);
-  const [page, setPage] = React.useState(1);
   const [query, setQuery] = React.useState('');
+  const [pendingOnly, setPendingOnly] = React.useState(false);
+  const [selectedMemberIds, setSelectedMemberIds] = React.useState<string[]>(
+    [],
+  );
 
   // confirm-remove / confirm-cancel state
-  const [pendingRemoval, setPendingRemoval] = React.useState<Member | null>(null);
+  const [pendingRemoval, setPendingRemoval] = React.useState<Member | null>(
+    null,
+  );
 
   // confirm-role-change state
   const [pendingRoleChange, setPendingRoleChange] = React.useState<{
@@ -69,12 +73,6 @@ export function MembersSection({
   // invite modal state
   const [inviteOpen, setInviteOpen] = React.useState(false);
 
-  const handleToggleLargeTeam = (on: boolean) => {
-    setLargeTeam(on);
-    setMembers(on ? LARGE_MEMBERS : DEFAULT_MEMBERS);
-    setPage(1);
-  };
-
   const q = query.trim().toLowerCase();
   const visibleMembers = q
     ? members.filter(
@@ -82,23 +80,12 @@ export function MembersSection({
           m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q),
       )
     : members;
-
-  const owner = visibleMembers.find((m) => m.role === 'owner');
-  const admins = visibleMembers.filter((m) => m.role === 'admin');
-  const activeMembers = visibleMembers.filter(
-    (m) => m.role === 'member' && m.status === 'active',
-  );
-  const pending = visibleMembers.filter((m) => m.status === 'pending');
-
-  const totalActive = members.filter((m) => m.status === 'active').length;
-  const totalPending = members.filter((m) => m.status === 'pending').length;
-
-  const totalPages = Math.max(1, Math.ceil(activeMembers.length / PAGE_SIZE));
-  const currentPage = Math.min(page, totalPages);
-  const pageItems = activeMembers.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const filteredMembers = pendingOnly
+    ? visibleMembers.filter((member) => member.status === 'pending')
+    : visibleMembers;
+  const allSelected =
+    filteredMembers.length > 0 &&
+    filteredMembers.every((member) => selectedMemberIds.includes(member.id));
 
   const seatsRemaining = Math.max(
     0,
@@ -177,193 +164,90 @@ export function MembersSection({
     });
   };
 
-  const headerDescription =
-    totalPending > 0
-      ? `${totalActive} member${totalActive === 1 ? '' : 's'} · ${totalPending} pending invite${totalPending === 1 ? '' : 's'}`
-      : `${totalActive} member${totalActive === 1 ? '' : 's'} have access to this organization.`;
+  const toggleMember = (memberId: string, checked: boolean) => {
+    setSelectedMemberIds((current) =>
+      checked
+        ? [...new Set([...current, memberId])]
+        : current.filter((id) => id !== memberId),
+    );
+  };
+
+  const toggleAllMembers = (checked: boolean) => {
+    setSelectedMemberIds((current) =>
+      checked
+        ? [
+            ...new Set([
+              ...current,
+              ...filteredMembers.map((member) => member.id),
+            ]),
+          ]
+        : current.filter(
+            (id) => !filteredMembers.some((member) => member.id === id),
+          ),
+    );
+  };
 
   return (
     <>
-      <SettingsSection
-        title='Members'
-        description={headerDescription}
-        headerAction={
-          readOnly ? (
-            <Badge.Root variant='lighter' color='gray' size='medium'>
-              View only
-            </Badge.Root>
-          ) : (
-            <Button.Root
-              variant='primary'
-              size='small'
-              onClick={() => setInviteOpen(true)}
-            >
-              <Button.Icon as={RiAddLine} />
-              Invite
-            </Button.Root>
-          )
-        }
-      >
-        <div className='flex flex-col gap-5'>
-          {/* Simulate-larger-team demo control */}
-          {!readOnly && (
-            <div className='flex flex-col gap-1.5 rounded-xl bg-bg-weak-50 p-3'>
-              <label className='flex items-center justify-between gap-4'>
-                <span className='text-label-sm text-text-strong-950'>
-                  Simulate larger team
-                </span>
-                <Switch.Root
-                  checked={largeTeam}
-                  onCheckedChange={handleToggleLargeTeam}
-                />
-              </label>
-              <DemoNote>
-                Swaps the {DEFAULT_MEMBERS.length}-person roster for a{' '}
-                {LARGE_MEMBERS.length}-person one so pagination pages through
-                different people. This toggle is a demo affordance, not part of
-                the shipped design.
-              </DemoNote>
-            </div>
-          )}
+      <section className='flex w-full flex-col bg-bg-white-0'>
+        <header className='flex min-h-20 items-center gap-3 px-5 py-4'>
+          <div className='min-w-0 flex-1'>
+            <h2 className='text-label-lg text-text-strong-950'>Members</h2>
+            <p className='mt-1 text-paragraph-sm text-text-sub-600'>
+              Manage team members and roles.
+            </p>
+          </div>
+          <Button.Root
+            variant='primary'
+            size='xsmall'
+            className='shrink-0'
+            onClick={() => setInviteOpen(true)}
+          >
+            <Button.Icon as={RiUserAddLine} />
+            Invite Members
+          </Button.Root>
+        </header>
 
-          {members.length > FILTER_THRESHOLD && (
-            <Input.Root size='small'>
+        <div className='flex min-h-0 flex-1 flex-col gap-4 p-5'>
+          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+            <Input.Root size='xsmall' className='w-full sm:max-w-[300px]'>
               <Input.Wrapper>
                 <Input.Icon as={RiSearchLine} />
                 <Input.Input
-                  placeholder='Filter by name or email'
+                  aria-label='Search members'
+                  placeholder='Search...'
                   value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                    setPage(1);
-                  }}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
+                <Input.Affix className='pr-1'>
+                  <Kbd.Root>⌘1</Kbd.Root>
+                </Input.Affix>
               </Input.Wrapper>
             </Input.Root>
-          )}
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              size='xsmall'
+              aria-pressed={pendingOnly}
+              onClick={() => setPendingOnly((current) => !current)}
+            >
+              <Button.Icon as={RiFilter3Line} />
+              Filter
+            </Button.Root>
+          </div>
 
-          {owner && (
-            <RoleGroup label='Owner'>
-              <MemberRow
-                member={owner}
-                readOnly={readOnly}
-                onChangeRole={requestRoleChange}
-                onRequestRemoval={setPendingRemoval}
-                footnote={
-                  !readOnly && onNavigateGeneral ? (
-                    <button
-                      type='button'
-                      onClick={onNavigateGeneral}
-                      className='text-paragraph-xs text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
-                    >
-                      Transfer ownership from General → Danger Zone
-                    </button>
-                  ) : null
-                }
-              />
-            </RoleGroup>
-          )}
-
-          {admins.length > 0 && (
-            <RoleGroup label='Admins'>
-              {admins.map((member, index) => (
-                <React.Fragment key={member.id}>
-                  {index > 0 && (
-                    <div className='h-px shrink-0 bg-stroke-soft-200' />
-                  )}
-                  <MemberRow
-                    member={member}
-                    readOnly={readOnly}
-                    onChangeRole={requestRoleChange}
-                    onRequestRemoval={setPendingRemoval}
-                  />
-                </React.Fragment>
-              ))}
-            </RoleGroup>
-          )}
-
-          {activeMembers.length > 0 && (
-            <RoleGroup label='Members'>
-              {pageItems.map((member, index) => (
-                <React.Fragment key={member.id}>
-                  {index > 0 && (
-                    <div className='h-px shrink-0 bg-stroke-soft-200' />
-                  )}
-                  <MemberRow
-                    member={member}
-                    readOnly={readOnly}
-                    onChangeRole={requestRoleChange}
-                    onRequestRemoval={setPendingRemoval}
-                  />
-                </React.Fragment>
-              ))}
-            </RoleGroup>
-          )}
-
-          {pending.length > 0 && (
-            <RoleGroup label='Pending Invitations' dashed>
-              {pending.map((member, index) => (
-                <React.Fragment key={member.id}>
-                  {index > 0 && (
-                    <div className='h-px shrink-0 bg-stroke-soft-200' />
-                  )}
-                  <MemberRow
-                    member={member}
-                    readOnly={readOnly}
-                    onChangeRole={requestRoleChange}
-                    onRequestRemoval={setPendingRemoval}
-                    onResend={() => resendInvite(member)}
-                  />
-                </React.Fragment>
-              ))}
-            </RoleGroup>
-          )}
-
-          {visibleMembers.length === 0 && (
-            <DemoNote className='justify-center text-center'>
-              No members match &ldquo;{query}&rdquo;.
-            </DemoNote>
-          )}
-
-          {/* Pagination — only the Members group grows unbounded */}
-          {activeMembers.length > PAGE_SIZE && (
-            <div className='flex flex-col items-center gap-2 border-t border-stroke-soft-200 pt-3.5'>
-              <Pagination.Root variant='basic'>
-                <Pagination.NavButton
-                  aria-label='Previous page'
-                  disabled={currentPage === 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                >
-                  <Pagination.NavIcon as={RiArrowLeftSLine} />
-                </Pagination.NavButton>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <Pagination.Item
-                    key={p}
-                    current={p === currentPage}
-                    onClick={() => setPage(p)}
-                  >
-                    {p}
-                  </Pagination.Item>
-                ))}
-                <Pagination.NavButton
-                  aria-label='Next page'
-                  disabled={currentPage === totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                >
-                  <Pagination.NavIcon as={RiArrowRightSLine} />
-                </Pagination.NavButton>
-              </Pagination.Root>
-            </div>
-          )}
-          {!largeTeam && !readOnly && (
-            <DemoNote className='justify-center text-center'>
-              Only {DEFAULT_MEMBERS.length} members exist at this size, so
-              there&apos;s a single page. Turn on &ldquo;Simulate larger
-              team&rdquo; to page through more.
-            </DemoNote>
-          )}
+          <MembersTable
+            members={filteredMembers}
+            selectedMemberIds={selectedMemberIds}
+            allSelected={allSelected}
+            onToggleAll={toggleAllMembers}
+            onToggleMember={toggleMember}
+            onChangeRole={requestRoleChange}
+            onRequestRemoval={setPendingRemoval}
+            onResend={resendInvite}
+          />
         </div>
-      </SettingsSection>
+      </section>
 
       <DestructiveConfirmModal
         open={pendingRemoval !== null}
@@ -402,171 +286,237 @@ export function MembersSection({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Role group — bordered card wrapping one role's rows                */
-/* ------------------------------------------------------------------ */
-
-function RoleGroup({
-  label,
-  dashed,
-  children,
-}: {
-  label: string;
-  dashed?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className='flex flex-col gap-2'>
-      <span className='text-[12px] font-medium uppercase tracking-[0.04em] text-text-sub-600'>
-        {label}
-      </span>
-      <div
-        className={cn(
-          'flex flex-col overflow-hidden rounded-xl border',
-          dashed
-            ? 'border-dashed border-stroke-sub-300 bg-bg-weak-50'
-            : 'border-solid border-stroke-soft-200',
-        )}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Member row                                                          */
-/* ------------------------------------------------------------------ */
-
-function roleBadgeColor(role: MemberRole) {
-  if (role === 'owner') return 'purple' as const;
-  if (role === 'admin') return 'blue' as const;
-  return 'gray' as const;
-}
-
-function MemberRow({
-  member,
-  readOnly,
+function MembersTable({
+  members,
+  selectedMemberIds,
+  allSelected,
+  onToggleAll,
+  onToggleMember,
   onChangeRole,
   onRequestRemoval,
   onResend,
-  footnote,
 }: {
-  member: Member;
-  readOnly: boolean;
+  members: Member[];
+  selectedMemberIds: string[];
+  allSelected: boolean;
+  onToggleAll: (checked: boolean) => void;
+  onToggleMember: (memberId: string, checked: boolean) => void;
   onChangeRole: (id: string, role: MemberRole) => void;
   onRequestRemoval: (member: Member) => void;
-  /** Only invoked for pending invitations — see the Dropdown menu below. */
-  onResend?: () => void;
-  footnote?: React.ReactNode;
+  onResend: (member: Member) => void;
 }) {
-  const isPending = member.status === 'pending';
-  const isOwner = member.role === 'owner';
+  if (members.length === 0) {
+    return (
+      <div className='flex min-h-48 flex-col items-center justify-center px-6 text-center'>
+        <p className='text-label-sm text-text-strong-950'>No members found</p>
+        <p className='mt-1 text-paragraph-xs text-text-sub-600'>
+          Adjust the search or filter to see members.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className='flex flex-col gap-1 px-3.5 py-3'>
-      <div className='flex items-center gap-3'>
-        <Avatar.Root size='32' color={member.color as AvatarColor}>
-          {member.initials}
-        </Avatar.Root>
+    <Table.Root>
+      <colgroup>
+        <col className='w-[38%]' />
+        <col className='w-[30%]' />
+        <col className='w-[24%]' />
+        <col className='w-12' />
+      </colgroup>
+      <Table.Header>
+        <Table.Row>
+          <Table.Head className='h-9 p-0 align-middle'>
+            <div className='flex items-center gap-2.5 px-3 py-2'>
+              <Checkbox.Root
+                checked={allSelected}
+                aria-label='Select all members'
+                onCheckedChange={(checked) => onToggleAll(checked === true)}
+              />
+              <TableColumnLabel>User</TableColumnLabel>
+            </div>
+          </Table.Head>
+          <Table.Head className='h-9 p-0 align-middle'>
+            <div className='px-3 py-2'>
+              <TableColumnLabel>Email Address</TableColumnLabel>
+            </div>
+          </Table.Head>
+          <Table.Head className='h-9 p-0 align-middle'>
+            <div className='px-3 py-2'>
+              <TableColumnLabel>Role</TableColumnLabel>
+            </div>
+          </Table.Head>
+          <Table.Head className='h-9 p-0' aria-label='Actions' />
+        </Table.Row>
+      </Table.Header>
+      <Table.Body spacing={8}>
+        {members.map((member, index) => (
+          <React.Fragment key={member.id}>
+            {index > 0 && <Table.RowDivider />}
+            <Table.Row>
+              <Table.Cell className='h-12 py-3'>
+                <div className='flex min-w-0 items-center gap-3'>
+                  <Checkbox.Root
+                    checked={selectedMemberIds.includes(member.id)}
+                    aria-label={`Select ${member.name}`}
+                    onCheckedChange={(checked) =>
+                      onToggleMember(member.id, checked === true)
+                    }
+                  />
+                  <MemberAvatar member={member} />
+                  <span className='truncate text-label-sm text-text-strong-950'>
+                    {member.name}
+                  </span>
+                </div>
+              </Table.Cell>
+              <Table.Cell className='h-12 py-3'>
+                <span className='block truncate text-paragraph-sm text-text-sub-600'>
+                  {member.email}
+                </span>
+              </Table.Cell>
+              <Table.Cell className='h-12 py-3'>
+                <MemberRoleBadge member={member} />
+              </Table.Cell>
+              <Table.Cell className='h-12 px-3 py-3 text-center'>
+                <MemberActions
+                  member={member}
+                  onChangeRole={onChangeRole}
+                  onRequestRemoval={onRequestRemoval}
+                  onResend={onResend}
+                />
+              </Table.Cell>
+            </Table.Row>
+          </React.Fragment>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  );
+}
 
-        <div className='flex min-w-0 flex-1 flex-col'>
-          <span className='truncate text-label-sm text-text-strong-950'>
-            {member.name}
-          </span>
-          {isPending ? (
-            <span className='truncate text-paragraph-xs text-text-sub-600'>
-              Expires in {member.expiresInDays ?? 7} day
-              {member.expiresInDays === 1 ? '' : 's'}
-            </span>
-          ) : (
-            <span className='truncate text-paragraph-xs text-text-sub-600'>
-              {member.email}
-            </span>
-          )}
-        </div>
+function TableColumnLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className='flex items-center gap-0.5 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
+      {children}
+      <RiArrowUpDownLine className='size-5' aria-hidden='true' />
+    </span>
+  );
+}
 
-        <div className='flex shrink-0 items-center gap-2'>
-          {isPending ? (
-            <Badge.Root variant='light' color='orange' size='medium'>
-              Pending
-            </Badge.Root>
-          ) : (
-            <Badge.Root
-              variant='light'
-              color={roleBadgeColor(member.role)}
-              size='medium'
+function MemberRoleBadge({ member }: { member: Member }) {
+  const label =
+    member.status === 'pending'
+      ? 'Pending Invitation'
+      : MEMBER_ROLE_LABEL[member.role];
+  const status =
+    member.status === 'pending'
+      ? 'pending'
+      : member.role === 'admin'
+        ? 'completed'
+        : 'disabled';
+
+  return (
+    <StatusBadge.Root variant='stroke' status={status}>
+      <StatusBadge.Dot />
+      {label}
+    </StatusBadge.Root>
+  );
+}
+
+function MemberAvatar({ member }: { member: Member }) {
+  const src = MEMBER_AVATAR_IMAGES[member.id];
+
+  if (src) {
+    return (
+      <Image
+        src={src}
+        alt=''
+        width={24}
+        height={24}
+        className='size-6 shrink-0 rounded-full object-cover'
+      />
+    );
+  }
+
+  return (
+    <Avatar.Root size='24' color={member.color}>
+      {member.initials}
+    </Avatar.Root>
+  );
+}
+
+function MemberActions({
+  member,
+  onChangeRole,
+  onRequestRemoval,
+  onResend,
+}: {
+  member: Member;
+  onChangeRole: (id: string, role: MemberRole) => void;
+  onRequestRemoval: (member: Member) => void;
+  onResend: (member: Member) => void;
+}) {
+  const isPending = member.status === 'pending';
+
+  return (
+    <Dropdown.Root>
+      <Dropdown.Trigger asChild>
+        <CompactButton.Root
+          variant='ghost'
+          size='large'
+          aria-label={`Actions for ${member.name}`}
+        >
+          <CompactButton.Icon as={RiMore2Line} />
+        </CompactButton.Root>
+      </Dropdown.Trigger>
+      <Dropdown.Content align='end' className='w-[220px]'>
+        {isPending ? (
+          <>
+            <Dropdown.Item onSelect={() => onResend(member)}>
+              Resend invite
+            </Dropdown.Item>
+            <Dropdown.Item
+              className='text-error-base data-[highlighted]:text-error-base'
+              onSelect={() => onRequestRemoval(member)}
             >
-              {MEMBER_ROLE_LABEL[member.role]}
-            </Badge.Root>
-          )}
-
-          {/* Owner has no row actions; read-only preview hides all menus */}
-          {isOwner || readOnly ? (
-            <div className='size-7' aria-hidden='true' />
-          ) : (
-            <Dropdown.Root>
-              <Dropdown.Trigger asChild>
-                <CompactButton.Root variant='ghost' size='large'>
-                  <CompactButton.Icon as={RiMore2Line} />
-                </CompactButton.Root>
-              </Dropdown.Trigger>
-              <Dropdown.Content align='end' className='w-[220px]'>
-                {isPending ? (
-                  <>
-                    <Dropdown.Item onSelect={onResend}>
-                      Resend invite
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      className='text-error-base data-[highlighted]:text-error-base'
-                      onSelect={() => onRequestRemoval(member)}
-                    >
-                      Cancel invite
-                    </Dropdown.Item>
-                  </>
-                ) : (
-                  <>
-                    <Dropdown.MenuSub>
-                      <Dropdown.MenuSubTrigger>
-                        Change role
-                      </Dropdown.MenuSubTrigger>
-                      <Dropdown.MenuSubContent className='w-[160px]'>
-                        <Dropdown.RadioGroup
-                          value={member.role}
-                          onValueChange={(v) =>
-                            onChangeRole(member.id, v as MemberRole)
-                          }
-                        >
-                          <Dropdown.RadioItem
-                            value='admin'
-                            className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
-                          >
-                            Admin
-                          </Dropdown.RadioItem>
-                          <Dropdown.RadioItem
-                            value='member'
-                            className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
-                          >
-                            Member
-                          </Dropdown.RadioItem>
-                        </Dropdown.RadioGroup>
-                      </Dropdown.MenuSubContent>
-                    </Dropdown.MenuSub>
-                    <Dropdown.Item
-                      className='text-error-base data-[highlighted]:text-error-base'
-                      onSelect={() => onRequestRemoval(member)}
-                    >
-                      Remove from organization
-                    </Dropdown.Item>
-                  </>
-                )}
-              </Dropdown.Content>
-            </Dropdown.Root>
-          )}
-        </div>
-      </div>
-      {footnote && <div className='pl-11'>{footnote}</div>}
-    </div>
+              Cancel invite
+            </Dropdown.Item>
+          </>
+        ) : (
+          <>
+            <Dropdown.MenuSub>
+              <Dropdown.MenuSubTrigger>Change role</Dropdown.MenuSubTrigger>
+              <Dropdown.MenuSubContent className='w-[160px]'>
+                <Dropdown.RadioGroup
+                  value={member.role}
+                  onValueChange={(value) =>
+                    onChangeRole(member.id, value as MemberRole)
+                  }
+                >
+                  <Dropdown.RadioItem
+                    value='admin'
+                    className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
+                  >
+                    Admin
+                  </Dropdown.RadioItem>
+                  <Dropdown.RadioItem
+                    value='member'
+                    className='cursor-pointer rounded-lg p-2 text-paragraph-sm outline-none data-[highlighted]:bg-bg-weak-50'
+                  >
+                    Member
+                  </Dropdown.RadioItem>
+                </Dropdown.RadioGroup>
+              </Dropdown.MenuSubContent>
+            </Dropdown.MenuSub>
+            <Dropdown.Item
+              className='text-error-base data-[highlighted]:text-error-base'
+              onSelect={() => onRequestRemoval(member)}
+            >
+              Remove from organization
+            </Dropdown.Item>
+          </>
+        )}
+      </Dropdown.Content>
+    </Dropdown.Root>
   );
 }
 
@@ -806,14 +756,19 @@ function InviteModal({
                         size='xsmall'
                         variant='compact'
                         value={invitee.role}
-                        onValueChange={(v) => setRole(invitee.id, v as MemberRole)}
+                        onValueChange={(v) =>
+                          setRole(invitee.id, v as MemberRole)
+                        }
                       >
                         <Select.Trigger className='w-[110px]'>
                           <Select.Value />
                         </Select.Trigger>
                         <Select.Content>
                           {ROLE_OPTIONS.map((option) => (
-                            <Select.Item key={option.value} value={option.value}>
+                            <Select.Item
+                              key={option.value}
+                              value={option.value}
+                            >
                               {option.label}
                             </Select.Item>
                           ))}
@@ -839,17 +794,16 @@ function InviteModal({
               </ul>
             )}
 
-            <button
-              type='button'
+            <LinkButton
               onClick={() => {
                 commitEmails(draft);
                 inputRef.current?.focus();
               }}
-              className='flex w-fit items-center gap-1 text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+              className='flex w-fit items-center gap-1 text-label-sm'
             >
               <RiAddLine className='size-4' />
               Add another person
-            </button>
+            </LinkButton>
 
             <p className='text-paragraph-xs text-text-sub-600'>
               They&apos;ll get an email invite to join {ORG_NAME}. Invite links

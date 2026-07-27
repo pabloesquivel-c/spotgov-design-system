@@ -17,7 +17,7 @@ import * as Modal from '@/components/ui/modal';
 import { DestructiveConfirmModal } from '@/components/blocks/modal/destructive-confirm-modal';
 import { notification } from '@/hooks/use-notification';
 
-import { SettingsSection } from './settings-card';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
 import {
   DEFAULT_INTEGRATIONS,
@@ -49,7 +49,7 @@ export function IntegrationsSection() {
         title='Integrations'
         description='Connect e-procurement platforms to sync tenders automatically.'
       >
-        <ul className='flex flex-col divide-y divide-stroke-soft-200'>
+        <ul className='flex flex-col divide-y divide-stroke-soft-200 rounded-xl ring-1 ring-inset ring-stroke-soft-200'>
           {DEFAULT_INTEGRATIONS.map((integration) => (
             <IntegrationRow
               key={integration.id}
@@ -135,7 +135,7 @@ function IntegrationRow({
   onReconnect: () => void;
 }) {
   return (
-    <li className='flex items-center gap-3 py-4'>
+    <li className='flex items-center gap-3 px-4 py-3'>
       <div className='flex size-10 shrink-0 items-center justify-center rounded-full bg-bg-white-0 ring-1 ring-inset ring-stroke-soft-200'>
         <RiPlugLine className='size-5 text-text-sub-600' />
       </div>
@@ -146,7 +146,10 @@ function IntegrationRow({
         </span>
         {status === 'failed' ? (
           <span className='flex items-center gap-1 text-paragraph-xs text-error-base'>
-            <RiErrorWarningLine className='size-3.5 shrink-0' aria-hidden='true' />
+            <RiErrorWarningLine
+              className='size-3.5 shrink-0'
+              aria-hidden='true'
+            />
             Connection failed, reconnect required
           </span>
         ) : status === 'connected' ? (
@@ -185,7 +188,11 @@ function IntegrationRow({
         {status !== 'not-connected' && (
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
-              <CompactButton.Root variant='ghost' size='large'>
+              <CompactButton.Root
+                variant='ghost'
+                size='large'
+                aria-label={`More actions for ${integration.name}`}
+              >
                 <CompactButton.Icon as={RiMore2Line} />
               </CompactButton.Root>
             </Dropdown.Trigger>
@@ -233,8 +240,8 @@ function ConnectModal({
         />
         <Modal.Body className='flex flex-col gap-4'>
           <p className='text-paragraph-sm text-text-sub-600'>
-            Use your {name} credentials to link this organization. SpotGov
-            then syncs tender notices automatically.
+            Use your {name} credentials to link this organization. SpotGov then
+            syncs tender notices automatically.
           </p>
 
           <div className='flex flex-col gap-1'>

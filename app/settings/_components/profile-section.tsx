@@ -12,7 +12,8 @@ import * as Label from '@/components/ui/label';
 import { notification } from '@/hooks/use-notification';
 import { mockSessionSingleOrg } from '@/components/blocks/sidebar/skeleton/skeleton-mock-session';
 
-import { SettingsSection } from './settings-card';
+import { LinkButton } from './link-button';
+import { SettingsSection } from './settings-section';
 import { DemoNote } from './demo-note';
 
 const owner = mockSessionSingleOrg.user;
@@ -25,7 +26,10 @@ export function ProfileSection({
 }) {
   const [name, setName] = React.useState(owner.name);
   const [email, setEmail] = React.useState(owner.email);
-  const [saved, setSaved] = React.useState({ name: owner.name, email: owner.email });
+  const [saved, setSaved] = React.useState({
+    name: owner.name,
+    email: owner.email,
+  });
   const [pendingEmail, setPendingEmail] = React.useState<string | null>(null);
 
   const [currentPassword, setCurrentPassword] = React.useState('');
@@ -119,19 +123,18 @@ export function ProfileSection({
       onDiscard={handleDiscard}
       onApply={handleApply}
     >
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-5'>
         <div className='flex items-center gap-4'>
           <Avatar.Root size='64' color='gray'>
             {owner.initials}
           </Avatar.Root>
           <div className='flex flex-col gap-1'>
-            <button
-              type='button'
+            <LinkButton
               onClick={handleUploadPhoto}
-              className='w-fit text-label-sm text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+              className='w-fit text-label-sm'
             >
               Change photo
-            </button>
+            </LinkButton>
             <span className='text-paragraph-xs text-text-sub-600'>
               JPG or PNG, up to 2MB.
             </span>
@@ -166,8 +169,8 @@ export function ProfileSection({
             </Input.Root>
             <Hint.Root>
               Password accounts can change their email here with a one-time
-              code. SSO-provisioned accounts manage email through their
-              identity provider instead, and can&apos;t edit it here.
+              code. SSO-provisioned accounts manage email through their identity
+              provider instead, and can&apos;t edit it here.
             </Hint.Root>
 
             {pendingEmail && (
@@ -181,13 +184,12 @@ export function ProfileSection({
                     </span>
                   </span>
                   <div className='flex items-center gap-3'>
-                    <button
-                      type='button'
+                    <LinkButton
                       onClick={handleResendCode}
-                      className='text-label-xs text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                      className='text-label-xs'
                     >
                       Resend code
-                    </button>
+                    </LinkButton>
                     <button
                       type='button'
                       onClick={() => setPendingEmail(null)}
@@ -199,8 +201,7 @@ export function ProfileSection({
                 </div>
                 <DemoNote>
                   Real OTP verification isn&apos;t wired up.{' '}
-                  <button
-                    type='button'
+                  <LinkButton
                     onClick={() => {
                       setSaved((prev) => ({ ...prev, email: pendingEmail }));
                       setPendingEmail(null);
@@ -210,10 +211,10 @@ export function ProfileSection({
                         description: `${pendingEmail} is now your account email.`,
                       });
                     }}
-                    className='font-medium text-primary-base outline-none transition-colors hover:text-primary-darker focus-visible:underline'
+                    className='font-medium'
                   >
                     Simulate confirmation
-                  </button>
+                  </LinkButton>
                   .
                 </DemoNote>
               </div>
@@ -228,9 +229,7 @@ export function ProfileSection({
             Change Password
           </span>
           <div className='flex flex-col gap-1'>
-            <Label.Root htmlFor='current-password'>
-              Current Password
-            </Label.Root>
+            <Label.Root htmlFor='current-password'>Current Password</Label.Root>
             <Input.Root>
               <Input.Wrapper>
                 <Input.Input

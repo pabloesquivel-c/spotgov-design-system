@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-23T15:38:46.942Z",
+  "generatedAt": "2026-07-27T12:14:14.719Z",
   "counts": {
     "primitives": 58,
     "blockCategories": 22,
-    "blockExports": 141,
+    "blockExports": 142,
     "canonicalBlockExports": 25
   },
   "primitives": [
@@ -1869,6 +1869,18 @@
       "slug": "modal",
       "name": "ServerMaintenanceModal",
       "exportName": "ServerMaintenanceModal",
+      "importPath": "@/components/blocks/modal",
+      "purpose": "Dialogs and confirmations",
+      "canonical": false,
+      "referenceOnly": false,
+      "storybook": "Blocks/Modal"
+    },
+    {
+      "layer": "block",
+      "category": "modal",
+      "slug": "modal",
+      "name": "SettingsModal",
+      "exportName": "SettingsModal",
       "importPath": "@/components/blocks/modal",
       "purpose": "Dialogs and confirmations",
       "canonical": false,
