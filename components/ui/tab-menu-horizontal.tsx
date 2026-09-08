@@ -10,6 +10,10 @@ import { cn } from '@/utils/cn';
 import type { PolymorphicComponentProps } from '@/utils/polymorphic';
 import { useTabObserver } from '@/hooks/use-tab-observer';
 
+// Switching content panes is instant by design — only the underline below
+// animates. A fade here was tried and felt slow for something toggled this
+// often (see the animation-frequency rule: tens-of-times/day interactions
+// should have animation removed, not added).
 const TabMenuHorizontalContent = TabsPrimitive.Content;
 TabMenuHorizontalContent.displayName = 'TabMenuHorizontalContent';
 
@@ -76,7 +80,7 @@ const TabMenuHorizontalList = React.forwardRef<
         {/* Floating Bg */}
         <div
           className={cn(
-            'absolute -bottom-px left-0 h-0.5 bg-primary-base opacity-0 transition-all duration-300 group-has-[[data-state=active]]/tab-list:opacity-100',
+            'absolute -bottom-px left-0 h-0.5 bg-primary-base opacity-0 transition-[opacity,transform,width] duration-200 group-has-[[data-state=active]]/tab-list:opacity-100',
             {
               hidden: !mounted,
             },
@@ -105,7 +109,9 @@ const TabMenuHorizontalTrigger = React.forwardRef<
         // base
         'group/tab-item h-12 py-3.5 text-label-sm text-text-sub-600 outline-none',
         'flex items-center justify-center gap-1.5',
-        'transition duration-200 ease-out',
+        'transition duration-200 ease',
+        // hover
+        'hover:text-text-strong-950',
         // focus
         'focus:outline-none',
         // active
