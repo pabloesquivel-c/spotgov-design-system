@@ -24,6 +24,7 @@ import {
   MockFilterRows,
 } from './_components/filter-panel-states';
 import { FilterRowVariants } from './_components/filter-row-variants';
+import { ModalStates } from './_components/modal-states';
 import { PageHeader } from './_components/page-header';
 import { DEFAULT_STATE, STATE_IDS, type StateId } from './_components/states';
 
@@ -32,6 +33,7 @@ const VIEW_IDS = [
   'filter rows',
   'filter panel',
   'applied summary',
+  'modals',
 ] as const;
 type ViewId = (typeof VIEW_IDS)[number];
 
@@ -76,6 +78,7 @@ export default function SearchTendersWorkbenchPage() {
             {view === 'filter rows' ? <FilterRowVariants /> : null}
             {view === 'filter panel' ? <FilterPanelStates /> : null}
             {view === 'applied summary' ? <AppliedSummaryStates /> : null}
+            {view === 'modals' ? <ModalStates /> : null}
           </div>
         </div>
       </div>
