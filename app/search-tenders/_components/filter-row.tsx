@@ -4,23 +4,30 @@
 // value trigger, remove button. Figma: "Dropdown Items [1.1]" component,
 // reused across every filter kind (node 2465:48084 for Buyer).
 //
-// These are closed-state triggers only — no dropdown/menu content yet, by
-// design: the field/operator/value pickers haven't been handed over.
+// Field/value triggers open their picker via the shared Popover primitive
+// when the caller passes one — composition, not a hardcoded switch on
+// field type in here. A row that doesn't pass a picker (e.g. a keyword
+// row's plain text value) just renders the closed-state button, unchanged.
 
 import * as React from 'react';
 import { RiArrowRightSLine, RiCloseFill } from '@remixicon/react';
 import type { RemixiconComponentType } from '@remixicon/react';
 
+import * as Popover from '@/components/ui/popover';
 import { cn } from '@/utils/cn';
 
 export function FilterFieldTrigger({
   label,
   icon: Icon,
+  picker,
 }: {
   label: string;
   icon: RemixiconComponentType;
+  /** Opens on click when given (e.g. the keyword-target picker for a
+   * Document/Contract Object row). Omit for fields with nothing to open. */
+  picker?: React.ReactNode;
 }) {
-  return (
+  const trigger = (
     <button
       type='button'
       className='flex w-[284px] shrink-0 items-center gap-2 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-left'
@@ -33,6 +40,19 @@ export function FilterFieldTrigger({
           displayed — it opens the same field picker as any other filter. */}
       <RiArrowRightSLine className='size-5 shrink-0 text-text-sub-600' />
     </button>
+  );
+
+  if (!picker) {
+    return trigger;
+  }
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger asChild>{trigger}</Popover.Trigger>
+      <Popover.Content align='start' unstyled showArrow={false}>
+        {picker}
+      </Popover.Content>
+    </Popover.Root>
   );
 }
 
@@ -73,13 +93,18 @@ export function FilterValueTrigger({
    * bound. Both ends of the range take the error border, not just one. */
   invalid = false,
   className,
+  picker,
 }: {
   placeholder?: string;
   showChevron?: boolean;
   invalid?: boolean;
   className?: string;
+  /** Opens on click when given (e.g. BuyerPicker for a Buyer row,
+   * DateFilterCalendar for a date bound). Omit for values with nothing to
+   * open, like a plain keyword text input. */
+  picker?: React.ReactNode;
 }) {
-  return (
+  const trigger = (
     <button
       type='button'
       className={cn(
@@ -98,6 +123,19 @@ export function FilterValueTrigger({
         <RiArrowRightSLine className='size-5 shrink-0 text-text-sub-600' />
       ) : null}
     </button>
+  );
+
+  if (!picker) {
+    return trigger;
+  }
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger asChild>{trigger}</Popover.Trigger>
+      <Popover.Content align='start' unstyled showArrow={false}>
+        {picker}
+      </Popover.Content>
+    </Popover.Root>
   );
 }
 

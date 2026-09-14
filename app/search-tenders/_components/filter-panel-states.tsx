@@ -14,6 +14,10 @@ import {
   RiNodeTree,
 } from '@remixicon/react';
 
+import { BuyerPicker } from './buyer-picker';
+import { CategoryPicker } from './category-picker';
+import { DateFilterCalendar } from './date-filter-calendar';
+import { CollapsedFilterPanel, FilterPanel } from './filter-panel';
 import {
   FilterFieldTrigger,
   FilterOperatorLabel,
@@ -23,7 +27,9 @@ import {
   FilterRow,
   FilterValueTrigger,
 } from './filter-row';
-import { CollapsedFilterPanel, FilterPanel } from './filter-panel';
+import { KeywordTargetPicker } from './keyword-target-picker';
+import { LocationPicker } from './location-picker';
+import { ProcedurePicker } from './procedure-picker';
 import { Specimen } from './specimen';
 
 /** One row of each filter kind, so the panel isn't empty while the real
@@ -34,23 +40,23 @@ export function MockFilterRows() {
       <FilterRow>
         <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Category' icon={RiNodeTree} />
         <FilterOperatorTrigger label='is none of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<CategoryPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Submission Deadline' icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is between' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
@@ -62,7 +68,11 @@ export function MockFilterRows() {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterFieldTrigger
+          label='Document'
+          icon={RiFileTextLine}
+          picker={<KeywordTargetPicker />}
+        />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger showChevron={false} placeholder='Enter keywords...' />
         <FilterRemoveButton />
@@ -82,9 +92,9 @@ function ErrorMockRows() {
           icon={RiCalendarEventFill}
         />
         <FilterOperatorTrigger label='is between' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
@@ -100,19 +110,23 @@ function ErrorMockRows() {
       <FilterRow>
         <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Location' icon={RiMapPinLine} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<LocationPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterFieldTrigger
+          label='Document'
+          icon={RiFileTextLine}
+          picker={<KeywordTargetPicker />}
+        />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger showChevron={false} placeholder='Enter keywords...' />
         <FilterRemoveButton />
@@ -132,28 +146,28 @@ function LimitReachedMockRows() {
       <FilterRow>
         <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Category' icon={RiNodeTree} />
         <FilterOperatorTrigger label='is none of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<CategoryPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Location' icon={RiMapPinLine} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<LocationPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Procedure type' icon={RiNodeTree} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={<ProcedurePicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
@@ -170,21 +184,25 @@ function LimitReachedMockRows() {
           icon={RiCalendarEventFill}
         />
         <FilterOperatorTrigger label='is between' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Publication Date' icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is after' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterFieldTrigger
+          label='Document'
+          icon={RiFileTextLine}
+          picker={<KeywordTargetPicker />}
+        />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger
           showChevron={false}
@@ -194,7 +212,11 @@ function LimitReachedMockRows() {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterFieldTrigger
+          label='Document'
+          icon={RiFileTextLine}
+          picker={<KeywordTargetPicker />}
+        />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger
           showChevron={false}
@@ -204,7 +226,11 @@ function LimitReachedMockRows() {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Contract Object' icon={RiFileTextLine} />
+        <FilterFieldTrigger
+          label='Contract Object'
+          icon={RiFileTextLine}
+          picker={<KeywordTargetPicker />}
+        />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger
           showChevron={false}

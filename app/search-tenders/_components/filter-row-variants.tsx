@@ -15,6 +15,9 @@ import {
 } from '@remixicon/react';
 import type { RemixiconComponentType } from '@remixicon/react';
 
+import { BuyerPicker } from './buyer-picker';
+import { CategoryPicker } from './category-picker';
+import { DateFilterCalendar } from './date-filter-calendar';
 import {
   FilterFieldTrigger,
   FilterOperatorLabel,
@@ -24,32 +27,36 @@ import {
   FilterRow,
   FilterValueTrigger,
 } from './filter-row';
+import { KeywordTargetPicker } from './keyword-target-picker';
+import { LocationPicker } from './location-picker';
 import { Specimen } from './specimen';
 
 /** "is any of" / "is none of" is the same shape for every set-kind field. */
 function SetFieldVariants({
   title,
   icon,
+  picker,
 }: {
   title: string;
   icon: RemixiconComponentType;
+  picker: React.ReactNode;
 }) {
   return (
     <Specimen
       title={title}
-      description={`A set-kind field: matches when ${title.toLowerCase()} is any of, or none of, the selected values.`}
+      description={`A set-kind field: matches when ${title.toLowerCase()} is any of, or none of, the selected values. Click a value trigger to open its picker.`}
     >
       <FilterRow>
         <FilterFieldTrigger label={title} icon={icon} />
         <FilterOperatorTrigger label='is any of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={picker} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label={title} icon={icon} />
         <FilterOperatorTrigger label='is none of' />
-        <FilterValueTrigger />
+        <FilterValueTrigger picker={picker} />
         <FilterRemoveButton />
       </FilterRow>
     </Specimen>
@@ -70,28 +77,28 @@ function DateFieldVariants({ title }: { title: string }) {
   return (
     <Specimen
       title={title}
-      description='A date field: a range between two dates, or a single before/after bound.'
+      description='A date field: a range between two dates, or a single before/after bound. Click a value trigger to open the calendar.'
     >
       <FilterRow>
         <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is between' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is after' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is before' />
-        <FilterValueTrigger showChevron={false} />
+        <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
     </Specimen>
@@ -145,11 +152,17 @@ function BasePriceVariants() {
 }
 
 /** Keyword fields (Document, Contract Object) have one fixed operator —
- * "contains" — so there's no operator box, just a plain label. */
+ * "contains" — so there's no operator box, just a plain label. The field
+ * trigger (not the value, which is free text) opens the keyword-target
+ * picker — the only thing to pick here is Document vs. Contract Object. */
 function KeywordFieldVariant({ title }: { title: string }) {
   return (
     <FilterRow>
-      <FilterFieldTrigger label={title} icon={RiFileTextLine} />
+      <FilterFieldTrigger
+        label={title}
+        icon={RiFileTextLine}
+        picker={<KeywordTargetPicker />}
+      />
       <FilterOperatorLabel label='contains' />
       <FilterValueTrigger showChevron={false} placeholder='Enter keywords...' />
       <FilterRemoveButton />
@@ -161,7 +174,7 @@ function DocumentVariants() {
   return (
     <Specimen
       title='Document / Contract Object'
-      description='Keyword fields with one fixed operator — "contains" — so there’s no operator box, just a plain label.'
+      description='Keyword fields with one fixed operator — "contains". Click the field trigger to switch between Document and Contract Object.'
     >
       <KeywordFieldVariant title='Document' />
       <KeywordFieldVariant title='Contract Object' />
@@ -172,9 +185,21 @@ function DocumentVariants() {
 export function FilterRowVariants() {
   return (
     <div className='flex flex-col gap-8'>
-      <SetFieldVariants title='Buyer' icon={RiBuildingLine} />
-      <SetFieldVariants title='Category' icon={RiNodeTree} />
-      <SetFieldVariants title='Location' icon={RiMapPinLine} />
+      <SetFieldVariants
+        title='Buyer'
+        icon={RiBuildingLine}
+        picker={<BuyerPicker />}
+      />
+      <SetFieldVariants
+        title='Category'
+        icon={RiNodeTree}
+        picker={<CategoryPicker />}
+      />
+      <SetFieldVariants
+        title='Location'
+        icon={RiMapPinLine}
+        picker={<LocationPicker />}
+      />
       <DateFieldVariants title='Submission Deadline' />
       <DateFieldVariants title='Publication Date' />
       <BasePriceVariants />

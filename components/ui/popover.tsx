@@ -44,7 +44,7 @@ const PopoverContent = React.forwardRef<
             !unstyled &&
               'w-max rounded-2xl bg-bg-white-0 p-5 shadow-regular-md ring-1 ring-inset ring-stroke-soft-200',
           ],
-          'z-50',
+          'z-50 origin-[var(--radix-popover-content-transform-origin)] duration-150 ease-out',
           // animation
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
