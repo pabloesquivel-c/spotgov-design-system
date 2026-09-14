@@ -18,6 +18,12 @@
 // footer "Unapplied changes" variant. Same shape as the error hint, same
 // information-fill icon, but neutral tone — editing filters isn't a
 // mistake, it just hasn't been searched yet.
+//
+// Limit reached (10 of 10 criteria): [suggested] a search allows up to 10
+// criteria total — 7 structured filters + 3 keyword rows. Reuses the same
+// neutral hint shape as "Unapplied changes" (hitting a cap isn't an
+// error), and additionally disables both toolbar add actions via
+// `disableAddActions`.
 
 import * as React from 'react';
 import { RiAddLine, RiInformationFill, RiListCheck3, RiSearch2Line } from '@remixicon/react';
@@ -96,6 +102,7 @@ export function FilterPanel({
   hint,
   onSearch,
   searchInputRef,
+  disableAddActions,
 }: {
   children?: React.ReactNode;
   hint?: FilterPanelHint;
@@ -103,6 +110,9 @@ export function FilterPanel({
    * and leaves the panel expanded for another edit. */
   onSearch?: () => void;
   searchInputRef?: React.Ref<HTMLInputElement>;
+  /** [suggested] 10-criteria cap reached (7 structured filters + 3
+   * keyword rows) — disables both add actions in the toolbar. */
+  disableAddActions?: boolean;
 }) {
   const isEmpty = !children;
 
@@ -114,7 +124,10 @@ export function FilterPanel({
       }
     >
       <div className='flex w-full flex-col gap-8'>
-        <ToolbarRow searchInputRef={searchInputRef} />
+        <ToolbarRow
+          searchInputRef={searchInputRef}
+          disableAddActions={disableAddActions}
+        />
 
         {isEmpty ? (
           <EmptyFilters />

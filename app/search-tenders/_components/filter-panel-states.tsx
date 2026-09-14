@@ -121,6 +121,101 @@ function ErrorMockRows() {
   );
 }
 
+/** [suggested] The 10-criteria cap, fully reached: 7 structured filters
+ * (Buyer, Category, Location, Procedure type, Base value, Submission
+ * Deadline, Publication Date) + 3 keyword rows — the exact composition
+ * from the spec's own example (5 structured + 3 keyword + 2 more
+ * structured = 10). */
+function LimitReachedMockRows() {
+  return (
+    <>
+      <FilterRow>
+        <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
+        <FilterOperatorTrigger label='is any of' />
+        <FilterValueTrigger />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Category' icon={RiNodeTree} />
+        <FilterOperatorTrigger label='is none of' />
+        <FilterValueTrigger />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Location' icon={RiMapPinLine} />
+        <FilterOperatorTrigger label='is any of' />
+        <FilterValueTrigger />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Procedure type' icon={RiNodeTree} />
+        <FilterOperatorTrigger label='is any of' />
+        <FilterValueTrigger />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Base Price' icon={RiCoinsLine} />
+        <FilterOperatorTrigger label='is at least' />
+        <FilterValueTrigger showChevron={false} />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger
+          label='Submission Deadline'
+          icon={RiCalendarEventFill}
+        />
+        <FilterOperatorTrigger label='is between' />
+        <FilterValueTrigger showChevron={false} />
+        <FilterRangeSeparator />
+        <FilterValueTrigger showChevron={false} />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Publication Date' icon={RiCalendarEventFill} />
+        <FilterOperatorTrigger label='is after' />
+        <FilterValueTrigger showChevron={false} />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterOperatorLabel label='contains' />
+        <FilterValueTrigger
+          showChevron={false}
+          placeholder='Enter keywords...'
+        />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Document' icon={RiFileTextLine} />
+        <FilterOperatorLabel label='contains' />
+        <FilterValueTrigger
+          showChevron={false}
+          placeholder='Enter keywords...'
+        />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger label='Contract Object' icon={RiFileTextLine} />
+        <FilterOperatorLabel label='contains' />
+        <FilterValueTrigger
+          showChevron={false}
+          placeholder='Enter keywords...'
+        />
+        <FilterRemoveButton />
+      </FilterRow>
+    </>
+  );
+}
+
 const GRID_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
 // Opening a row is the user waiting to read new content — a touch more
 // deliberate. Closing is the system getting out of the way — snappier.
@@ -268,6 +363,21 @@ export function FilterPanelStates() {
           }}
         >
           <MockFilterRows />
+        </FilterPanel>
+      </Specimen>
+
+      <Specimen
+        title='Filter limit reached (10 of 10 criteria)'
+        description='[suggested] Up to 7 structured filters + 3 keyword rows, 10 total. At the cap, Add filter and Add keywords are disabled and the hint explains why.'
+      >
+        <FilterPanel
+          disableAddActions
+          hint={{
+            tone: 'neutral',
+            message: 'You can add up to 10 criteria to a search.',
+          }}
+        >
+          <LimitReachedMockRows />
         </FilterPanel>
       </Specimen>
 

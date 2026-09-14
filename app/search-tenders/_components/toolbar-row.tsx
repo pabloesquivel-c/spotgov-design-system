@@ -22,10 +22,15 @@ const STAGE_TABS = [
 
 export function ToolbarRow({
   searchInputRef,
+  disableAddActions = false,
 }: {
   /** Lets a parent (e.g. the collapse/expand toggle) move focus into the
    * search input right after it expands. */
   searchInputRef?: React.Ref<HTMLInputElement>;
+  /** [suggested] A search supports up to 10 criteria total (7 structured
+   * filters + 3 keyword rows). Once the cap is reached, both add actions
+   * are unavailable — the panel's hint explains why. */
+  disableAddActions?: boolean;
 }) {
   return (
     <div className='flex flex-col gap-4'>
@@ -84,6 +89,7 @@ export function ToolbarRow({
           mode='stroke'
           size='small'
           className='h-9'
+          disabled={disableAddActions}
         >
           <Button.Icon as={RiFilter3Line} />
           Add filter
@@ -94,6 +100,7 @@ export function ToolbarRow({
           mode='stroke'
           size='small'
           className='h-9'
+          disabled={disableAddActions}
         >
           <Button.Icon as={RiAddLine} />
           Add keywords
