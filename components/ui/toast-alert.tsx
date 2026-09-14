@@ -14,9 +14,11 @@ type AlertToastProps = {
   t: string | number;
   status?: React.ComponentPropsWithoutRef<typeof Alert.Root>['status'];
   variant?: React.ComponentPropsWithoutRef<typeof Alert.Root>['variant'];
+  size?: React.ComponentPropsWithoutRef<typeof Alert.Root>['size'];
   message: string;
   dismissable?: boolean;
   icon?: React.ElementType;
+  action?: { label: string; onClick: () => void };
 };
 
 const AlertToast = React.forwardRef<
@@ -28,9 +30,11 @@ const AlertToast = React.forwardRef<
       t,
       status = 'feature',
       variant = 'stroke',
+      size = 'small',
       message,
       dismissable = true,
       icon,
+      action,
     },
     forwardedRef,
   ) => {
@@ -66,11 +70,20 @@ const AlertToast = React.forwardRef<
         ref={forwardedRef}
         status={status}
         variant={variant}
-        size='small'
+        size={size}
         className='w-[360px]'
       >
         <Alert.Icon as={Icon} />
         {message}
+        {action ? (
+          <button
+            type='button'
+            className='shrink-0 whitespace-nowrap font-medium underline'
+            onClick={action.onClick}
+          >
+            {action.label}
+          </button>
+        ) : null}
         {dismissable ? (
           <button type='button' onClick={() => toast.dismiss(t)}>
             <Alert.CloseIcon />

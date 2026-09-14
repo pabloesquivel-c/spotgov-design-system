@@ -33,13 +33,15 @@ import { ToolbarRow } from './toolbar-row';
  * only: this doesn't decide when the form collapses, it just renders the
  * collapsed state once something else says to.
  */
-export function CollapsedFilterPanel({
-  summary = 'Search...',
-}: {
-  /** What the search input showed before collapsing, e.g. the applied
-   * query. Falls back to the input's own placeholder when there is none. */
-  summary?: string;
-}) {
+export const CollapsedFilterPanel = React.forwardRef<
+  HTMLButtonElement,
+  {
+    /** What the search input showed before collapsing, e.g. the applied
+     * query. Falls back to the input's own placeholder when there is none. */
+    summary?: string;
+    onEditSearch?: () => void;
+  }
+>(function CollapsedFilterPanel({ summary = 'Search...', onEditSearch }, ref) {
   return (
     <div className='flex min-w-0 items-start justify-between gap-2 rounded-20 border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs'>
       <div className='flex min-w-0 flex-1 items-center gap-2 p-2'>
@@ -50,17 +52,19 @@ export function CollapsedFilterPanel({
       </div>
 
       <Button.Root
+        ref={ref}
         variant='neutral'
         mode='stroke'
         size='small'
         className='h-9 shrink-0'
+        onClick={onEditSearch}
       >
         <Button.Icon as={RiAddLine} />
         Edit Search
       </Button.Root>
     </div>
   );
-}
+});
 
 function EmptyFilters() {
   return (
@@ -90,9 +94,15 @@ export type FilterPanelHint = {
 export function FilterPanel({
   children,
   hint,
+  onSearch,
+  searchInputRef,
 }: {
   children?: React.ReactNode;
   hint?: FilterPanelHint;
+  /** Fires only on "Search" — not "Clear all", which just empties the rows
+   * and leaves the panel expanded for another edit. */
+  onSearch?: () => void;
+  searchInputRef?: React.Ref<HTMLInputElement>;
 }) {
   const isEmpty = !children;
 
@@ -103,8 +113,8 @@ export function FilterPanel({
         (isEmpty ? ' pb-4' : '')
       }
     >
-      <div className='flex w-full flex-col gap-4'>
-        <ToolbarRow />
+      <div className='flex w-full flex-col gap-8'>
+        <ToolbarRow searchInputRef={searchInputRef} />
 
         {isEmpty ? (
           <EmptyFilters />
@@ -146,6 +156,7 @@ export function FilterPanel({
               mode='filled'
               size='small'
               className='h-9'
+              onClick={onSearch}
             >
               Search
             </Button.Root>

@@ -7,6 +7,7 @@
 import * as React from 'react';
 
 import { AppliedSummary, type SummaryChip } from './applied-summary';
+import { Specimen } from './specimen';
 
 const SHORT_CHIPS: SummaryChip[] = [
   { id: 'q', label: 'Keyword "Escola"' },
@@ -41,43 +42,42 @@ const LONG_CHIP: SummaryChip[] = [
 export function AppliedSummaryStates() {
   return (
     <div className='flex flex-col gap-8'>
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Matching any of (few chips)
-        </h2>
+      <Specimen
+        title='Matching any of'
+        description='A few applied chips under an "any" match mode.'
+      >
         <AppliedSummary chips={SHORT_CHIPS} matchMode='any' />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Matching all of
-        </h2>
+      <Specimen
+        title='Matching all of'
+        description='The same chips under an "all" match mode.'
+      >
         <AppliedSummary chips={SHORT_CHIPS} matchMode='all' />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Wrapping to a second line
-        </h2>
+      <Specimen
+        title='Wrapping to a second line'
+        description='Enough chips that the row wraps instead of overflowing.'
+      >
         <AppliedSummary chips={WRAPPING_CHIPS} matchMode='any' />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          One chip long enough to need its own truncation
-        </h2>
+      <Specimen
+        title='One long chip'
+        description='A single chip long enough to need its own truncation.'
+      >
         <AppliedSummary chips={LONG_CHIP} matchMode='all' />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Nothing applied — renders null
-        </h2>
+      <Specimen
+        title='Nothing applied'
+        description='Empty on purpose — AppliedSummary returns nothing when there are no chips.'
+      >
         <p className='text-paragraph-xs text-text-sub-600'>
-          (Empty on purpose — <code>AppliedSummary</code> returns nothing
-          when there are no chips.)
+          (Renders null — nothing to show here.)
         </p>
-      </div>
+      </Specimen>
     </div>
   );
 }

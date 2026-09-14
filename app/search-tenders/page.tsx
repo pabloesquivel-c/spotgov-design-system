@@ -26,7 +26,9 @@ import {
 import { FilterRowVariants } from './_components/filter-row-variants';
 import { ModalStates } from './_components/modal-states';
 import { PageHeader } from './_components/page-header';
+import { SearchResultsStates } from './_components/search-results-states';
 import { DEFAULT_STATE, STATE_IDS, type StateId } from './_components/states';
+import { ToastStates } from './_components/toast-states';
 
 const VIEW_IDS = [
   'page',
@@ -34,6 +36,8 @@ const VIEW_IDS = [
   'filter panel',
   'applied summary',
   'modals',
+  'toasts',
+  'search results',
 ] as const;
 type ViewId = (typeof VIEW_IDS)[number];
 
@@ -79,6 +83,8 @@ export default function SearchTendersWorkbenchPage() {
             {view === 'filter panel' ? <FilterPanelStates /> : null}
             {view === 'applied summary' ? <AppliedSummaryStates /> : null}
             {view === 'modals' ? <ModalStates /> : null}
+            {view === 'toasts' ? <ToastStates /> : null}
+            {view === 'search results' ? <SearchResultsStates /> : null}
           </div>
         </div>
       </div>

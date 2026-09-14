@@ -24,6 +24,7 @@ import {
   FilterValueTrigger,
 } from './filter-row';
 import { CollapsedFilterPanel, FilterPanel } from './filter-panel';
+import { Specimen } from './specimen';
 
 /** One row of each filter kind, so the panel isn't empty while the real
  * applied filters are still placeholders. */
@@ -120,29 +121,131 @@ function ErrorMockRows() {
   );
 }
 
+const GRID_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+// Opening a row is the user waiting to read new content — a touch more
+// deliberate. Closing is the system getting out of the way — snappier.
+// ("Slow where the user is deciding, fast where the system responds.")
+const EXPAND_MS = 220;
+const COLLAPSE_MS = 180;
+
+/**
+ * One CSS-driven accordion row per panel, both always mounted and stacked
+ * in normal flow. `grid-template-rows` animates between 0fr (its own
+ * content collapsed away) and 1fr (its own natural height) — the standard
+ * Radix Collapsible/Accordion technique. The browser interpolates the
+ * track size continuously, so there's no JS height measurement, no forced
+ * reflow, and — because both directions run the exact same CSS rule in
+ * reverse (just a different duration) — collapse and expand stay in sync
+ * by construction, unlike a hand-measured height that can drift asymmetric
+ * between directions.
+ *
+ * `inert` removes the collapsed panel from focus/tab order and the a11y
+ * tree without affecting layout, so a hidden search input can't eat a Tab
+ * press.
+ */
+function AccordionRow({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className='grid motion-reduce:transition-none'
+      style={{
+        gridTemplateRows: open ? '1fr' : '0fr',
+        transition: `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`,
+      }}
+    >
+      <div
+        className='min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100'
+        data-open={open ? '' : undefined}
+        // @ts-expect-error -- `inert` isn't in this React/TS version's DOM
+        // typings yet, but is a real, broadly-supported HTML attribute.
+        inert={open ? undefined : ''}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Wires CollapsedFilterPanel and FilterPanel into one toggle: clicking
+ * "Search" collapses — "Clear all" does not, it only empties the rows and
+ * leaves the panel open for another edit — and "Edit Search" expands.
+ * Under prefers-reduced-motion, both rows resize instantly (CSS handles
+ * this via `motion-reduce:transition-none`, no JS branch needed).
+ */
+function FilterPanelToggle() {
+  const [isExpanded, setIsExpanded] = React.useState(true);
+  const editSearchRef = React.useRef<HTMLButtonElement>(null);
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const isFirstRender = React.useRef(true);
+
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (isExpanded) {
+      searchInputRef.current?.focus();
+    } else {
+      editSearchRef.current?.focus();
+    }
+  }, [isExpanded]);
+
+  return (
+    <div>
+      <AccordionRow open={isExpanded}>
+        <FilterPanel searchInputRef={searchInputRef} onSearch={() => setIsExpanded(false)}>
+          <MockFilterRows />
+        </FilterPanel>
+      </AccordionRow>
+
+      <AccordionRow open={!isExpanded}>
+        <CollapsedFilterPanel
+          ref={editSearchRef}
+          summary='Escola'
+          onEditSearch={() => setIsExpanded(true)}
+        />
+      </AccordionRow>
+    </div>
+  );
+}
+
 export function FilterPanelStates() {
   return (
     <div className='flex flex-col gap-8'>
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Empty (no filters or keywords)
-        </h2>
+      <Specimen
+        title='Empty'
+        description='No filters or keywords have been added yet.'
+      >
         <FilterPanel />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Populated (mock rows)
-        </h2>
+      <Specimen
+        title='Collapse ↔ Expand'
+        description='Interactive — click to toggle between the collapsed and expanded panel.'
+      >
+        <FilterPanelToggle />
+      </Specimen>
+
+      <Specimen
+        title='Populated'
+        description='One row of each filter kind, as a stand-in for real applied filters.'
+      >
         <FilterPanel>
           <MockFilterRows />
         </FilterPanel>
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Validation error (invalid range)
-        </h2>
+      <Specimen
+        title='Validation error'
+        description='An invalid range — the lower bound is above the upper bound, so it can never match.'
+      >
         <FilterPanel
           hint={{
             tone: 'error',
@@ -152,12 +255,12 @@ export function FilterPanelStates() {
         >
           <ErrorMockRows />
         </FilterPanel>
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Unapplied changes
-        </h2>
+      <Specimen
+        title='Unapplied changes'
+        description='Filters have been edited but not searched yet — results below still reflect the last search.'
+      >
         <FilterPanel
           hint={{
             tone: 'neutral',
@@ -166,21 +269,21 @@ export function FilterPanelStates() {
         >
           <MockFilterRows />
         </FilterPanel>
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Collapsed (placeholder)
-        </h2>
+      <Specimen
+        title='Collapsed — placeholder'
+        description='The panel collapsed with no applied search to summarize.'
+      >
         <CollapsedFilterPanel />
-      </div>
+      </Specimen>
 
-      <div className='flex flex-col gap-4'>
-        <h2 className='text-label-sm text-text-strong-950'>
-          Collapsed (applied search)
-        </h2>
+      <Specimen
+        title='Collapsed — applied search'
+        description='The panel collapsed with an applied search summarized in its place.'
+      >
         <CollapsedFilterPanel summary='Escola' />
-      </div>
+      </Specimen>
     </div>
   );
 }

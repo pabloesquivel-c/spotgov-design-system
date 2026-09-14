@@ -24,6 +24,7 @@ import {
   FilterRow,
   FilterValueTrigger,
 } from './filter-row';
+import { Specimen } from './specimen';
 
 /** "is any of" / "is none of" is the same shape for every set-kind field. */
 function SetFieldVariants({
@@ -34,9 +35,10 @@ function SetFieldVariants({
   icon: RemixiconComponentType;
 }) {
   return (
-    <div className='flex flex-col gap-4'>
-      <h2 className='text-label-sm text-text-strong-950'>{title}</h2>
-
+    <Specimen
+      title={title}
+      description={`A set-kind field: matches when ${title.toLowerCase()} is any of, or none of, the selected values.`}
+    >
       <FilterRow>
         <FilterFieldTrigger label={title} icon={icon} />
         <FilterOperatorTrigger label='is any of' />
@@ -50,7 +52,7 @@ function SetFieldVariants({
         <FilterValueTrigger />
         <FilterRemoveButton />
       </FilterRow>
-    </div>
+    </Specimen>
   );
 }
 
@@ -66,9 +68,10 @@ function SetFieldVariants({
  */
 function DateFieldVariants({ title }: { title: string }) {
   return (
-    <div className='flex flex-col gap-4'>
-      <h2 className='text-label-sm text-text-strong-950'>{title}</h2>
-
+    <Specimen
+      title={title}
+      description='A date field: a range between two dates, or a single before/after bound.'
+    >
       <FilterRow>
         <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
         <FilterOperatorTrigger label='is between' />
@@ -91,7 +94,7 @@ function DateFieldVariants({ title }: { title: string }) {
         <FilterValueTrigger showChevron={false} />
         <FilterRemoveButton />
       </FilterRow>
-    </div>
+    </Specimen>
   );
 }
 
@@ -102,9 +105,10 @@ function DateFieldVariants({ title }: { title: string }) {
  */
 function BasePriceVariants() {
   return (
-    <div className='flex flex-col gap-4'>
-      <h2 className='text-label-sm text-text-strong-950'>Base price</h2>
-
+    <Specimen
+      title='Base price'
+      description='A range, a single at-least/at-most bound, or an invalid range where the lower bound exceeds the upper (both sides take the error border).'
+    >
       <FilterRow>
         <FilterFieldTrigger label='Base Price' icon={RiCoinsLine} />
         <FilterOperatorTrigger label='is between' />
@@ -136,7 +140,7 @@ function BasePriceVariants() {
         <FilterValueTrigger showChevron={false} invalid />
         <FilterRemoveButton />
       </FilterRow>
-    </div>
+    </Specimen>
   );
 }
 
@@ -155,14 +159,13 @@ function KeywordFieldVariant({ title }: { title: string }) {
 
 function DocumentVariants() {
   return (
-    <div className='flex flex-col gap-4'>
-      <h2 className='text-label-sm text-text-strong-950'>
-        Document / Contract Object
-      </h2>
-
+    <Specimen
+      title='Document / Contract Object'
+      description='Keyword fields with one fixed operator — "contains" — so there’s no operator box, just a plain label.'
+    >
       <KeywordFieldVariant title='Document' />
       <KeywordFieldVariant title='Contract Object' />
-    </div>
+    </Specimen>
   );
 }
 

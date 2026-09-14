@@ -41,7 +41,7 @@ const SegmentedControlList = React.forwardRef<
       {/* floating bg */}
       <div
         className={cn(
-          'absolute inset-y-1 left-0 -z-10 rounded-md bg-bg-white-0 shadow-toggle-switch transition-transform duration-300',
+          'absolute inset-y-1 left-0 -z-10 rounded-md bg-bg-white-0 shadow-toggle-switch transition-transform duration-150',
           {
             hidden: !mounted,
           },
@@ -50,7 +50,7 @@ const SegmentedControlList = React.forwardRef<
         style={{
           transform: `translate3d(${lineStyle.left}px, 0, 0)`,
           width: `${lineStyle.width}px`,
-          transitionTimingFunction: 'cubic-bezier(0.65, 0, 0.35, 1)',
+          transitionTimingFunction: 'cubic-bezier(0.23, 1, 0.32, 1)',
         }}
         aria-hidden='true'
       />
@@ -71,7 +71,7 @@ const SegmentedControlTrigger = React.forwardRef<
         'peer',
         'relative z-10 h-7 whitespace-nowrap rounded-md px-1 text-label-sm text-text-soft-400 outline-none',
         'flex items-center justify-center gap-1.5',
-        'transition duration-300 ease-out',
+        'transition duration-150 ease-out',
         // focus
         'focus:outline-none',
         // active
