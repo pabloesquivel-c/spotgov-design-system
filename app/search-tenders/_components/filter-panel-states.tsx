@@ -310,8 +310,10 @@ function LimitReachedMockRows() {
  * Wires CollapsedFilterPanel and FilterPanel into one toggle: clicking
  * "Search" collapses — "Clear all" does not, it only empties the rows and
  * leaves the panel open for another edit — and "Edit Search" expands.
- * Under prefers-reduced-motion, both rows resize instantly (CSS handles
- * this via `motion-reduce:transition-none`, no JS branch needed).
+ * `animate={false}` matches rich-state-flow.tsx's real Search interaction
+ * — [confirmed] v1 cut the collapse/expand transition, so this specimen
+ * stays honest about what actually ships instead of demoing a nicer
+ * animated version nobody sees.
  */
 function FilterPanelToggle() {
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -334,13 +336,13 @@ function FilterPanelToggle() {
 
   return (
     <div>
-      <AccordionRow open={isExpanded}>
+      <AccordionRow open={isExpanded} animate={false}>
         <FilterPanel searchInputRef={searchInputRef} onSearch={() => setIsExpanded(false)}>
           <MockFilterRows />
         </FilterPanel>
       </AccordionRow>
 
-      <AccordionRow open={!isExpanded}>
+      <AccordionRow open={!isExpanded} animate={false}>
         <CollapsedFilterPanel
           ref={editSearchRef}
           summary='Escola'
@@ -373,6 +375,15 @@ export function FilterPanelStates() {
         description='One row of each filter kind, as a stand-in for real applied filters.'
       >
         <FilterPanel>
+          <MockFilterRows />
+        </FilterPanel>
+      </Specimen>
+
+      <Specimen
+        title='No Market Intelligence access'
+        description='The one variant that drops Awarded entirely instead of showing it locked — for an org the upsell doesn’t apply to. Default everywhere else is three tabs.'
+      >
+        <FilterPanel showAwardedTab={false}>
           <MockFilterRows />
         </FilterPanel>
       </Specimen>

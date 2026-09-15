@@ -38,7 +38,7 @@ export function PageHeader({
   onViewSearchChange?: (value: string) => void;
   hasUnsavedViewChanges?: boolean;
   onUpdateView?: () => void;
-  onSaveAsNewView?: () => void;
+  onSaveAsNewView?: (name: string) => void;
   onResetView?: () => void;
   onExport?: () => void;
 }) {
@@ -79,8 +79,8 @@ export function PageHeader({
                   onUpdateView?.();
                   setViewsOpen(false);
                 }}
-                onSaveAsNewView={() => {
-                  onSaveAsNewView?.();
+                onSaveAsNewView={(name) => {
+                  onSaveAsNewView?.(name);
                   setViewsOpen(false);
                 }}
                 onReset={onResetView}

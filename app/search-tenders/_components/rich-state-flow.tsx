@@ -12,13 +12,14 @@
 //
 // Filter rows are real: Add filter/Add keywords append rows (new filters
 // default to Buyer, per dynamic-filter-rows.tsx), each row's field/operator
-// pickers actually edit that row, and the X removes it.
+// pickers actually edit that row, and the X removes it. Applied rows,
+// stage, and match mode all drive the actual result set against the mock
+// TENDERS data below — see evaluateTender.
 //
-// Simplification for this first pass: the stage tabs and country select
-// stay presentational (reused as-is from ToolbarRow), and row edits apply
+// Simplification for this first pass: the country select stays
+// presentational (reused as-is from ToolbarRow), and row edits apply
 // immediately rather than joining the pending/applied Search mechanic —
-// only the search query and "Saved only" drive that today. "Awarded
-// locked" is shown as a banner rather than wired onto the stage tab itself.
+// only the search query, "Saved only", rows, and stage join that today.
 // None of this is settled as final.
 //
 // Search collapses the panel (node 2464:48024): clicking "Search" swaps
@@ -33,6 +34,9 @@
 // mock request resolves, so the action reads as caused by the click rather
 // than a delayed reaction to it; loading feedback moves to the results
 // skeleton below instead of the (now hidden) Search button spinner.
+// [confirmed] v1 cut: the swap itself is instant (`AccordionRow`'s
+// `animate={false}`), not eased — motion here is a later pass, not a
+// launch blocker.
 
 import * as React from 'react';
 import {
@@ -40,7 +44,6 @@ import {
   RiErrorWarningFill,
   RiGlobalLine,
   RiInformationFill,
-  RiLockLine,
   RiRadarLine,
 } from '@remixicon/react';
 
@@ -54,10 +57,12 @@ import {
   DynamicFilterRows,
   hasInvalidPriceRange,
   type FilterRowState,
+  type StructuredField,
 } from './dynamic-filter-rows';
 import { ErrorMockRows } from './filter-panel-states';
 import { AccordionRow, CollapsedFilterPanel, FilterPanel } from './filter-panel';
 import type { ForceStateId } from './flows';
+import type { KeywordTarget } from './keyword-target-picker';
 import { PageHeader } from './page-header';
 import { ResultsSummary, type SortValue } from './results-summary';
 import type { Stage } from './toolbar-row';
@@ -65,11 +70,21 @@ import {
   TenderResultCard,
   type DeadlineStatus,
   type MatchedFilterField,
+  type MatchedKeyword,
 } from './tender-result-card';
 import { VIEWS } from './views-picker';
 
 function baseValueNumber(value: string): number {
   return Number(value.replace(/[^0-9.-]/g, '')) || 0;
+}
+
+function parsePrice(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  const parsed = Number(trimmed);
+  return Number.isNaN(parsed) ? null : parsed;
 }
 
 function deadlineRank(status: DeadlineStatus): number {
@@ -119,77 +134,469 @@ type MockTender = {
   id: string;
   name: string;
   buyer: string;
+  category: string;
   location: string;
   countryFlag: string;
   procedureType: string;
   deadlineDate: string;
+  // Real date backing Submission Deadline's between/after/before operators
+  // — `deadlineDate` above stays the display string. `null` mirrors
+  // `deadlineStatus: 'unavailable'`.
+  submissionDeadlineDate: Date | null;
   baseValue: string;
   deadlineStatus: DeadlineStatus;
-  matchedFilters: MatchedFilterField[];
+  stage: Stage;
+  // Longer description a keyword row targeting "Contract Object" searches.
+  contractObjectText: string;
+  // Mock document snippets a keyword row targeting "Documents" searches.
+  documents: { title: string; text: string }[];
 };
 
+// Mock "today" for every deadline below: 15th Sept, 2026.
 const TENDERS: MockTender[] = [
   {
     id: 't1',
-    name: 'Aquisição de mobiliário escolar para as escolas básicas do concelho',
-    buyer: 'Direção-Geral dos Estabelecimentos Escolares',
+    name: 'Construção de um novo pavilhão polidesportivo municipal',
+    buyer: 'Município de Lisboa',
+    category: 'Construction',
     location: 'Lisbon, Portugal',
     countryFlag: '🇵🇹',
     procedureType: 'Concurso público',
     deadlineDate: '24th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 24),
     baseValue: '€2,450,000',
     deadlineStatus: { type: 'days', days: 9 },
-    matchedFilters: ['Category', 'Location', 'Base value'],
+    stage: 'active',
+    contractObjectText:
+      'Construção de um novo pavilhão polidesportivo municipal, incluindo estrutura em betão armado e cobertura metálica.',
+    documents: [
+      {
+        title: 'Caderno de Encargos',
+        text: 'O caderno de encargos exige verificação de amianto na estrutura existente antes do início da obra.',
+      },
+    ],
   },
   {
     id: 't2',
     name: 'Reabilitação de pavimento e sinalização rodoviária na Avenida Central',
-    buyer: 'Câmara Municipal de Sintra',
-    location: 'Sintra, Portugal',
+    buyer: 'Município do Porto',
+    category: 'Road maintenance',
+    location: 'Porto, Portugal',
     countryFlag: '🇵🇹',
     procedureType: 'Ajuste direto',
     deadlineDate: '16th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 16),
     baseValue: '€185,000',
     deadlineStatus: { type: 'tomorrow' },
-    matchedFilters: ['Category', 'Procedure type', 'Publication date', 'Buyer'],
+    stage: 'active',
+    contractObjectText:
+      'Reabilitação de pavimento e sinalização rodoviária na Avenida Central, incluindo repavimentação total do troço.',
+    documents: [
+      {
+        title: 'Termos de Referência',
+        text: 'É exigida garantia bancária no valor de 5% do valor base do contrato.',
+      },
+    ],
   },
   {
     id: 't3',
     name: 'Manutenção de elevadores em edifícios públicos',
-    buyer: 'Infraestruturas de Portugal',
-    location: 'Porto, Portugal',
+    buyer: 'Câmara Municipal de Sintra',
+    category: 'Civil engineering',
+    location: 'Sintra, Portugal',
     countryFlag: '🇵🇹',
     procedureType: 'Concurso público',
     deadlineDate: '15th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 15),
     baseValue: '€96,000',
     deadlineStatus: { type: 'today' },
-    matchedFilters: ['Category'],
+    stage: 'active',
+    contractObjectText:
+      'Manutenção preventiva e corretiva de elevadores em edifícios públicos, com disponibilidade permanente 24/7.',
+    documents: [
+      {
+        title: 'Memória Descritiva',
+        text: 'Inclui plano de manutenção preventiva trimestral para todos os elevadores instalados.',
+      },
+    ],
   },
   {
     id: 't4',
     name: 'Fornecimento de equipamento informático para serviços administrativos',
-    buyer: 'Universidade de Coimbra',
-    location: 'Coimbra, Portugal',
+    buyer: 'Infraestruturas de Portugal',
+    category: 'IT services',
+    location: 'Braga, Portugal',
     countryFlag: '🇵🇹',
     procedureType: 'Concurso público',
     deadlineDate: '2nd Aug, 2026',
+    submissionDeadlineDate: new Date(2026, 7, 2),
     baseValue: '€412,000',
     deadlineStatus: { type: 'closed' },
-    matchedFilters: ['Category', 'Base value'],
+    stage: 'evaluating',
+    contractObjectText:
+      'Fornecimento de equipamento informático para serviços administrativos, incluindo instalação e suporte técnico.',
+    documents: [
+      {
+        title: 'Especificações Técnicas',
+        text: 'Lista detalhada do equipamento informático a fornecer, incluindo garantia de 3 anos.',
+      },
+    ],
   },
   {
     id: 't5',
-    name: 'Apoio jurídico especializado em contratação pública',
-    buyer: 'Município do Porto',
-    location: 'Porto, Portugal',
+    name: 'Aquisição de equipamento médico e laboratorial para hospital universitário',
+    buyer: 'Universidade de Coimbra',
+    category: 'Medical equipment',
+    location: 'Coimbra, Portugal',
     countryFlag: '🇵🇹',
     procedureType: 'Consulta prévia',
     deadlineDate: '—',
+    submissionDeadlineDate: null,
     baseValue: '€58,000',
     deadlineStatus: { type: 'unavailable' },
-    matchedFilters: [],
+    stage: 'active',
+    contractObjectText:
+      'Aquisição de equipamento médico e laboratorial para o hospital universitário, incluindo instalação e formação.',
+    documents: [
+      {
+        title: 'Ficha Técnica',
+        text: 'Especificações do equipamento médico e laboratorial exigido, com certificação CE.',
+      },
+    ],
+  },
+  {
+    id: 't6',
+    name: 'Remodelação da instalação elétrica de edifícios escolares',
+    buyer: 'Município de Lisboa',
+    category: 'Electrical works',
+    location: 'Lisbon, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Ajuste direto',
+    deadlineDate: '20th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 20),
+    baseValue: '€340,000',
+    deadlineStatus: { type: 'days', days: 5 },
+    stage: 'active',
+    contractObjectText:
+      'Remodelação da instalação elétrica de edifícios escolares, incluindo novos quadros elétricos e iluminação LED.',
+    documents: [
+      {
+        title: 'Relatório Técnico',
+        text: 'Inclui certificação energética obrigatória após conclusão da remodelação elétrica.',
+      },
+    ],
+  },
+  {
+    id: 't7',
+    name: 'Aquisição de licenças de software de gestão documental',
+    buyer: 'Município do Porto',
+    category: 'Software licences',
+    location: 'Porto, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Consulta prévia',
+    deadlineDate: '5th Oct, 2026',
+    submissionDeadlineDate: new Date(2026, 9, 5),
+    baseValue: '€1,150,000',
+    deadlineStatus: { type: 'days', days: 20 },
+    stage: 'active',
+    contractObjectText:
+      'Aquisição de licenças de software de gestão documental para os serviços municipais, com suporte anual incluído.',
+    documents: [
+      {
+        title: 'Termos de Referência',
+        text: 'É exigida garantia bancária correspondente a 5% do valor total das licenças de software.',
+      },
+    ],
+  },
+  {
+    id: 't8',
+    name: 'Aquisição de equipamento médico de diagnóstico para unidades de saúde locais',
+    buyer: 'Câmara Municipal de Sintra',
+    category: 'Medical equipment',
+    location: 'Sintra, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Concurso público',
+    deadlineDate: '10th Jul, 2026',
+    submissionDeadlineDate: new Date(2026, 6, 10),
+    baseValue: '€125,000',
+    deadlineStatus: { type: 'closed' },
+    stage: 'evaluating',
+    contractObjectText:
+      'Aquisição de equipamento médico de diagnóstico por imagem para unidades de saúde locais.',
+    documents: [
+      {
+        title: 'Ficha Técnica',
+        text: 'Lista do equipamento médico de diagnóstico e respetiva certificação CE.',
+      },
+    ],
+  },
+  {
+    id: 't9',
+    name: 'Construção de um novo edifício administrativo',
+    buyer: 'Infraestruturas de Portugal',
+    category: 'Construction',
+    location: 'Faro, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Concurso público',
+    deadlineDate: '30th Nov, 2026',
+    submissionDeadlineDate: new Date(2026, 10, 30),
+    baseValue: '€2,980,000',
+    deadlineStatus: { type: 'days', days: 76 },
+    stage: 'active',
+    contractObjectText:
+      'Construção de um novo edifício administrativo com fundações reforçadas e estrutura em betão armado.',
+    documents: [
+      {
+        title: 'Caderno de Encargos',
+        text: 'Estudo prévio identificou presença de amianto na estrutura do edifício a demolir.',
+      },
+    ],
+  },
+  {
+    id: 't10',
+    name: 'Prestação de serviços de apoio técnico informático e manutenção de rede',
+    buyer: 'Universidade de Coimbra',
+    category: 'IT services',
+    location: 'Coimbra, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Ajuste direto',
+    deadlineDate: '17th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 17),
+    baseValue: '€210,000',
+    deadlineStatus: { type: 'days', days: 2 },
+    stage: 'active',
+    contractObjectText:
+      'Prestação de serviços de apoio técnico informático e manutenção de rede para os serviços centrais.',
+    documents: [
+      {
+        title: 'Especificações Técnicas',
+        text: 'Requisitos de suporte técnico informático e SLA de resposta em 4 horas.',
+      },
+    ],
+  },
+  {
+    id: 't11',
+    name: 'Reabilitação estrutural de pontes pedonais e manutenção de elevadores',
+    buyer: 'Município de Lisboa',
+    category: 'Civil engineering',
+    location: 'Lisbon, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Concurso público',
+    deadlineDate: '13th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 13),
+    baseValue: '€45,000',
+    deadlineStatus: { type: 'closed' },
+    stage: 'evaluating',
+    contractObjectText:
+      'Reabilitação estrutural de pontes pedonais e manutenção de elevadores de acesso público.',
+    documents: [
+      {
+        title: 'Memória Descritiva',
+        text: 'Inspeção estrutural das pontes e verificação dos elevadores de acesso público.',
+      },
+    ],
+  },
+  {
+    id: 't12',
+    name: 'Reparação de pavimento degradado e substituição de sinalização vertical',
+    buyer: 'Município do Porto',
+    category: 'Road maintenance',
+    location: 'Porto, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Ajuste direto',
+    deadlineDate: '—',
+    submissionDeadlineDate: null,
+    baseValue: '€480,000',
+    deadlineStatus: { type: 'unavailable' },
+    stage: 'active',
+    contractObjectText:
+      'Reparação de pavimento degradado e substituição de sinalização vertical em vias municipais.',
+    documents: [
+      {
+        title: 'Termos de Referência',
+        text: 'É exigida garantia bancária no valor de 5% do valor base do contrato.',
+      },
+    ],
+  },
+  {
+    id: 't13',
+    name: 'Substituição da rede elétrica interna e iluminação pública',
+    buyer: 'Câmara Municipal de Sintra',
+    category: 'Electrical works',
+    location: 'Sintra, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Concurso público',
+    deadlineDate: '15th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 15),
+    baseValue: '€650,000',
+    deadlineStatus: { type: 'today' },
+    stage: 'active',
+    contractObjectText:
+      'Substituição da rede elétrica interna e iluminação pública em zona histórica.',
+    documents: [
+      {
+        title: 'Relatório Técnico',
+        text: 'Certificação energética exigida para toda a instalação elétrica renovada.',
+      },
+    ],
+  },
+  {
+    id: 't14',
+    name: 'Renovação de licenças de software de engenharia e modelação estrutural',
+    buyer: 'Infraestruturas de Portugal',
+    category: 'Software licences',
+    location: 'Aveiro, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Consulta prévia',
+    deadlineDate: '16th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 16),
+    baseValue: '€890,000',
+    deadlineStatus: { type: 'tomorrow' },
+    stage: 'evaluating',
+    contractObjectText:
+      'Renovação de licenças de software de engenharia e modelação estrutural para projetos de infraestrutura.',
+    documents: [
+      {
+        title: 'Especificações Técnicas',
+        text: 'Requisitos de licenciamento de software de engenharia estrutural.',
+      },
+    ],
+  },
+  {
+    id: 't15',
+    name: 'Serviços de helpdesk informático e gestão de infraestrutura de rede',
+    buyer: 'Universidade de Coimbra',
+    category: 'IT services',
+    location: 'Coimbra, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Ajuste direto',
+    deadlineDate: '1st Dec, 2026',
+    submissionDeadlineDate: new Date(2026, 11, 1),
+    baseValue: '€1,450,000',
+    deadlineStatus: { type: 'days', days: 77 },
+    stage: 'active',
+    contractObjectText:
+      'Serviços de helpdesk informático e gestão de infraestrutura de rede para a universidade.',
+    documents: [
+      {
+        title: 'Especificações Técnicas',
+        text: 'Requisitos de suporte técnico informático e gestão de rede universitária.',
+      },
+    ],
+  },
+  {
+    id: 't16',
+    name: 'Obras de construção civil para ampliação do edifício sede da câmara',
+    buyer: 'Município de Lisboa',
+    category: 'Construction',
+    location: 'Lisbon, Portugal',
+    countryFlag: '🇵🇹',
+    procedureType: 'Concurso público',
+    deadlineDate: '25th Sept, 2026',
+    submissionDeadlineDate: new Date(2026, 8, 25),
+    baseValue: '€275,000',
+    deadlineStatus: { type: 'days', days: 10 },
+    stage: 'evaluating',
+    contractObjectText:
+      'Obras de construção civil para ampliação do edifício sede da câmara municipal.',
+    documents: [
+      {
+        title: 'Caderno de Encargos',
+        text: 'Obras de ampliação sujeitas a verificação de amianto na estrutura existente.',
+      },
+    ],
   },
 ];
+
+type TenderResult = MockTender & {
+  matchedFilters: MatchedFilterField[];
+  matchedKeyword?: MatchedKeyword;
+};
+
+const FIELD_TO_MATCHED_LABEL: Record<StructuredField, MatchedFilterField> = {
+  buyer: 'Buyer',
+  category: 'Category',
+  'submission-deadline': 'Publication date',
+  'base-price': 'Base value',
+};
+
+const KEYWORD_TARGET_TO_MATCHED_LABEL: Record<KeywordTarget, MatchedFilterField> = {
+  'contract-object': 'Contract Object',
+  documents: 'Documents',
+};
+
+/** A row with nothing picked yet (no values/dates/price/terms) contributes
+ * no constraint — this is what keeps the panel's default unconfigured rows
+ * from filtering out every tender before the user has touched anything. */
+function isRowConfigured(row: FilterRowState): boolean {
+  if (row.kind === 'keyword') {
+    return row.terms.length > 0;
+  }
+  if (row.field === 'buyer' || row.field === 'category') {
+    return row.values.length > 0;
+  }
+  if (row.field === 'submission-deadline') {
+    return Boolean(row.dateFrom);
+  }
+  return row.priceFrom.trim() !== '' || row.priceTo.trim() !== '';
+}
+
+function tenderMatchesRow(tender: MockTender, row: FilterRowState): boolean {
+  if (row.kind === 'keyword') {
+    const haystack =
+      row.target === 'documents'
+        ? tender.documents.map((doc) => doc.text).join(' ')
+        : tender.contractObjectText;
+    const lower = haystack.toLowerCase();
+    return row.terms.some((term) => lower.includes(term.toLowerCase()));
+  }
+
+  if (row.field === 'buyer' || row.field === 'category') {
+    const value = row.field === 'buyer' ? tender.buyer : tender.category;
+    const inSet = row.values.includes(value);
+    return row.operator === 'none-of' ? !inSet : inSet;
+  }
+
+  if (row.field === 'submission-deadline') {
+    if (!tender.submissionDeadlineDate) {
+      return false;
+    }
+    const time = tender.submissionDeadlineDate.getTime();
+    const from = row.dateFrom?.getTime();
+    const to = row.dateTo?.getTime();
+    if (row.operator === 'after') {
+      return from !== undefined && time >= from;
+    }
+    if (row.operator === 'before') {
+      return from !== undefined && time <= from;
+    }
+    if (from === undefined) {
+      return false;
+    }
+    return to === undefined ? time >= from : time >= from && time <= to;
+  }
+
+  // base-price
+  const value = baseValueNumber(tender.baseValue);
+  const from = parsePrice(row.priceFrom);
+  const to = parsePrice(row.priceTo);
+  if (row.operator === 'at-least') {
+    return from !== null && value >= from;
+  }
+  if (row.operator === 'at-most') {
+    return from !== null && value <= from;
+  }
+  if (from !== null && to !== null) {
+    return value >= from && value <= to;
+  }
+  if (from !== null) {
+    return value >= from;
+  }
+  if (to !== null) {
+    return value <= to;
+  }
+  return true;
+}
 
 function LoadingResults() {
   return (
@@ -248,16 +655,6 @@ function SearchUnavailable({ onRetry }: { onRetry: () => void }) {
           onAction={onRetry}
         />
       </div>
-    </div>
-  );
-}
-
-function AwardedLockedNote() {
-  return (
-    <div className='mx-8 flex items-center gap-2 rounded-lg border border-stroke-soft-200 bg-bg-weak-50 px-3 py-2 text-paragraph-xs text-text-sub-600'>
-      <RiLockLine className='size-4 shrink-0' />
-      Awarded is available only with Market Intelligence — contact your admin
-      to unlock it.
     </div>
   );
 }
@@ -359,6 +756,32 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
     setCurrentView('');
   }, []);
 
+  // Instant, not a fake network delay like Search's 500ms — Export just
+  // hands off to a background job, so the toast confirming that handoff
+  // fires the moment the button is clicked. Download would fetch the real
+  // file once the export finishes; not wired here, out of scope for the
+  // demo.
+  //
+  // A fixed `id` (rather than none, which lets Sonner mint a new one each
+  // call) makes a second click while the toast is still up replace it in
+  // place instead of stacking a duplicate — no visible disabled/loading
+  // state needed on the button itself, since the action really is instant.
+  const handleExport = React.useCallback(() => {
+    toast.custom(
+      (t) => (
+        <AlertToast.Root
+          t={t}
+          status='success'
+          size='xsmall'
+          message='Your export is ready'
+          icon={RiCheckboxCircleFill}
+          action={{ label: 'Download', onClick: () => toast.dismiss(t) }}
+        />
+      ),
+      { id: 'export-ready' },
+    );
+  }, []);
+
   const handleUpdateView = React.useCallback(() => {
     toast.custom((t) => (
       <AlertToast.Root
@@ -372,15 +795,11 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   }, [currentView]);
 
   // Not tied to any real per-view snapshot yet (views are names, not saved
-  // configurations) — this proves the interaction (name collision handling,
-  // becoming the current view, confirmation) rather than real persistence.
-  const handleSaveAsNewView = React.useCallback(() => {
-    let name = 'New view';
-    let suffix = 2;
-    while (views.includes(name)) {
-      name = `New view ${suffix}`;
-      suffix += 1;
-    }
+  // configurations) — this proves the interaction (becoming the current
+  // view, confirmation) rather than real persistence. The name itself now
+  // comes from ViewsPicker's own naming step, which already blocks
+  // duplicates before this ever fires.
+  const handleSaveAsNewView = React.useCallback((name: string) => {
     setViews((prev) => [name, ...prev]);
     setCurrentView(name);
     toast.custom((t) => (
@@ -392,7 +811,7 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
         icon={RiCheckboxCircleFill}
       />
     ));
-  }, [views]);
+  }, []);
 
   // Discards pending edits — reverts the pending search back to whatever
   // is currently applied, the same "undo my unsearched changes" job Reset
@@ -468,18 +887,70 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
     );
   }
 
-  const results = TENDERS.filter((t) => {
-    if (appliedSavedOnly && !savedIds.has(t.id)) {
-      return false;
+  const configuredRows = appliedRows.filter(isRowConfigured);
+
+  function evaluateTender(tender: MockTender): TenderResult | null {
+    if (appliedSavedOnly && !savedIds.has(tender.id)) {
+      return null;
     }
     if (
       appliedQuery &&
-      !`${t.name} ${t.buyer}`.toLowerCase().includes(appliedQuery.toLowerCase())
+      !`${tender.name} ${tender.buyer}`.toLowerCase().includes(appliedQuery.toLowerCase())
     ) {
-      return false;
+      return null;
     }
-    return true;
-  });
+    if (tender.stage !== appliedStage) {
+      return null;
+    }
+
+    const matchedRows = configuredRows.filter((row) => tenderMatchesRow(tender, row));
+
+    if (configuredRows.length > 0) {
+      const passes =
+        appliedMatchMode === 'all'
+          ? matchedRows.length === configuredRows.length
+          : matchedRows.length > 0;
+      if (!passes) {
+        return null;
+      }
+    }
+
+    const matchedFilters: MatchedFilterField[] = [];
+    let matchedKeyword: MatchedKeyword | undefined;
+
+    for (const row of matchedRows) {
+      if (row.kind === 'keyword') {
+        matchedFilters.push(KEYWORD_TARGET_TO_MATCHED_LABEL[row.target]);
+        if (!matchedKeyword) {
+          if (row.target === 'documents') {
+            const doc = tender.documents.find((d) =>
+              row.terms.some((term) => d.text.toLowerCase().includes(term.toLowerCase())),
+            );
+            if (doc) {
+              matchedKeyword = { documentTitle: doc.title, snippet: doc.text };
+            }
+          } else {
+            const lower = tender.contractObjectText.toLowerCase();
+            const hasTerm = row.terms.some((term) => lower.includes(term.toLowerCase()));
+            if (hasTerm) {
+              matchedKeyword = {
+                documentTitle: 'Contract Object',
+                snippet: tender.contractObjectText,
+              };
+            }
+          }
+        }
+      } else {
+        matchedFilters.push(FIELD_TO_MATCHED_LABEL[row.field]);
+      }
+    }
+
+    return { ...tender, matchedFilters, matchedKeyword };
+  }
+
+  const results = TENDERS.map(evaluateTender).filter(
+    (tender): tender is TenderResult => tender !== null,
+  );
 
   const sortedResults = sortTenders(results, sort);
 
@@ -520,11 +991,12 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           onUpdateView={handleUpdateView}
           onSaveAsNewView={handleSaveAsNewView}
           onResetView={handleResetView}
+          onExport={handleExport}
         />
       </div>
 
       <div className='flex flex-col gap-4 px-8'>
-        <AccordionRow open={isPanelExpanded}>
+        <AccordionRow open={isPanelExpanded} animate={false}>
           <FilterPanel
             searchInputRef={searchInputRef}
             onSearch={handleSearch}
@@ -584,7 +1056,7 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           </FilterPanel>
         </AccordionRow>
 
-        <AccordionRow open={!isPanelExpanded}>
+        <AccordionRow open={!isPanelExpanded} animate={false}>
           <CollapsedFilterPanel
             ref={editSearchRef}
             summary={searchValue || undefined}
@@ -596,8 +1068,6 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           <AppliedSummary chips={chips} matchMode={appliedMatchMode} />
         ) : null}
       </div>
-
-      {forceState === 'locked' ? <AwardedLockedNote /> : null}
 
       {/* ResultsSummary lives with the cards it captions, not with the
           panel above it — it's describing "5 active tenders..." for the
@@ -626,7 +1096,16 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           sortedResults.map((tender) => (
             <TenderResultCard
               key={tender.id}
-              {...tender}
+              name={tender.name}
+              buyer={tender.buyer}
+              location={tender.location}
+              countryFlag={tender.countryFlag}
+              procedureType={tender.procedureType}
+              deadlineDate={tender.deadlineDate}
+              baseValue={tender.baseValue}
+              deadlineStatus={tender.deadlineStatus}
+              matchedFilters={tender.matchedFilters}
+              matchedKeyword={tender.matchedKeyword}
               saved={savedIds.has(tender.id)}
               onToggleSave={() => toggleSave(tender.id, tender.name)}
             />

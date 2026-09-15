@@ -74,7 +74,7 @@ export function KeywordTargetPicker({
                   }
                 }}
               />
-              <span className='flex-1 text-label-sm text-text-sub-600'>
+              <span className='flex-1 text-label-sm text-text-strong-950'>
                 {option.label}
               </span>
             </label>

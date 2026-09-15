@@ -75,8 +75,13 @@ export function ResultsSummary({
                 dismissible chips — gray, not the blue Badge tried earlier.
                 Tag.DismissButton's built-in -mr-1 against the root's px-2
                 already produces the design's pl-8/pr-4 optical asymmetry,
-                so no padding override is needed here. */}
-            <Tag.Root variant='gray'>
+                so no padding override is needed here. text-paragraph-sm
+                overrides Tag's own default text-label-xs (12px/medium) —
+                at 12px the view name read visibly smaller than "Sort by"'s
+                14px/regular select value right next to it; scoped to this
+                instance only, since every other chip (Buyer/Category
+                picks, AppliedSummary) is a compact 12px label on purpose. */}
+            <Tag.Root variant='gray' className='text-paragraph-sm'>
               {currentView}
               <Tag.DismissButton
                 aria-label={`Exit "${currentView}" view`}

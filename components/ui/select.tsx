@@ -233,15 +233,74 @@ const SelectContext = React.createContext<SelectContextType>({
 
 const useSelectContext = () => React.useContext(SelectContext);
 
+// Coordinates every mounted SelectRoot so at most one is ever open — see
+// the `pointer-events-auto` note on SelectTrigger below for why this is
+// needed. Module-level (not context) since selects can live under
+// unrelated trees (a filter row's Select, the page header's, a dial's)
+// with no shared ancestor to hang a context provider from.
+const openSelectClosers = new Set<() => void>();
+
+function closeOtherSelects(exceptCloser: () => void) {
+  openSelectClosers.forEach((closer) => {
+    if (closer !== exceptCloser) {
+      closer();
+    }
+  });
+}
+
 const SelectRoot = ({
   size = 'medium',
   variant = 'default',
   hasError,
+  open: openProp,
+  defaultOpen,
+  onOpenChange,
   ...rest
 }: React.ComponentProps<typeof SelectPrimitives.Root> & SelectContextType) => {
+  const [openState, setOpenState] = React.useState(defaultOpen ?? false);
+  const open = openProp ?? openState;
+
+  // Re-assigned every render (cheap) so the stable closer below always
+  // calls the latest onOpenChange/setOpenState, avoiding a stale closure
+  // without needing onOpenChange in a dependency array.
+  const closeSelfRef = React.useRef<() => void>(() => {});
+  closeSelfRef.current = () => {
+    if (openProp === undefined) {
+      setOpenState(false);
+    }
+    onOpenChange?.(false);
+  };
+  // Identity stays stable across renders — required for Set membership
+  // (add/delete by reference) and for excluding "myself" when closing
+  // every other open select.
+  const stableCloserRef = React.useRef(() => closeSelfRef.current());
+
+  React.useEffect(() => {
+    const closer = stableCloserRef.current;
+    openSelectClosers.add(closer);
+    return () => {
+      openSelectClosers.delete(closer);
+    };
+  }, []);
+
+  function handleOpenChange(next: boolean) {
+    if (next) {
+      closeOtherSelects(stableCloserRef.current);
+    }
+    if (openProp === undefined) {
+      setOpenState(next);
+    }
+    onOpenChange?.(next);
+  }
+
   return (
     <SelectContext.Provider value={{ size, variant, hasError }}>
-      <SelectPrimitives.Root {...rest} />
+      <SelectPrimitives.Root
+        open={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={handleOpenChange}
+        {...rest}
+      />
     </SelectContext.Provider>
   );
 };
@@ -276,7 +335,16 @@ const SelectTrigger = React.forwardRef<
   return (
     <SelectPrimitives.Trigger
       ref={forwardedRef}
-      className={triggerRoot({ class: className })}
+      // This version of @radix-ui/react-select has no `modal` escape hatch
+      // — its Content always mounts with `disableOutsidePointerEvents`,
+      // which sets `document.body { pointer-events: none }` for as long as
+      // it's open. `pointer-events` inherits, so every other trigger on the
+      // page (including a different Select's) goes dead too: clicking one
+      // while this one is open doesn't reach it as a DOM event at all, it
+      // just closes this one — switching takes two clicks. `pointer-events-
+      // auto` here overrides that inherited `none` on the trigger itself,
+      // so it stays clickable regardless of what else is open.
+      className={triggerRoot({ class: cn('pointer-events-auto', className) })}
       {...rest}
     >
       <Slottable>{children}</Slottable>

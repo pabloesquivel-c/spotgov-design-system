@@ -8,6 +8,13 @@
 //   2446:35295 — search matched nothing.
 // Plain rows, no checkboxes — a view is selected, not multi-checked — with
 // the current view's row taking the weak-50 background.
+//
+// Naming step: "Save as new view"/"Create view" used to save immediately
+// under an auto-generated name ("New view", "New view 2", ...). This swaps
+// the popover's own content to a name prompt first — same shell, input, and
+// button primitives as the rest of this picker (and every other picker in
+// this playground), so hovers/colors/radii/text styles match by
+// construction rather than by copying values.
 
 import * as React from 'react';
 import { RiSearch2Line } from '@remixicon/react';
@@ -67,6 +74,83 @@ function ViewsList({
   );
 }
 
+/**
+ * The naming step for "Save as new view"/"Create view" — same
+ * `CheckboxPickerShell` as the rest of this picker (300px, rounded-xl,
+ * shadow-regular-md) and the same `Input`/`Button` primitives, so it reads
+ * as one continuous component rather than a bolted-on dialog.
+ *
+ * Duplicate-name validation follows the same pattern as this playground's
+ * other inline validation (dynamic-filter-rows.tsx's invalid price range):
+ * a live boolean flips the input to `hasError` and prints an
+ * error-base hint directly under it, and the primary button stays disabled
+ * until the name is both non-empty and not a duplicate.
+ */
+function SaveViewForm({
+  views,
+  onCancel,
+  onSave,
+}: {
+  views: string[];
+  onCancel: () => void;
+  onSave: (name: string) => void;
+}) {
+  const [name, setName] = React.useState('');
+  const trimmed = name.trim();
+  const isDuplicate =
+    trimmed.length > 0 &&
+    views.some((view) => view.toLowerCase() === trimmed.toLowerCase());
+  const canSave = trimmed.length > 0 && !isDuplicate;
+
+  return (
+    <CheckboxPickerShell>
+      <Input.Root size='xsmall' hasError={isDuplicate}>
+        <Input.Wrapper>
+          <Input.Input
+            autoFocus
+            placeholder='Name this view'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && canSave) {
+                onSave(trimmed);
+              }
+            }}
+          />
+        </Input.Wrapper>
+      </Input.Root>
+
+      {isDuplicate ? (
+        <span className='px-1 text-paragraph-xs text-error-base'>
+          A view named &quot;{trimmed}&quot; already exists.
+        </span>
+      ) : null}
+
+      <div className='flex w-full items-center gap-1'>
+        <Button.Root
+          variant='neutral'
+          mode='ghost'
+          size='xsmall'
+          className='flex-1 justify-center'
+          onClick={onCancel}
+        >
+          Cancel
+        </Button.Root>
+        <Button.Root
+          variant='neutral'
+          mode='filled'
+          size='xsmall'
+          className='flex-1 justify-center'
+          disabled={!canSave}
+          onClick={() => onSave(trimmed)}
+        >
+          Save
+        </Button.Root>
+      </div>
+    </CheckboxPickerShell>
+  );
+}
+
 export function ViewsPicker({
   /** The footer (Update view / Save as new view / Reset) only shows once
    * the current view has been edited — it's how you leave that state, not
@@ -94,7 +178,10 @@ export function ViewsPicker({
   searchValue?: string;
   onSearchChange?: (value: string) => void;
   onUpdateView?: () => void;
-  onSaveAsNewView?: () => void;
+  /** Fires once a name has been typed and confirmed in the naming step —
+   * not on the "Save as new view"/"Create view" click itself, which only
+   * opens that step. */
+  onSaveAsNewView?: (name: string) => void;
   onReset?: () => void;
 }) {
   const [uncontrolledCurrent, setUncontrolledCurrent] = React.useState(
@@ -103,6 +190,7 @@ export function ViewsPicker({
   const current = currentProp ?? uncontrolledCurrent;
   const [uncontrolledSearch, setUncontrolledSearch] = React.useState('');
   const search = searchValueProp ?? uncontrolledSearch;
+  const [isNaming, setIsNaming] = React.useState(false);
 
   function selectView(view: string) {
     if (currentProp === undefined) {
@@ -122,6 +210,19 @@ export function ViewsPicker({
   const filtered = trimmedSearch
     ? views.filter((view) => view.toLowerCase().includes(trimmedSearch.toLowerCase()))
     : views;
+
+  if (isNaming) {
+    return (
+      <SaveViewForm
+        views={views}
+        onCancel={() => setIsNaming(false)}
+        onSave={(name) => {
+          onSaveAsNewView?.(name);
+          setIsNaming(false);
+        }}
+      />
+    );
+  }
 
   return (
     <CheckboxPickerShell>
@@ -149,7 +250,7 @@ export function ViewsPicker({
             mode='filled'
             size='xsmall'
             className='w-full justify-center'
-            onClick={onSaveAsNewView}
+            onClick={() => setIsNaming(true)}
           >
             Create view
           </Button.Root>
@@ -183,7 +284,7 @@ export function ViewsPicker({
             mode='stroke'
             size='xsmall'
             className='w-full justify-center'
-            onClick={onSaveAsNewView}
+            onClick={() => setIsNaming(true)}
           >
             Save as new view
           </Button.Root>

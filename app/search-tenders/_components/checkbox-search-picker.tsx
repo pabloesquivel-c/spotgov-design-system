@@ -73,7 +73,7 @@ export function CheckboxOptionList({
             defaultChecked={selected ? undefined : option.checked}
             onCheckedChange={onToggle ? () => onToggle(option.label) : undefined}
           />
-          <span className='flex-1 text-label-sm text-text-sub-600'>
+          <span className='flex-1 text-label-sm text-text-strong-950'>
             {option.label}
           </span>
         </label>

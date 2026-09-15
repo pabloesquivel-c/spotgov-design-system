@@ -20,7 +20,6 @@ export const FORCE_STATE_IDS = [
   'no-results',
   'filter-error',
   'dropped',
-  'locked',
   'denied',
   'error',
 ] as const;

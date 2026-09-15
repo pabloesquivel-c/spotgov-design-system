@@ -51,6 +51,13 @@ export type DeadlineStatus =
   | { type: 'closed' }
   | { type: 'unavailable' };
 
+// [confirmed] Beyond this, the deadline isn't close enough to warrant an
+// urgency pill — the "Deadline: <date>" meta tag already carries the date,
+// and a success-green pill on something 2+ months out reads as urgent when
+// it isn't. Pills for today/tomorrow/closed/unavailable are unaffected;
+// only a "days" status this far out is suppressed.
+const DEADLINE_URGENCY_WINDOW_DAYS = 30;
+
 // Figma: 2516:22519 (today, error/red), 2516:22515 (tomorrow, warning/
 // orange), 2516:22511 (days, success/green), 2516:22524 (closed, faded/
 // grey). "Deadline not available" isn't its own Figma tag — it reuses the
@@ -80,6 +87,10 @@ const DEADLINE_STATUS_STYLES = {
 } as const;
 
 function DeadlineStatusPill({ status }: { status: DeadlineStatus }) {
+  if (status.type === 'days' && status.days > DEADLINE_URGENCY_WINDOW_DAYS) {
+    return null;
+  }
+
   const label =
     status.type === 'today'
       ? 'Closes today'
@@ -257,7 +268,19 @@ export function TenderResultCard({
   const hiddenCount = matchedFilters.length - MATCHED_FILTERS_VISIBLE_COUNT;
 
   return (
-    <div className='flex w-full flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 px-3 pb-3 pt-2.5 shadow-regular-xs'>
+    // Hover-only affordance for the side drawer this card will open — no
+    // click handler yet. Flat bg tint + dropped border/shadow, same
+    // "clickable card" treatment as hr-modules-checkbox.tsx and
+    // selectable-radio/checkbox-cards.tsx: a list row reads as clickable
+    // by tinting in place, not rising off the page (how Notion/Linear
+    // rows do it too).
+    //
+    // :hover bubbles, so hovering Save/"+N more filters"/the keyword tag
+    // would tint the card *and* highlight the button at once — two
+    // hovers reading as one blurry one. :not(:has(button:hover)) drops
+    // the card's own hover the moment a nested button is the real
+    // target, so only that button's hover shows.
+    <div className='flex w-full cursor-pointer flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 px-3 pb-3 pt-2.5 shadow-regular-xs transition-[background-color,box-shadow,border-color] duration-150 ease [&:hover:not(:has(button:hover))]:border-transparent [&:hover:not(:has(button:hover))]:bg-bg-weak-50 [&:hover:not(:has(button:hover))]:shadow-none'>
       <div className='flex w-full items-start gap-4'>
         <div className='flex min-w-0 flex-1 flex-col gap-3'>
           <div className='flex flex-col gap-2'>

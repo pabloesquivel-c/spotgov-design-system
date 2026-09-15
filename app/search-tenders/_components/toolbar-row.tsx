@@ -9,28 +9,33 @@
 // it reads more like a toolbar-level query setting (alongside stage/country)
 // than something that belongs inside the rows it governs.
 //
-// Active/Evaluating are a real controlled toggle. Awarded stays disabled —
-// [confirmed] it's only available with Market Intelligence — with a
-// tooltip explaining why on hover/focus, rather than being clickable and
-// then explaining itself after the fact.
+// Active/Evaluating/Awarded are all a real controlled toggle — Awarded
+// isn't locked or disabled, it's a normal clickable stage like the other
+// two. [confirmed] The only variant is whether it's there at all:
+// `showAwardedTab={false}` drops it entirely for the one org Market
+// Intelligence isn't offered to, rather than showing it disabled with
+// nothing to unlock.
 
 import * as React from 'react';
-import { RiAddLine, RiFilter3Line, RiLockLine, RiSearch2Line } from '@remixicon/react';
+import { RiAddLine, RiFilter3Line, RiSearch2Line } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
 import * as Checkbox from '@/components/ui/checkbox';
 import * as Input from '@/components/ui/input';
 import * as Select from '@/components/ui/select';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import * as Tooltip from '@/components/ui/tooltip';
 import type { MatchMode } from './applied-summary';
 
-const STAGE_TABS = [
+const BASE_STAGE_TABS = [
   { value: 'active', label: 'Active' },
   { value: 'evaluating', label: 'Evaluating' },
 ] as const;
 
-export type Stage = (typeof STAGE_TABS)[number]['value'];
+const AWARDED_TAB = { value: 'awarded', label: 'Awarded' } as const;
+
+export type Stage =
+  | (typeof BASE_STAGE_TABS)[number]['value']
+  | typeof AWARDED_TAB.value;
 
 export function ToolbarRow({
   searchInputRef,
@@ -49,6 +54,7 @@ export function ToolbarRow({
   matchMode,
   onMatchModeChange,
   showMatchMode,
+  showAwardedTab = true,
 }: {
   /** Lets a parent (e.g. the collapse/expand toggle) move focus into the
    * search input right after it expands. */
@@ -70,7 +76,7 @@ export function ToolbarRow({
   onSavedOnlyChange?: (value: boolean) => void;
   onAddFilter?: () => void;
   onAddKeyword?: () => void;
-  /** Controlled Active/Evaluating toggle. Omit to leave it uncontrolled. */
+  /** Controlled stage toggle. Omit to leave it uncontrolled. */
   stage?: Stage;
   onStageChange?: (stage: Stage) => void;
   matchMode?: MatchMode;
@@ -79,7 +85,14 @@ export function ToolbarRow({
    * "any" and "all" produce the same results, so the caller gates this on
    * row count rather than always showing it. */
   showMatchMode?: boolean;
+  /** [confirmed] Default is three real, clickable tabs — Active,
+   * Evaluating, Awarded. Set false for the one org variant Market
+   * Intelligence isn't offered to, dropping Awarded entirely rather than
+   * showing it disabled. */
+  showAwardedTab?: boolean;
 }) {
+  const stageTabs = showAwardedTab ? [...BASE_STAGE_TABS, AWARDED_TAB] : BASE_STAGE_TABS;
+
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex items-center justify-between gap-3'>
@@ -97,27 +110,11 @@ export function ToolbarRow({
           className='w-[368px] shrink-0'
         >
           <SegmentedControl.List>
-            {STAGE_TABS.map((tab) => (
+            {stageTabs.map((tab) => (
               <SegmentedControl.Trigger key={tab.value} value={tab.value}>
                 {tab.label}
               </SegmentedControl.Trigger>
             ))}
-
-            <Tooltip.Root delayDuration={200}>
-              <Tooltip.Trigger asChild>
-                <SegmentedControl.Trigger
-                  value='awarded'
-                  disabled
-                  className='gap-1 disabled:cursor-not-allowed disabled:opacity-60'
-                >
-                  <RiLockLine className='size-3.5 shrink-0' />
-                  Awarded
-                </SegmentedControl.Trigger>
-              </Tooltip.Trigger>
-              <Tooltip.Content side='bottom' size='small'>
-                Available only with Market Intelligence
-              </Tooltip.Content>
-            </Tooltip.Root>
           </SegmentedControl.List>
         </SegmentedControl.Root>
 
@@ -179,9 +176,15 @@ export function ToolbarRow({
               flex-1 fills all remaining row width (Figma: flex-[1_0_0]),
               min-w-0 lets it shrink below its content size instead of
               overflowing past the panel's rounded corner at narrower widths. */}
-          <Input.Root size='small' className='min-w-0 flex-1'>
-            <Input.Wrapper>
-              <Input.Icon as={RiSearch2Line} />
+          <Input.Root
+            size='small'
+            className='min-w-0 flex-1 hover:shadow-regular-xs active:scale-[0.99]'
+          >
+            <Input.Wrapper className='[&:has(input:focus)]:hover:bg-bg-weak-50'>
+              <Input.Icon
+                as={RiSearch2Line}
+                className='group-has-[:placeholder-shown]:group-hover/input-wrapper:text-text-soft-400'
+              />
               {/* [confirmed] Scoped to reference/contract number, buyer name,
                   and tender title/contract object only — the three fields
                   that can return suggestions without new search logic.
@@ -192,6 +195,7 @@ export function ToolbarRow({
                   mechanism as the Document/Contract Object rows. */}
               <Input.Input
                 ref={searchInputRef}
+                className='group-hover/input-wrapper:placeholder:text-text-soft-400'
                 placeholder='Reference, buyer, or tender title'
                 value={searchValue}
                 onChange={

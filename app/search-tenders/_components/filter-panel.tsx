@@ -102,21 +102,34 @@ const COLLAPSE_MS = 180;
  */
 export function AccordionRow({
   open,
+  animate = true,
   children,
 }: {
   open: boolean;
+  /** [confirmed] v1 cut Search's panel collapse down to an instant swap —
+   * no transition. Left as a prop rather than deleting the motion code, so
+   * the collapse mechanic (and the `inert` a11y behavior below) survives
+   * untouched for whenever the animation comes back. */
+  animate?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
-      className='grid motion-reduce:transition-none'
+      className={
+        'grid motion-reduce:transition-none' + (animate ? '' : ' transition-none')
+      }
       style={{
         gridTemplateRows: open ? '1fr' : '0fr',
-        transition: `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`,
+        transition: animate
+          ? `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`
+          : undefined,
       }}
     >
       <div
-        className='min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100'
+        className={
+          'min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100' +
+          (animate ? '' : ' transition-none')
+        }
         data-open={open ? '' : undefined}
         // @ts-expect-error -- `inert` isn't in this React/TS version's DOM
         // typings yet, but is a real, broadly-supported HTML attribute.
@@ -177,6 +190,7 @@ export function FilterPanel({
   matchMode,
   onMatchModeChange,
   showMatchMode,
+  showAwardedTab,
 }: {
   children?: React.ReactNode;
   hint?: FilterPanelHint;
@@ -218,6 +232,10 @@ export function FilterPanel({
    * "any" and "all" produce the same results, so the caller gates this on
    * row count rather than always showing it. */
   showMatchMode?: boolean;
+  /** Forwarded to ToolbarRow. [confirmed] Defaults to true (three tabs,
+   * Awarded locked behind Market Intelligence) — set false for the org
+   * variant where that upsell doesn't apply. */
+  showAwardedTab?: boolean;
 }) {
   const isEmpty = isEmptyProp ?? !children;
 
@@ -253,6 +271,7 @@ export function FilterPanel({
           matchMode={matchMode}
           onMatchModeChange={onMatchModeChange}
           showMatchMode={showMatchMode}
+          showAwardedTab={showAwardedTab}
         />
 
         {isEmpty ? (
