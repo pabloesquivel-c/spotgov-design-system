@@ -262,10 +262,16 @@ export function TenderResultCard({
         <div className='flex min-w-0 flex-1 flex-col gap-3'>
           <div className='flex flex-col gap-2'>
             <div className='flex flex-col gap-1'>
-              <p className='truncate text-label-sm text-text-strong-950'>
+              <p
+                title={name}
+                className='line-clamp-2 text-label-sm text-text-strong-950'
+              >
                 {name}
               </p>
-              <p className='truncate text-label-sm text-text-sub-600'>
+              <p
+                title={buyer}
+                className='truncate text-label-sm text-text-sub-600'
+              >
                 {buyer}
               </p>
             </div>

@@ -6,8 +6,11 @@
 // options. Both nodes only cover the inner content ("Body"); the bordered
 // rounded shell is inferred from the screenshot, not spec'd by either node.
 //
-// Search + checkbox list, no logic: nothing filters as you type and
-// checking a box doesn't do anything yet.
+// The search box is real: it filters `options` by a case-insensitive
+// substring match on the label, shared by every caller (Buyer, Category,
+// Location, Procedure type) since they all go through
+// `CheckboxSearchPicker`. Checking a box is wired per-caller via
+// `selected`/`onToggle` — see dynamic-filter-rows.tsx.
 //
 // Hover: node 2446:30162 "Checkbox-Row" — bg-weak-50 row background, and
 // the checked checkbox is black (fill-strong-950), not the primitive's
@@ -39,8 +42,15 @@ export type CheckboxPickerOption = {
  * skip search entirely, but shares the same row rendering. */
 export function CheckboxOptionList({
   options,
+  selected,
+  onToggle,
 }: {
   options: CheckboxPickerOption[];
+  /** Controlled selection by label. Omit both this and `onToggle` to fall
+   * back to each option's own `checked` as an uncontrolled default, as
+   * every specimen usage does. */
+  selected?: Set<string>;
+  onToggle?: (label: string) => void;
 }) {
   return (
     <div
@@ -56,9 +66,13 @@ export function CheckboxOptionList({
       {options.map((option) => (
         <label
           key={option.label}
-          className='flex items-center gap-2 rounded-md px-2 py-1 transition-colors duration-100 ease hover:bg-bg-weak-50'
+          className='flex items-center gap-2 rounded-md px-2 py-1 transition-colors duration-100 ease hover:bg-bg-weak-50 active:scale-[0.99]'
         >
-          <Checkbox.Root defaultChecked={option.checked} />
+          <Checkbox.Root
+            checked={selected ? selected.has(option.label) : undefined}
+            defaultChecked={selected ? undefined : option.checked}
+            onCheckedChange={onToggle ? () => onToggle(option.label) : undefined}
+          />
           <span className='flex-1 text-label-sm text-text-sub-600'>
             {option.label}
           </span>
@@ -89,20 +103,42 @@ export function CheckboxPickerShell({
 export function CheckboxSearchPicker({
   searchPlaceholder,
   options,
+  selected,
+  onToggle,
 }: {
   searchPlaceholder: string;
   options: CheckboxPickerOption[];
+  selected?: Set<string>;
+  onToggle?: (label: string) => void;
 }) {
+  const [search, setSearch] = React.useState('');
+  const trimmed = search.trim();
+  const filtered = trimmed
+    ? options.filter((option) =>
+        option.label.toLowerCase().includes(trimmed.toLowerCase()),
+      )
+    : options;
+
   return (
     <CheckboxPickerShell>
       <Input.Root size='xsmall'>
         <Input.Wrapper>
           <Input.Icon as={RiSearch2Line} />
-          <Input.Input placeholder={searchPlaceholder} />
+          <Input.Input
+            placeholder={searchPlaceholder}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </Input.Wrapper>
       </Input.Root>
 
-      <CheckboxOptionList options={options} />
+      {filtered.length === 0 ? (
+        <p className='px-2 py-4 text-center text-label-sm text-text-soft-400'>
+          No matches found
+        </p>
+      ) : (
+        <CheckboxOptionList options={filtered} selected={selected} onToggle={onToggle} />
+      )}
     </CheckboxPickerShell>
   );
 }

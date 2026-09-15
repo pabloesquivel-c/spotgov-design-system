@@ -17,7 +17,7 @@ import {
 import { BuyerPicker } from './buyer-picker';
 import { CategoryPicker } from './category-picker';
 import { DateFilterCalendar } from './date-filter-calendar';
-import { CollapsedFilterPanel, FilterPanel } from './filter-panel';
+import { AccordionRow, CollapsedFilterPanel, FilterPanel } from './filter-panel';
 import {
   FilterFieldTrigger,
   FilterOperatorLabel,
@@ -27,7 +27,13 @@ import {
   FilterRow,
   FilterValueTrigger,
 } from './filter-row';
+import { FilterTypePicker } from './filter-type-picker';
 import { KeywordTargetPicker } from './keyword-target-picker';
+import {
+  DateOperatorPicker,
+  PriceOperatorPicker,
+  SetOperatorPicker,
+} from './operator-picker';
 import { LocationPicker } from './location-picker';
 import { ProcedurePicker } from './procedure-picker';
 import { Specimen } from './specimen';
@@ -38,22 +44,43 @@ export function MockFilterRows() {
   return (
     <>
       <FilterRow>
-        <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
-        <FilterOperatorTrigger label='is any of' />
+        <FilterFieldTrigger
+          label='Buyer'
+          icon={RiBuildingLine}
+          picker={<FilterTypePicker defaultValue='buyer' />}
+        />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
         <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Category' icon={RiNodeTree} />
-        <FilterOperatorTrigger label='is none of' />
+        <FilterFieldTrigger
+          label='Category'
+          icon={RiNodeTree}
+          picker={<FilterTypePicker defaultValue='category' />}
+        />
+        <FilterOperatorTrigger
+          label='is none of'
+          picker={<SetOperatorPicker defaultValue='none-of' />}
+        />
         <FilterValueTrigger picker={<CategoryPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Submission Deadline' icon={RiCalendarEventFill} />
-        <FilterOperatorTrigger label='is between' />
+        <FilterFieldTrigger
+          label='Submission Deadline'
+          icon={RiCalendarEventFill}
+          picker={<FilterTypePicker defaultValue='submission-deadline' />}
+        />
+        <FilterOperatorTrigger
+          label='is between'
+          picker={<DateOperatorPicker defaultValue='between' />}
+        />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
@@ -61,8 +88,15 @@ export function MockFilterRows() {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Base Price' icon={RiCoinsLine} />
-        <FilterOperatorTrigger label='is at least' />
+        <FilterFieldTrigger
+          label='Base Price'
+          icon={RiCoinsLine}
+          picker={<FilterTypePicker defaultValue='base-price' />}
+        />
+        <FilterOperatorTrigger
+          label='is at least'
+          picker={<PriceOperatorPicker defaultValue='at-least' />}
+        />
         <FilterValueTrigger showChevron={false} />
         <FilterRemoveButton />
       </FilterRow>
@@ -83,7 +117,7 @@ export function MockFilterRows() {
 
 /** Same mock set as MockFilterRows, except Base Price is the invalid
  * range from node 2454:46685 — lower bound above the upper bound. */
-function ErrorMockRows() {
+export function ErrorMockRows() {
   return (
     <>
       <FilterRow>
@@ -91,7 +125,10 @@ function ErrorMockRows() {
           label='Submission Deadline'
           icon={RiCalendarEventFill}
         />
-        <FilterOperatorTrigger label='is between' />
+        <FilterOperatorTrigger
+          label='is between'
+          picker={<DateOperatorPicker defaultValue='between' />}
+        />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
@@ -100,7 +137,10 @@ function ErrorMockRows() {
 
       <FilterRow>
         <FilterFieldTrigger label='Base Price' icon={RiCoinsLine} />
-        <FilterOperatorTrigger label='is between' />
+        <FilterOperatorTrigger
+          label='is between'
+          picker={<PriceOperatorPicker defaultValue='between' />}
+        />
         <FilterValueTrigger showChevron={false} invalid />
         <FilterRangeSeparator />
         <FilterValueTrigger showChevron={false} invalid />
@@ -109,14 +149,20 @@ function ErrorMockRows() {
 
       <FilterRow>
         <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
-        <FilterOperatorTrigger label='is any of' />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
         <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Location' icon={RiMapPinLine} />
-        <FilterOperatorTrigger label='is any of' />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
         <FilterValueTrigger picker={<LocationPicker />} />
         <FilterRemoveButton />
       </FilterRow>
@@ -145,21 +191,30 @@ function LimitReachedMockRows() {
     <>
       <FilterRow>
         <FilterFieldTrigger label='Buyer' icon={RiBuildingLine} />
-        <FilterOperatorTrigger label='is any of' />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
         <FilterValueTrigger picker={<BuyerPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Category' icon={RiNodeTree} />
-        <FilterOperatorTrigger label='is none of' />
+        <FilterOperatorTrigger
+          label='is none of'
+          picker={<SetOperatorPicker defaultValue='none-of' />}
+        />
         <FilterValueTrigger picker={<CategoryPicker />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
         <FilterFieldTrigger label='Location' icon={RiMapPinLine} />
-        <FilterOperatorTrigger label='is any of' />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
         <FilterValueTrigger picker={<LocationPicker />} />
         <FilterRemoveButton />
       </FilterRow>
@@ -173,7 +228,10 @@ function LimitReachedMockRows() {
 
       <FilterRow>
         <FilterFieldTrigger label='Base Price' icon={RiCoinsLine} />
-        <FilterOperatorTrigger label='is at least' />
+        <FilterOperatorTrigger
+          label='is at least'
+          picker={<PriceOperatorPicker defaultValue='at-least' />}
+        />
         <FilterValueTrigger showChevron={false} />
         <FilterRemoveButton />
       </FilterRow>
@@ -183,7 +241,10 @@ function LimitReachedMockRows() {
           label='Submission Deadline'
           icon={RiCalendarEventFill}
         />
-        <FilterOperatorTrigger label='is between' />
+        <FilterOperatorTrigger
+          label='is between'
+          picker={<DateOperatorPicker defaultValue='between' />}
+        />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
@@ -192,7 +253,10 @@ function LimitReachedMockRows() {
 
       <FilterRow>
         <FilterFieldTrigger label='Publication Date' icon={RiCalendarEventFill} />
-        <FilterOperatorTrigger label='is after' />
+        <FilterOperatorTrigger
+          label='is after'
+          picker={<DateOperatorPicker defaultValue='after' />}
+        />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
@@ -239,56 +303,6 @@ function LimitReachedMockRows() {
         <FilterRemoveButton />
       </FilterRow>
     </>
-  );
-}
-
-const GRID_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
-// Opening a row is the user waiting to read new content — a touch more
-// deliberate. Closing is the system getting out of the way — snappier.
-// ("Slow where the user is deciding, fast where the system responds.")
-const EXPAND_MS = 220;
-const COLLAPSE_MS = 180;
-
-/**
- * One CSS-driven accordion row per panel, both always mounted and stacked
- * in normal flow. `grid-template-rows` animates between 0fr (its own
- * content collapsed away) and 1fr (its own natural height) — the standard
- * Radix Collapsible/Accordion technique. The browser interpolates the
- * track size continuously, so there's no JS height measurement, no forced
- * reflow, and — because both directions run the exact same CSS rule in
- * reverse (just a different duration) — collapse and expand stay in sync
- * by construction, unlike a hand-measured height that can drift asymmetric
- * between directions.
- *
- * `inert` removes the collapsed panel from focus/tab order and the a11y
- * tree without affecting layout, so a hidden search input can't eat a Tab
- * press.
- */
-function AccordionRow({
-  open,
-  children,
-}: {
-  open: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className='grid motion-reduce:transition-none'
-      style={{
-        gridTemplateRows: open ? '1fr' : '0fr',
-        transition: `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`,
-      }}
-    >
-      <div
-        className='min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100'
-        data-open={open ? '' : undefined}
-        // @ts-expect-error -- `inert` isn't in this React/TS version's DOM
-        // typings yet, but is a real, broadly-supported HTML attribute.
-        inert={open ? undefined : ''}
-      >
-        {children}
-      </div>
-    </div>
   );
 }
 
@@ -394,17 +408,35 @@ export function FilterPanelStates() {
 
       <Specimen
         title='Filter limit reached (10 of 10 criteria)'
-        description='[suggested] Up to 7 structured filters + 3 keyword rows, 10 total. At the cap, Add filter and Add keywords are disabled and the hint explains why.'
+        description='Up to 7 structured filters + 3 keyword rows, 10 total. At the cap, Add filter and Add keywords are disabled and the hint explains why.'
       >
         <FilterPanel
           disableAddActions
           hint={{
             tone: 'neutral',
-            message: 'You can add up to 10 criteria to a search.',
+            message: 'You’ve reached the 10-criteria limit for a search.',
           }}
         >
           <LimitReachedMockRows />
         </FilterPanel>
+      </Specimen>
+
+      <Specimen
+        title='Value trigger — selected options'
+        description='Figma node 2554:32332. Once a set-kind filter (Buyer, Category, Location) has picks, its value trigger shows them as removable chips instead of "Choose...".'
+      >
+        <FilterRow>
+          <FilterFieldTrigger label='Category' icon={RiNodeTree} />
+          <FilterOperatorTrigger label='is any of' />
+          <FilterValueTrigger
+            chips={[
+              { id: 'construction', label: 'Construction', onRemove: () => undefined },
+              { id: 'civil-engineering', label: 'Civil engineering', onRemove: () => undefined },
+              { id: 'road-maintenance', label: 'Road maintenance', onRemove: () => undefined },
+            ]}
+          />
+          <FilterRemoveButton />
+        </FilterRow>
       </Specimen>
 
       <Specimen

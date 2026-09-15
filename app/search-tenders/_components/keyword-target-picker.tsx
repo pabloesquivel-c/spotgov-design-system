@@ -17,16 +17,22 @@ import * as Checkbox from '@/components/ui/checkbox';
 import { cn } from '@/utils/cn';
 import { CheckboxPickerShell } from './checkbox-search-picker';
 
-type KeywordTarget = 'contract-object' | 'documents';
+export type KeywordTarget = 'contract-object' | 'documents';
 
 const OPTIONS: Array<{ value: KeywordTarget; label: string }> = [
   { value: 'contract-object', label: 'Contract Object' },
   { value: 'documents', label: 'Documents' },
 ];
 
-export function KeywordTargetPicker() {
+export function KeywordTargetPicker({
+  defaultValue = 'contract-object',
+  onSelect,
+}: {
+  defaultValue?: KeywordTarget;
+  onSelect?: (value: KeywordTarget) => void;
+}) {
   const [selected, setSelected] = React.useState<KeywordTarget | undefined>(
-    'contract-object',
+    defaultValue,
   );
 
   return (
@@ -61,9 +67,12 @@ export function KeywordTargetPicker() {
               <Checkbox.Root
                 checked={checked}
                 disabled={disabled}
-                onCheckedChange={(next) =>
-                  setSelected(next ? option.value : undefined)
-                }
+                onCheckedChange={(next) => {
+                  setSelected(next ? option.value : undefined);
+                  if (next) {
+                    onSelect?.(option.value);
+                  }
+                }}
               />
               <span className='flex-1 text-label-sm text-text-sub-600'>
                 {option.label}

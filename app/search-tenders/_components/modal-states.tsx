@@ -8,7 +8,13 @@ import * as React from 'react';
 import { BuyerPicker } from './buyer-picker';
 import { CategoryPicker } from './category-picker';
 import { DateFilterCalendar } from './date-filter-calendar';
+import { FilterTypePicker } from './filter-type-picker';
 import { KeywordMatchTooltip } from './keyword-match-tooltip';
+import {
+  DateOperatorPicker,
+  PriceOperatorPicker,
+  SetOperatorPicker,
+} from './operator-picker';
 import { KeywordTargetPicker } from './keyword-target-picker';
 import { LocationPicker } from './location-picker';
 import { ProcedurePicker } from './procedure-picker';
@@ -22,6 +28,34 @@ import {
 export function ModalStates() {
   return (
     <div className='flex flex-col gap-8'>
+      <Specimen
+        title='Filter type picker'
+        description='Opens from a filter row’s field trigger — swaps which field the row filters on.'
+      >
+        <FilterTypePicker defaultValue='category' />
+      </Specimen>
+
+      <Specimen
+        title='Is any/none-of picker'
+        description='Opens from the operator trigger on a set-kind row — Buyer, Category, Location.'
+      >
+        <SetOperatorPicker defaultValue='none-of' />
+      </Specimen>
+
+      <Specimen
+        title='Is between/after/before picker'
+        description='Opens from the operator trigger on a date-kind row — Submission Deadline, Publication Date.'
+      >
+        <DateOperatorPicker defaultValue='after' />
+      </Specimen>
+
+      <Specimen
+        title='Is between/at least/at most picker'
+        description='Opens from the operator trigger on the Base Price row.'
+      >
+        <PriceOperatorPicker defaultValue='at-least' />
+      </Specimen>
+
       <Specimen
         title='Buyer picker'
         description='Opens from the Buyer filter row’s value trigger.'

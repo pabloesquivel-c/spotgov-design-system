@@ -5,6 +5,7 @@
 
 import * as React from 'react';
 
+import { ResultsSummary } from './results-summary';
 import { Specimen } from './specimen';
 import {
   TenderResultCard,
@@ -31,6 +32,13 @@ const BASE_CARD_PROPS = {
 export function SearchResultsStates() {
   return (
     <div className='flex flex-col gap-8'>
+      <Specimen
+        title='Results header'
+        description='Running count + sort control, sitting between the applied-search summary and the result list. Interactive — try the sort dropdown.'
+      >
+        <ResultsSummary count={1234} stage='active' country='Portugal' />
+      </Specimen>
+
       <Specimen
         title='Rich'
         description='Every field populated: deadline, location, procedure type, and matched filters.'
@@ -119,7 +127,7 @@ export function SearchResultsStates() {
 
       <Specimen
         title='Long title and buyer name'
-        description='Title and buyer name long enough to clip — proves both truncate to one line instead of wrapping or overflowing the card.'
+        description='Title and buyer name long enough to clip. The title wraps to 2 lines before truncating (real tender titles run long); the buyer name stays 1 line. Both show the full text on hover.'
       >
         <TenderResultCard
           {...BASE_CARD_PROPS}

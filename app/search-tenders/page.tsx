@@ -24,8 +24,10 @@ import {
   MockFilterRows,
 } from './_components/filter-panel-states';
 import { FilterRowVariants } from './_components/filter-row-variants';
+import { FLOW_IDS, FORCE_STATE_IDS, FlowsDemo } from './_components/flows';
 import { ModalStates } from './_components/modal-states';
 import { PageHeader } from './_components/page-header';
+import { ResultsSummary } from './_components/results-summary';
 import { SearchResultsStates } from './_components/search-results-states';
 import { DEFAULT_STATE, STATE_IDS, type StateId } from './_components/states';
 import { ToastStates } from './_components/toast-states';
@@ -57,10 +59,24 @@ export default function SearchTendersWorkbenchPage() {
         default: DEFAULT_STATE,
       },
     },
+    flows: {
+      flow: {
+        type: 'select',
+        options: [...FLOW_IDS],
+        default: FLOW_IDS[0],
+      },
+      forceState: {
+        type: 'select',
+        options: [...FORCE_STATE_IDS],
+        default: FORCE_STATE_IDS[0],
+      },
+    },
   } as const);
 
   const view = values.view.view as ViewId;
   const state = values.state.state as StateId;
+  const flow = values.flows.flow as (typeof FLOW_IDS)[number];
+  const forceState = values.flows.forceState as (typeof FORCE_STATE_IDS)[number];
 
   return (
     <div className='grid h-screen grid-cols-[320px_1fr] gap-4 bg-bg-weak-50 p-4'>
@@ -72,19 +88,36 @@ export default function SearchTendersWorkbenchPage() {
         <div className='flex shrink-0 items-baseline gap-3 border-b border-stroke-soft-200 px-6 py-3'>
           <p className='text-label-sm text-text-strong-950'>Search Tenders</p>
           <p className='text-paragraph-xs text-text-sub-600'>
-            {view === 'page' ? `${state} state` : `${view} specimens`}
+            {flow !== 'none'
+              ? `${flow} flow`
+              : view === 'page'
+                ? `${state} state`
+                : `${view} specimens`}
           </p>
         </div>
 
         <div className='min-h-0 flex-1 overflow-auto px-6 py-6'>
           <div className='mx-auto max-w-[1180px]'>
-            {view === 'page' ? <SearchTendersScreen state={state} /> : null}
-            {view === 'filter rows' ? <FilterRowVariants /> : null}
-            {view === 'filter panel' ? <FilterPanelStates /> : null}
-            {view === 'applied summary' ? <AppliedSummaryStates /> : null}
-            {view === 'modals' ? <ModalStates /> : null}
-            {view === 'toasts' ? <ToastStates /> : null}
-            {view === 'search results' ? <SearchResultsStates /> : null}
+            {flow !== 'none' ? (
+              <FlowsDemo flow={flow} forceState={forceState} />
+            ) : null}
+            {flow === 'none' && view === 'page' ? (
+              <SearchTendersScreen state={state} />
+            ) : null}
+            {flow === 'none' && view === 'filter rows' ? (
+              <FilterRowVariants />
+            ) : null}
+            {flow === 'none' && view === 'filter panel' ? (
+              <FilterPanelStates />
+            ) : null}
+            {flow === 'none' && view === 'applied summary' ? (
+              <AppliedSummaryStates />
+            ) : null}
+            {flow === 'none' && view === 'modals' ? <ModalStates /> : null}
+            {flow === 'none' && view === 'toasts' ? <ToastStates /> : null}
+            {flow === 'none' && view === 'search results' ? (
+              <SearchResultsStates />
+            ) : null}
           </div>
         </div>
       </div>
@@ -96,7 +129,9 @@ function SearchTendersScreen({ state: _state }: { state: StateId }) {
   // Every section reads `_state` once more than one is built.
   return (
     <div className='flex flex-col gap-6'>
-      <PageHeader />
+      <div className='px-8'>
+        <PageHeader />
+      </div>
 
       <div className='flex flex-col gap-4 px-8'>
         <FilterPanel>
@@ -104,6 +139,8 @@ function SearchTendersScreen({ state: _state }: { state: StateId }) {
         </FilterPanel>
 
         <AppliedSummary chips={WRAPPING_CHIPS} matchMode='any' />
+
+        <ResultsSummary count={1234} stage='active' country='Portugal' />
       </div>
     </div>
   );

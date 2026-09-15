@@ -18,8 +18,10 @@ import { cn } from '@/utils/cn';
 import { CheckboxPickerShell } from './checkbox-search-picker';
 
 // More than fits in the max-height below, on purpose — this is what forces
-// the list to actually scroll instead of just having room to.
-const VIEWS = [
+// the list to actually scroll instead of just having room to. Exported as
+// the real page header's starting list, so the live picker and this
+// specimen tab's mock start from the same data.
+export const VIEWS = [
   'Medical Equipments',
   'Aveiro Only Tenders 2026',
   'CPV 336, Madrid',
@@ -31,9 +33,11 @@ const VIEWS = [
 ];
 
 function ViewsList({
+  views,
   current,
   onSelect,
 }: {
+  views: string[];
   current: string;
   onSelect: (view: string) => void;
 }) {
@@ -46,7 +50,7 @@ function ViewsList({
     // selected — with no gap, two adjacent selected/hovered rows merge
     // into one solid block instead of reading as separate options.
     <div className='flex max-h-[240px] w-full flex-col gap-1 overflow-y-auto'>
-      {VIEWS.map((view) => (
+      {views.map((view) => (
         <button
           key={view}
           type='button'
@@ -68,23 +72,99 @@ export function ViewsPicker({
    * the current view has been edited — it's how you leave that state, not
    * a permanent fixture of the dropdown. */
   hasUnsavedChanges = false,
+  /** Every prop below is optional and defaults to the same uncontrolled
+   * mock behavior this component always had — the Modals specimen tab's
+   * bare `<ViewsPicker />` and `<ViewsPicker hasUnsavedChanges />` calls
+   * are unaffected. Passing them (as the real page header does) turns this
+   * into the live picker: real search filtering, real selection, and the
+   * footer actions actually doing something. */
+  views = VIEWS,
+  current: currentProp,
+  onSelectView,
+  searchValue: searchValueProp,
+  onSearchChange,
+  onUpdateView,
+  onSaveAsNewView,
+  onReset,
 }: {
   hasUnsavedChanges?: boolean;
+  views?: string[];
+  current?: string;
+  onSelectView?: (view: string) => void;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  onUpdateView?: () => void;
+  onSaveAsNewView?: () => void;
+  onReset?: () => void;
 }) {
-  const [current, setCurrent] = React.useState(VIEWS[1]);
+  const [uncontrolledCurrent, setUncontrolledCurrent] = React.useState(
+    views[1] ?? views[0],
+  );
+  const current = currentProp ?? uncontrolledCurrent;
+  const [uncontrolledSearch, setUncontrolledSearch] = React.useState('');
+  const search = searchValueProp ?? uncontrolledSearch;
+
+  function selectView(view: string) {
+    if (currentProp === undefined) {
+      setUncontrolledCurrent(view);
+    }
+    onSelectView?.(view);
+  }
+
+  function changeSearch(value: string) {
+    if (searchValueProp === undefined) {
+      setUncontrolledSearch(value);
+    }
+    onSearchChange?.(value);
+  }
+
+  const trimmedSearch = search.trim();
+  const filtered = trimmedSearch
+    ? views.filter((view) => view.toLowerCase().includes(trimmedSearch.toLowerCase()))
+    : views;
 
   return (
     <CheckboxPickerShell>
       <Input.Root size='xsmall'>
         <Input.Wrapper>
           <Input.Icon as={RiSearch2Line} />
-          <Input.Input placeholder='Search by Views...' />
+          <Input.Input
+            placeholder='Search by Views...'
+            value={search}
+            onChange={(e) => changeSearch(e.target.value)}
+          />
         </Input.Wrapper>
       </Input.Root>
 
-      <ViewsList current={current} onSelect={setCurrent} />
+      {views.length === 0 ? (
+        <>
+          <div className='flex w-full flex-col items-center gap-1 py-6 text-center'>
+            <p className='text-label-sm text-text-sub-600'>No views yet</p>
+            <p className='max-w-[210px] text-label-sm text-text-soft-400'>
+              Click below to create your first view
+            </p>
+          </div>
+          <Button.Root
+            variant='neutral'
+            mode='filled'
+            size='xsmall'
+            className='w-full justify-center'
+            onClick={onSaveAsNewView}
+          >
+            Create view
+          </Button.Root>
+        </>
+      ) : filtered.length === 0 ? (
+        <div className='flex w-full items-center justify-center py-4'>
+          <p className='max-w-[210px] text-center text-label-sm text-text-soft-400'>
+            No views matched &quot;{search}&quot;
+          </p>
+        </div>
+      ) : (
+        <ViewsList views={filtered} current={current} onSelect={selectView} />
+      )}
 
-      {hasUnsavedChanges ? (
+      {hasUnsavedChanges && views.length > 0 ? (
         // No divider: node 2446:35261 sits the footer directly under the
         // list, unlike the invalid-range filter-panel hint which does have
         // one — different component, don't carry the pattern over.
@@ -94,6 +174,7 @@ export function ViewsPicker({
             mode='filled'
             size='xsmall'
             className='w-full justify-center'
+            onClick={onUpdateView}
           >
             Update view
           </Button.Root>
@@ -102,6 +183,7 @@ export function ViewsPicker({
             mode='stroke'
             size='xsmall'
             className='w-full justify-center'
+            onClick={onSaveAsNewView}
           >
             Save as new view
           </Button.Root>
@@ -110,6 +192,7 @@ export function ViewsPicker({
             mode='ghost'
             size='xsmall'
             className='w-full justify-center'
+            onClick={onReset}
           >
             Reset
           </Button.Root>
@@ -167,7 +250,7 @@ export function ViewsPickerNoMatch({
 
       <div className='flex w-full items-center justify-center py-4'>
         <p className='max-w-[210px] text-center text-label-sm text-text-soft-400'>
-          No views matched "{query}"
+          No views matched &quot;{query}&quot;
         </p>
       </div>
     </CheckboxPickerShell>

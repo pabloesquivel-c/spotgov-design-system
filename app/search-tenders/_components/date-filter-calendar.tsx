@@ -12,9 +12,11 @@
 // primitive's default primary blue — both need custom classNames/layout
 // the wrapper doesn't expose.
 //
-// What's still just a mock: Clear/Apply don't close a popover or write to
-// a filter row yet, because there's no popover-open state or filter-value
-// state anywhere on this screen to write to.
+// Apply reports the current selection via `onSelect`; the caller (a
+// FilterValueTrigger in filter-row.tsx) uses that to close its own popover
+// and store the date on the row. Clear only resets the calendar's own
+// selection — it doesn't fire onSelect or close, so clearing mid-pick
+// doesn't dismiss the popover out from under you.
 
 import * as React from 'react';
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
@@ -59,9 +61,20 @@ function CalendarCaption() {
   );
 }
 
-export function DateFilterCalendar() {
+export function DateFilterCalendar({
+  value,
+  onSelect,
+}: {
+  /** The row's currently applied date, if any — reopening the calendar
+   * should pick up where the last Apply left off. */
+  value?: Date;
+  /** Fires on Apply with the calendar's current selection (or `undefined`
+   * after Clear + Apply). Omit to keep the calendar decorative, as every
+   * specimen usage does. */
+  onSelect?: (date: Date | undefined) => void;
+}) {
   const [selected, setSelected] = React.useState<Date | undefined>(
-    new Date(2024, 0, 11),
+    value ?? new Date(2024, 0, 11),
   );
 
   return (
@@ -113,7 +126,12 @@ export function DateFilterCalendar() {
         >
           Clear
         </Button.Root>
-        <Button.Root variant='neutral' mode='filled' size='xsmall'>
+        <Button.Root
+          variant='neutral'
+          mode='filled'
+          size='xsmall'
+          onClick={() => onSelect?.(selected)}
+        >
           Apply
         </Button.Root>
       </div>

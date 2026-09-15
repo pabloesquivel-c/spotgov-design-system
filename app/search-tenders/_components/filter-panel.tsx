@@ -26,10 +26,17 @@
 // `disableAddActions`.
 
 import * as React from 'react';
-import { RiAddLine, RiInformationFill, RiListCheck3, RiSearch2Line } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiInformationFill,
+  RiListCheck3,
+  RiLoader2Line,
+  RiSearch2Line,
+} from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
-import { ToolbarRow } from './toolbar-row';
+import type { MatchMode } from './applied-summary';
+import { ToolbarRow, type Stage } from './toolbar-row';
 
 /**
  * Collapsed panel: node 2464:48024 "Popover / Search filters — Collapsed".
@@ -72,6 +79,55 @@ export const CollapsedFilterPanel = React.forwardRef<
   );
 });
 
+const GRID_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+// Opening a row is the user waiting to read new content — a touch more
+// deliberate. Closing is the system getting out of the way — snappier.
+// ("Slow where the user is deciding, fast where the system responds.")
+const EXPAND_MS = 220;
+const COLLAPSE_MS = 180;
+
+/**
+ * One CSS-driven accordion row per panel state (expanded/collapsed), both
+ * always mounted and stacked in normal flow. `grid-template-rows` animates
+ * between 0fr (its own content collapsed away) and 1fr (its own natural
+ * height) — the standard Radix Collapsible/Accordion technique. The browser
+ * interpolates the track size continuously, so there's no JS height
+ * measurement, no forced reflow, and — because both directions run the
+ * exact same CSS rule in reverse (just a different duration) — collapse and
+ * expand stay in sync by construction, unlike a hand-measured height that
+ * can drift asymmetric between directions.
+ *
+ * `inert` removes the collapsed side from focus/tab order and the a11y tree
+ * without affecting layout, so a hidden search input can't eat a Tab press.
+ */
+export function AccordionRow({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className='grid motion-reduce:transition-none'
+      style={{
+        gridTemplateRows: open ? '1fr' : '0fr',
+        transition: `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`,
+      }}
+    >
+      <div
+        className='min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100'
+        data-open={open ? '' : undefined}
+        // @ts-expect-error -- `inert` isn't in this React/TS version's DOM
+        // typings yet, but is a real, broadly-supported HTML attribute.
+        inert={open ? undefined : ''}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function EmptyFilters() {
   return (
     <div className='flex h-[200px] w-full flex-col items-center justify-center gap-3'>
@@ -101,20 +157,69 @@ export function FilterPanel({
   children,
   hint,
   onSearch,
+  onClearAll,
+  searchDisabled,
+  isSearching,
   searchInputRef,
   disableAddActions,
+  disableAddFilter,
+  disableAddKeyword,
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
+  savedOnly,
+  onSavedOnlyChange,
+  onAddFilter,
+  onAddKeyword,
+  stage,
+  onStageChange,
+  isEmpty: isEmptyProp,
+  matchMode,
+  onMatchModeChange,
+  showMatchMode,
 }: {
   children?: React.ReactNode;
   hint?: FilterPanelHint;
   /** Fires only on "Search" — not "Clear all", which just empties the rows
    * and leaves the panel expanded for another edit. */
   onSearch?: () => void;
+  onClearAll?: () => void;
+  /** [confirmed] Search is unavailable when there's nothing pending. */
+  searchDisabled?: boolean;
+  /** A previous Search is still in flight — disables the button (with
+   * `aria-busy` + spinner) so a second click can't fire a duplicate
+   * request. */
+  isSearching?: boolean;
   searchInputRef?: React.Ref<HTMLInputElement>;
   /** [suggested] 10-criteria cap reached (7 structured filters + 3
    * keyword rows) — disables both add actions in the toolbar. */
   disableAddActions?: boolean;
+  /** Per-bucket caps (7 structured, 3 keyword) — take priority over
+   * `disableAddActions` when set. */
+  disableAddFilter?: boolean;
+  disableAddKeyword?: boolean;
+  /** Controlled search value + "Saved only", forwarded to ToolbarRow. Omit
+   * either to leave that control uncontrolled. */
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  onSearchSubmit?: () => void;
+  savedOnly?: boolean;
+  onSavedOnlyChange?: (value: boolean) => void;
+  onAddFilter?: () => void;
+  onAddKeyword?: () => void;
+  stage?: Stage;
+  onStageChange?: (stage: Stage) => void;
+  /** Overrides the empty-state inferred from `children` — needed when a
+   * caller always passes a rows component even with zero rows inside it. */
+  isEmpty?: boolean;
+  matchMode?: MatchMode;
+  onMatchModeChange?: (mode: MatchMode) => void;
+  /** [suggested] Only meaningful with 2+ configured rows — with 0 or 1,
+   * "any" and "all" produce the same results, so the caller gates this on
+   * row count rather than always showing it. */
+  showMatchMode?: boolean;
 }) {
-  const isEmpty = !children;
+  const isEmpty = isEmptyProp ?? !children;
 
   return (
     <div
@@ -123,10 +228,31 @@ export function FilterPanel({
         (isEmpty ? ' pb-4' : '')
       }
     >
-      <div className='flex w-full flex-col gap-8'>
+      {/* gap-4, not gap-8: the toolbar and the filter-rows list are two
+          widgets in the same dense toolbar surface, not separate sections —
+          gap-8 read as a jump next to the row list's own gap-2 and the
+          footer's py-4. gap-4 matches ToolbarRow's own internal rhythm and
+          the footer gap on either side, so the panel reads as one
+          consistent 16px cadence bracketing the tighter 8px between
+          repeated rows. */}
+      <div className='flex w-full flex-col gap-4'>
         <ToolbarRow
           searchInputRef={searchInputRef}
           disableAddActions={disableAddActions}
+          disableAddFilter={disableAddFilter}
+          disableAddKeyword={disableAddKeyword}
+          searchValue={searchValue}
+          onSearchChange={onSearchChange}
+          onSearchSubmit={onSearchSubmit}
+          savedOnly={savedOnly}
+          onSavedOnlyChange={onSavedOnlyChange}
+          onAddFilter={onAddFilter}
+          onAddKeyword={onAddKeyword}
+          stage={stage}
+          onStageChange={onStageChange}
+          matchMode={matchMode}
+          onMatchModeChange={onMatchModeChange}
+          showMatchMode={showMatchMode}
         />
 
         {isEmpty ? (
@@ -161,6 +287,7 @@ export function FilterPanel({
               mode='stroke'
               size='small'
               className='h-9'
+              onClick={onClearAll}
             >
               Clear all
             </Button.Root>
@@ -169,8 +296,13 @@ export function FilterPanel({
               mode='filled'
               size='small'
               className='h-9'
+              disabled={searchDisabled || isSearching}
+              aria-busy={isSearching}
               onClick={onSearch}
             >
+              {isSearching ? (
+                <Button.Icon as={RiLoader2Line} className='animate-spin' />
+              ) : null}
               Search
             </Button.Root>
           </div>

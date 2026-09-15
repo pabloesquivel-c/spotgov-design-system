@@ -12,11 +12,39 @@ const BUYER_OPTIONS = [
   { label: 'Universidade de Coimbra' },
 ];
 
-export function BuyerPicker() {
+export function BuyerPicker({
+  selected,
+  onChange,
+}: {
+  /** Controlled selection by label. Omit to keep the picker's own
+   * uncontrolled default (one option pre-checked, nothing reported back). */
+  selected?: string[];
+  onChange?: (selected: string[]) => void;
+}) {
+  const selectedSet = React.useMemo(
+    () => (selected ? new Set(selected) : undefined),
+    [selected],
+  );
+
+  function toggle(label: string) {
+    if (!selectedSet || !onChange) {
+      return;
+    }
+    const next = new Set(selectedSet);
+    if (next.has(label)) {
+      next.delete(label);
+    } else {
+      next.add(label);
+    }
+    onChange(Array.from(next));
+  }
+
   return (
     <CheckboxSearchPicker
       searchPlaceholder='Search buyer...'
       options={BUYER_OPTIONS}
+      selected={selectedSet}
+      onToggle={onChange ? toggle : undefined}
     />
   );
 }
