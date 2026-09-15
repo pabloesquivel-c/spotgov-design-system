@@ -125,8 +125,8 @@ export default function SearchTendersWorkbenchPage() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- `state` will be read once more than one section is built
 function SearchTendersScreen({ state: _state }: { state: StateId }) {
-  // Every section reads `_state` once more than one is built.
   return (
     <div className='flex flex-col gap-6'>
       <div className='px-8'>
