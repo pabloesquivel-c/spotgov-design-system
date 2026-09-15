@@ -25,7 +25,6 @@ import {
   RiBookmarkFill,
   RiBookmarkLine,
   RiCalendarCloseLine,
-  RiCheckboxCircleFill,
   RiCoinsLine,
   RiErrorWarningFill,
   RiFileTextLine,
@@ -51,35 +50,35 @@ export type DeadlineStatus =
   | { type: 'closed' }
   | { type: 'unavailable' };
 
-// [confirmed] Beyond this, the deadline isn't close enough to warrant an
-// urgency pill — the "Deadline: <date>" meta tag already carries the date,
-// and a success-green pill on something 2+ months out reads as urgent when
-// it isn't. Pills for today/tomorrow/closed/unavailable are unaffected;
-// only a "days" status this far out is suppressed.
-const DEADLINE_URGENCY_WINDOW_DAYS = 30;
+// [confirmed] Beyond this, the deadline isn't close enough to warrant a
+// pill at all — the "Deadline: <date>" meta tag already carries the date
+// for anyone who wants it. No green/"success" tier for a deadline that
+// still needs action: a pill only ever means "pay attention" (warning,
+// 2-7 days) or "act now" (error, today) — a comfortable amount of runway
+// gets silence, not a color that reads as safe. Pills for today/tomorrow/
+// closed/unavailable are unaffected; only a "days" status this far out is
+// suppressed.
+const DEADLINE_URGENCY_WINDOW_DAYS = 7;
 
 // Figma: 2516:22519 (today, error/red), 2516:22515 (tomorrow, warning/
-// orange), 2516:22511 (days, success/green), 2516:22524 (closed, faded/
-// grey). "Deadline not available" isn't its own Figma tag — it reuses the
-// closed style per the user's instruction, since both mean "there's
-// nothing actionable here," just for different reasons.
+// orange), 2516:22524 (closed, faded/grey). "Deadline not available" isn't
+// its own Figma tag — it reuses the closed style per the user's
+// instruction, since both mean "there's nothing actionable here," just for
+// different reasons. The rest of the "days" bucket (2-7 days) reuses
+// tomorrow's warning styling rather than Figma's own success/green tag —
+// [confirmed] 5 days left isn't a "safe" state, so it shouldn't read as one.
 const DEADLINE_STATUS_STYLES = {
-  today: {
+  error: {
     icon: RiErrorWarningFill,
     bg: 'bg-error-lighter',
     text: 'text-error-base',
   },
-  tomorrow: {
+  warning: {
     icon: RiAlertFill,
     bg: 'bg-warning-lighter',
     text: 'text-warning-base',
   },
-  days: {
-    icon: RiCheckboxCircleFill,
-    bg: 'bg-success-lighter',
-    text: 'text-success-base',
-  },
-  closed: {
+  faded: {
     icon: RiForbidFill,
     bg: 'bg-faded-lighter',
     text: 'text-text-sub-600',
@@ -102,10 +101,14 @@ function DeadlineStatusPill({ status }: { status: DeadlineStatus }) {
             ? 'Closed'
             : 'Deadline not available';
 
-  const { icon: Icon, bg, text } =
-    DEADLINE_STATUS_STYLES[
-      status.type === 'unavailable' ? 'closed' : status.type
-    ];
+  const tier =
+    status.type === 'today'
+      ? 'error'
+      : status.type === 'closed' || status.type === 'unavailable'
+        ? 'faded'
+        : 'warning'; // tomorrow, or a "days" status within the urgency window
+
+  const { icon: Icon, bg, text } = DEADLINE_STATUS_STYLES[tier];
 
   return (
     <div className={cn('flex items-center gap-1 rounded-md py-1 pl-1 pr-2', bg)}>

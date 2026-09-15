@@ -45,7 +45,7 @@ export function SearchResultsStates() {
       >
         <TenderResultCard
           {...BASE_CARD_PROPS}
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
         />
       </Specimen>
 
@@ -60,7 +60,7 @@ export function SearchResultsStates() {
             snippet:
               '…must comply with condições técnicas requirements as set out in this document…',
           }}
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
         />
       </Specimen>
 
@@ -70,14 +70,14 @@ export function SearchResultsStates() {
       >
         <TenderResultCard
           {...BASE_CARD_PROPS}
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
           saved
         />
       </Specimen>
 
       <Specimen
         title='Deadline status'
-        description='Every state the countdown pill can be in: closes today, closes tomorrow, closes in N days, closed, and deadline not available. [confirmed] Past 30 days out, the pill drops entirely — the "Deadline: <date>" meta tag still carries the date, but a green "closing soon"-style pill stops being true at that distance.'
+        description='Every state the countdown pill can be in. [confirmed] No green/"success" tier — a deadline that still needs action is never a safe state, so a pill only ever means "act now" (today, error/red) or "pay attention soon" (tomorrow through 7 days out, warning/orange). Past 7 days, the pill drops entirely — the "Deadline: <date>" meta tag still carries the date, but nothing here is urgent enough to color.'
       >
         <div className='flex flex-col gap-4'>
           <TenderResultCard
@@ -90,7 +90,11 @@ export function SearchResultsStates() {
           />
           <TenderResultCard
             {...BASE_CARD_PROPS}
-            deadlineStatus={{ type: 'days', days: 9 }}
+            deadlineStatus={{ type: 'days', days: 5 }}
+          />
+          <TenderResultCard
+            {...BASE_CARD_PROPS}
+            deadlineStatus={{ type: 'days', days: 7 }}
           />
           <TenderResultCard
             {...BASE_CARD_PROPS}
@@ -102,7 +106,7 @@ export function SearchResultsStates() {
           />
           <TenderResultCard
             {...BASE_CARD_PROPS}
-            deadlineStatus={{ type: 'days', days: 34 }}
+            deadlineStatus={{ type: 'days', days: 9 }}
           />
         </div>
       </Specimen>
@@ -114,7 +118,7 @@ export function SearchResultsStates() {
         <TenderResultCard
           {...BASE_CARD_PROPS}
           matchedFilters={[]}
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
         />
       </Specimen>
 
@@ -124,7 +128,7 @@ export function SearchResultsStates() {
       >
         <TenderResultCard
           {...BASE_CARD_PROPS}
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
           defaultExpanded
         />
       </Specimen>
@@ -137,7 +141,7 @@ export function SearchResultsStates() {
           {...BASE_CARD_PROPS}
           name='Aquisição de mobiliário escolar, equipamento informático e material didático para as escolas básicas e secundárias do concelho de Lisboa'
           buyer='Direção-Geral dos Estabelecimentos Escolares e Administração Educativa da Área Metropolitana de Lisboa e Vale do Tejo'
-          deadlineStatus={{ type: 'days', days: 9 }}
+          deadlineStatus={{ type: 'days', days: 5 }}
         />
       </Specimen>
     </div>

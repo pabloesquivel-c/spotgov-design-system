@@ -48,7 +48,7 @@ import {
 } from '@remixicon/react';
 
 import { EmptyState } from '@/components/blocks/empty-state/empty-state';
-import { toast, Toaster } from '@/components/ui/toast';
+import { toast } from '@/components/ui/toast';
 import * as AlertToast from '@/components/ui/toast-alert';
 import { AppliedSummary, type MatchMode, type SummaryChip } from './applied-summary';
 import {
@@ -824,36 +824,40 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   }, [appliedQuery, appliedSavedOnly, appliedRows, appliedStage]);
 
   const toggleSave = React.useCallback((id: string, name: string) => {
+    let wasSaved = false;
     setSavedIds((prev) => {
+      wasSaved = prev.has(id);
       const next = new Set(prev);
-      const wasSaved = next.has(id);
       if (wasSaved) {
         next.delete(id);
       } else {
         next.add(id);
-        toast.custom((t) => (
-          <AlertToast.Root
-            t={t}
-            status='success'
-            size='xsmall'
-            message={`Saved "${name}"`}
-            icon={RiCheckboxCircleFill}
-            action={{
-              label: 'Undo',
-              onClick: () => {
-                setSavedIds((current) => {
-                  const reverted = new Set(current);
-                  reverted.delete(id);
-                  return reverted;
-                });
-                toast.dismiss(t);
-              },
-            }}
-          />
-        ));
       }
       return next;
     });
+
+    if (!wasSaved) {
+      toast.custom((t) => (
+        <AlertToast.Root
+          t={t}
+          status='success'
+          size='xsmall'
+          message={`Saved "${name}"`}
+          icon={RiCheckboxCircleFill}
+          action={{
+            label: 'Undo',
+            onClick: () => {
+              setSavedIds((current) => {
+                const reverted = new Set(current);
+                reverted.delete(id);
+                return reverted;
+              });
+              toast.dismiss(t);
+            },
+          }}
+        />
+      ));
+    }
   }, []);
 
   React.useEffect(() => {
@@ -1112,8 +1116,6 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           ))
         )}
       </div>
-
-      <Toaster />
     </div>
   );
 }
