@@ -81,7 +81,10 @@ export default function SearchTendersWorkbenchPage() {
   return (
     <div className='grid h-screen grid-cols-[320px_1fr] gap-4 bg-bg-weak-50 p-4'>
       <div className='min-h-0 overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0'>
-        <DialRoot mode='inline' />
+        {/* Defaults to dev-only — force it on so the panel also shows up on
+            Vercel previews, which build with NODE_ENV=production. This
+            page is a workbench, never real production. */}
+        <DialRoot mode='inline' productionEnabled />
       </div>
 
       <div className='flex min-h-0 flex-col overflow-hidden rounded-2xl border border-stroke-soft-200 bg-bg-white-0'>
