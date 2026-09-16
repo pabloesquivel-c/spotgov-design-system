@@ -7,6 +7,7 @@ import * as React from 'react';
 
 import { BuyerPicker } from './buyer-picker';
 import { CategoryPicker } from './category-picker';
+import { CpvPicker } from './cpv-picker';
 import { DateFilterCalendar } from './date-filter-calendar';
 import { FilterTypePicker } from './filter-type-picker';
 import { KeywordMatchTooltip } from './keyword-match-tooltip';
@@ -68,6 +69,13 @@ export function ModalStates() {
         description='Opens from the Category filter row’s value trigger.'
       >
         <CategoryPicker />
+      </Specimen>
+
+      <Specimen
+        title='CPV picker'
+        description='Opens from the CPV filter row’s value trigger, and from the CPV chip in the filter bar. Search by code, name, or a few words.'
+      >
+        <CpvPicker />
       </Specimen>
 
       <Specimen

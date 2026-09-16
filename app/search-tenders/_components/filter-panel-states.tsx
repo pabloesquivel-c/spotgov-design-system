@@ -6,16 +6,21 @@
 
 import * as React from 'react';
 import {
+  RiBarcodeLine,
   RiBuildingLine,
   RiCalendarEventFill,
   RiCoinsLine,
   RiFileTextLine,
+  RiGroupLine,
   RiMapPinLine,
+  RiMedalLine,
   RiNodeTree,
 } from '@remixicon/react';
 
 import { BuyerPicker } from './buyer-picker';
 import { CategoryPicker } from './category-picker';
+import { cpvLabel } from './cpv-data';
+import { CpvPicker } from './cpv-picker';
 import { DateFilterCalendar } from './date-filter-calendar';
 import { AccordionRow, CollapsedFilterPanel, FilterPanel } from './filter-panel';
 import {
@@ -37,6 +42,11 @@ import {
 import { LocationPicker } from './location-picker';
 import { ProcedurePicker } from './procedure-picker';
 import { Specimen } from './specimen';
+import { SupplierPicker } from './supplier-picker';
+
+// Four codes, so the row shows its three-chip cap plus the "+1 more"
+// overflow rather than a tidy count that never exercises it.
+const MOCK_CPV_CODES = ['45000000', '45233140', '45214200', '50750000'];
 
 /** One row of each filter kind, so the panel isn't empty while the real
  * applied filters are still placeholders. */
@@ -68,6 +78,30 @@ export function MockFilterRows() {
           picker={<SetOperatorPicker defaultValue='none-of' />}
         />
         <FilterValueTrigger picker={<CategoryPicker />} />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      {/* The one row shown already filled in: CPV is the field where the
+          chips (and their "+N more" overflow) are the point, since picking
+          a broad code silently brings its children along. */}
+      <FilterRow>
+        <FilterFieldTrigger
+          label='CPV'
+          icon={RiBarcodeLine}
+          picker={<FilterTypePicker defaultValue='cpv' />}
+        />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
+        <FilterValueTrigger
+          chips={MOCK_CPV_CODES.map((code) => ({
+            id: code,
+            label: cpvLabel(code),
+            onRemove: () => {},
+          }))}
+          picker={<CpvPicker />}
+        />
         <FilterRemoveButton />
       </FilterRow>
 
@@ -109,6 +143,42 @@ export function MockFilterRows() {
         />
         <FilterOperatorLabel label='contains' />
         <FilterValueTrigger showChevron={false} placeholder='Enter keywords...' />
+        <FilterRemoveButton />
+      </FilterRow>
+    </>
+  );
+}
+
+/** The two Awarded-only rows. Both use the same supplier picker; the
+ * difference is the question, not the list. Competitor shows a fixed "is
+ * any of" label instead of an operator picker — bidder data is incomplete
+ * by country and source, so a negation would confidently return tenders the
+ * company did bid on but where no bidder list was ever published. */
+export function AwardedMockRows() {
+  return (
+    <>
+      <FilterRow>
+        <FilterFieldTrigger
+          label='Winner'
+          icon={RiMedalLine}
+          picker={<FilterTypePicker defaultValue='winner' />}
+        />
+        <FilterOperatorTrigger
+          label='is any of'
+          picker={<SetOperatorPicker defaultValue='any-of' />}
+        />
+        <FilterValueTrigger picker={<SupplierPicker />} />
+        <FilterRemoveButton />
+      </FilterRow>
+
+      <FilterRow>
+        <FilterFieldTrigger
+          label='Competitor'
+          icon={RiGroupLine}
+          picker={<FilterTypePicker defaultValue='competitor' />}
+        />
+        <FilterOperatorLabel label='is any of' />
+        <FilterValueTrigger picker={<SupplierPicker />} />
         <FilterRemoveButton />
       </FilterRow>
     </>
@@ -310,10 +380,8 @@ function LimitReachedMockRows() {
  * Wires CollapsedFilterPanel and FilterPanel into one toggle: clicking
  * "Search" collapses — "Clear all" does not, it only empties the rows and
  * leaves the panel open for another edit — and "Edit Search" expands.
- * `animate={false}` matches rich-state-flow.tsx's real Search interaction
- * — [confirmed] v1 cut the collapse/expand transition, so this specimen
- * stays honest about what actually ships instead of demoing a nicer
- * animated version nobody sees.
+ * Uses AccordionRow's default (animated) transition, matching
+ * rich-state-flow.tsx's real Search interaction.
  */
 function FilterPanelToggle() {
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -336,13 +404,13 @@ function FilterPanelToggle() {
 
   return (
     <div>
-      <AccordionRow open={isExpanded} animate={false}>
+      <AccordionRow open={isExpanded}>
         <FilterPanel searchInputRef={searchInputRef} onSearch={() => setIsExpanded(false)}>
           <MockFilterRows />
         </FilterPanel>
       </AccordionRow>
 
-      <AccordionRow open={!isExpanded} animate={false}>
+      <AccordionRow open={!isExpanded}>
         <CollapsedFilterPanel
           ref={editSearchRef}
           summary='Escola'
@@ -380,10 +448,28 @@ export function FilterPanelStates() {
       </Specimen>
 
       <Specimen
+        title='Awarded filters'
+        description='Winner and Competitor, offered only on the Awarded tab and only where that country’s indexed data carries them. Winner takes both operators; Competitor is “is any of” only.'
+      >
+        <FilterPanel stage='awarded'>
+          <AwardedMockRows />
+        </FilterPanel>
+      </Specimen>
+
+      <Specimen
         title='No Market Intelligence access'
         description='The one variant that drops Awarded entirely instead of showing it locked — for an org the upsell doesn’t apply to. Default everywhere else is three tabs.'
       >
         <FilterPanel showAwardedTab={false}>
+          <MockFilterRows />
+        </FilterPanel>
+      </Specimen>
+
+      <Specimen
+        title='Awarded locked (no Market Intelligence)'
+        description='The common case for an org without the feature: Awarded stays visible but can’t be selected. Hover or Tab to it — a tooltip explains why.'
+      >
+        <FilterPanel awardedLocked>
           <MockFilterRows />
         </FilterPanel>
       </Specimen>

@@ -15,9 +15,12 @@
 // user still needs Clear all/Search to get out of it.
 //
 // Unapplied changes (edited since the last Search): node 2454:47095,
-// footer "Unapplied changes" variant. Same shape as the error hint, same
-// information-fill icon, but neutral tone — editing filters isn't a
-// mistake, it just hasn't been searched yet.
+// footer "Unapplied changes" variant. Rendered as a count ("3 unapplied
+// changes") sitting immediately left of Search rather than as a hint on the
+// far side of the footer — it's a property of the button you're about to
+// press, and the number tells you how much is pending in a way the original
+// sentence couldn't. The left-hand hint slot stays for the things that are
+// genuinely about the rows: validation errors and criteria caps.
 //
 // Limit reached (10 of 10 criteria): [suggested] a search allows up to 10
 // criteria total — 7 structured filters + 3 keyword rows. Reuses the same
@@ -35,8 +38,8 @@ import {
 } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
-import type { MatchMode } from './applied-summary';
-import { ToolbarRow, type Stage } from './toolbar-row';
+import type { MatchMode } from './filter-chips';
+import { ToolbarRow, type CountryCode, type Stage } from './toolbar-row';
 
 /**
  * Collapsed panel: node 2464:48024 "Popover / Search filters — Collapsed".
@@ -53,8 +56,20 @@ export const CollapsedFilterPanel = React.forwardRef<
      * query. Falls back to the input's own placeholder when there is none. */
     summary?: string;
     onEditSearch?: () => void;
+    /** Pending edits made while collapsed. The chip bar below this panel is
+     * live in both states, so a condition can be removed with the full form
+     * shut — without this the user would get no feedback and no way to run
+     * the edit short of reopening the panel. Omit/0 to hide both. */
+    unappliedCount?: number;
+    onSearch?: () => void;
+    isSearching?: boolean;
   }
->(function CollapsedFilterPanel({ summary = 'Search...', onEditSearch }, ref) {
+>(function CollapsedFilterPanel(
+  { summary = 'Search...', onEditSearch, unappliedCount = 0, onSearch, isSearching },
+  ref,
+) {
+  const showSearch = unappliedCount > 0 && Boolean(onSearch);
+
   return (
     <div className='flex min-w-0 items-start justify-between gap-2 rounded-20 border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs'>
       <div className='flex min-w-0 flex-1 items-center gap-2 p-2'>
@@ -64,27 +79,59 @@ export const CollapsedFilterPanel = React.forwardRef<
         </span>
       </div>
 
-      <Button.Root
-        ref={ref}
-        variant='neutral'
-        mode='stroke'
-        size='small'
-        className='h-9 shrink-0'
-        onClick={onEditSearch}
-      >
-        <Button.Icon as={RiAddLine} />
-        Edit Search
-      </Button.Root>
+      <div className='flex shrink-0 items-center gap-4'>
+        {showSearch ? (
+          <p className='whitespace-nowrap text-paragraph-xs text-text-sub-600'>
+            {unappliedCount === 1
+              ? '1 unapplied change'
+              : `${unappliedCount} unapplied changes`}
+          </p>
+        ) : null}
+
+        <Button.Root
+          ref={ref}
+          variant='neutral'
+          mode='stroke'
+          size='small'
+          className='h-9 shrink-0'
+          onClick={onEditSearch}
+        >
+          <Button.Icon as={RiAddLine} />
+          Edit Search
+        </Button.Root>
+
+        {showSearch ? (
+          <Button.Root
+            variant='neutral'
+            mode='filled'
+            size='small'
+            className='h-9 shrink-0'
+            disabled={isSearching}
+            aria-busy={isSearching}
+            onClick={onSearch}
+          >
+            {isSearching ? (
+              <Button.Icon as={RiLoader2Line} className='animate-spin' />
+            ) : null}
+            Search
+          </Button.Root>
+        ) : null}
+      </div>
     </div>
   );
 });
 
-const GRID_EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
-// Opening a row is the user waiting to read new content — a touch more
-// deliberate. Closing is the system getting out of the way — snappier.
-// ("Slow where the user is deciding, fast where the system responds.")
-const EXPAND_MS = 220;
-const COLLAPSE_MS = 180;
+// Unified morph: collapsed and expanded are one shape changing into
+// another, not two separate enter/exit transitions — so both directions
+// share one curve and one duration instead of an asymmetric ease-out.
+// Picked over the asymmetric-ease-out and snappier alternatives after
+// prototyping all three on the "Panel Animation" specimen tab.
+const GRID_EASE = 'cubic-bezier(0.77, 0, 0.175, 1)';
+// Exported so the results skeleton that appears as this panel collapses
+// (rich-state-flow.tsx) can key its own entrance off the same duration
+// instead of a second, driftable 240 literal.
+export const GRID_MS = 240;
+const FADE_MS = 160;
 
 /**
  * One CSS-driven accordion row per panel state (expanded/collapsed), both
@@ -93,9 +140,9 @@ const COLLAPSE_MS = 180;
  * height) — the standard Radix Collapsible/Accordion technique. The browser
  * interpolates the track size continuously, so there's no JS height
  * measurement, no forced reflow, and — because both directions run the
- * exact same CSS rule in reverse (just a different duration) — collapse and
- * expand stay in sync by construction, unlike a hand-measured height that
- * can drift asymmetric between directions.
+ * exact same CSS rule and duration — collapse and expand stay in sync by
+ * construction, unlike a hand-measured height that can drift asymmetric
+ * between directions.
  *
  * `inert` removes the collapsed side from focus/tab order and the a11y tree
  * without affecting layout, so a hidden search input can't eat a Tab press.
@@ -106,10 +153,9 @@ export function AccordionRow({
   children,
 }: {
   open: boolean;
-  /** [confirmed] v1 cut Search's panel collapse down to an instant swap —
-   * no transition. Left as a prop rather than deleting the motion code, so
-   * the collapse mechanic (and the `inert` a11y behavior below) survives
-   * untouched for whenever the animation comes back. */
+  /** Escape hatch to disable the transition (e.g. for a context that
+   * needs an instant swap) — everything real should leave this at the
+   * default. */
   animate?: boolean;
   children: React.ReactNode;
 }) {
@@ -121,15 +167,16 @@ export function AccordionRow({
       style={{
         gridTemplateRows: open ? '1fr' : '0fr',
         transition: animate
-          ? `grid-template-rows ${open ? EXPAND_MS : COLLAPSE_MS}ms ${GRID_EASE}`
+          ? `grid-template-rows ${GRID_MS}ms ${GRID_EASE}`
           : undefined,
       }}
     >
       <div
         className={
-          'min-h-0 overflow-hidden opacity-0 transition-opacity duration-150 ease-out motion-reduce:transition-none data-[open]:opacity-100' +
+          'min-h-0 overflow-hidden opacity-0 transition-opacity ease-out motion-reduce:transition-none data-[open]:opacity-100' +
           (animate ? '' : ' transition-none')
         }
+        style={{ transitionDuration: `${FADE_MS}ms` }}
         data-open={open ? '' : undefined}
         // @ts-expect-error -- `inert` isn't in this React/TS version's DOM
         // typings yet, but is a real, broadly-supported HTML attribute.
@@ -159,10 +206,53 @@ function EmptyFilters() {
   );
 }
 
+/**
+ * ── Where a problem goes, and whether it blocks Search ──────────────────
+ *
+ * The panel can be "wrong" in several ways at once, and reasoning about the
+ * combinations is hopeless. It isn't a product of states; it's one question
+ * asked of each condition independently:
+ *
+ *     If the user presses Search right now, can they trust the answer?
+ *
+ * There are only three ways to answer, and the answer picks both the
+ * surface and the consequence:
+ *
+ * 1. NO, THE ANSWER WOULD LIE — block Search. `tone: 'error'`, in this hint.
+ *    A condition that can never match returns zero tenders, and the user
+ *    reads that zero as "nothing out there" rather than "my filter is
+ *    impossible". Only the inverted price range qualifies today.
+ *
+ * 2. YES, BUT A ROW ISN'T DOING WHAT IT SAYS — Search runs. A note under
+ *    that row, not here. The results are correct; one row's wording just
+ *    oversells it (two rows on the same field, a keyword row at its term
+ *    limit). Wrong results would be case 1; this is a wording gap.
+ *
+ * 3. YES, YOU JUST CAN'T ADD MORE — Search runs. Disable the control that
+ *    would add it and say why *at that control*. The filter/keyword/total
+ *    caps do this via the Add buttons plus a `tone: 'neutral'` hint here;
+ *    the one-CPV-row cap does it as a blocked row inside the field picker.
+ *    Nothing about the current search is wrong, so blocking Search would
+ *    punish the user for a limit they've already respected.
+ *
+ * (A fourth case isn't a problem at all: the system changed their search
+ * for them — a row dropped by a stage or country switch — which gets a
+ * toast with Undo, because it needs to be reversible, not explained.)
+ *
+ * The placement rule falls out of it: **the message lives where the cause
+ * lives.** One row's problem goes under that row. The panel's problem goes
+ * in this hint. A blocked action goes on the control. Something done *to*
+ * the user goes in a toast.
+ *
+ * And the Search rule stays a flat OR, never a matrix — see `canSearch` in
+ * rich-state-flow.tsx. A new impossible condition adds one clause there.
+ * A new cap adds none.
+ */
 export type FilterPanelHint = {
   message: string;
-  /** error: an invalid row (e.g. lower bound above upper bound).
-   * neutral: edits since the last Search haven't been applied yet. */
+  /** error: the search can't run as configured (e.g. lower bound above
+   * upper bound) — pairs with a disabled Search button.
+   * neutral: the search runs fine; this is a cap or a pending edit. */
   tone: 'error' | 'neutral';
 };
 
@@ -173,6 +263,7 @@ export function FilterPanel({
   onClearAll,
   searchDisabled,
   isSearching,
+  unappliedCount = 0,
   searchInputRef,
   disableAddActions,
   disableAddFilter,
@@ -190,7 +281,11 @@ export function FilterPanel({
   matchMode,
   onMatchModeChange,
   showMatchMode,
+  country,
+  onCountryChange,
   showAwardedTab,
+  awardedLocked,
+  onCollapse,
 }: {
   children?: React.ReactNode;
   hint?: FilterPanelHint;
@@ -204,6 +299,11 @@ export function FilterPanel({
    * `aria-busy` + spinner) so a second click can't fire a duplicate
    * request. */
   isSearching?: boolean;
+  /** How many pending edits haven't been searched yet. 0 hides the
+   * indicator. Counts one per changed setting (lookup text, saved-only,
+   * stage, country, match mode) plus one per condition added, removed or
+   * edited. */
+  unappliedCount?: number;
   searchInputRef?: React.Ref<HTMLInputElement>;
   /** [suggested] 10-criteria cap reached (7 structured filters + 3
    * keyword rows) — disables both add actions in the toolbar. */
@@ -232,18 +332,62 @@ export function FilterPanel({
    * "any" and "all" produce the same results, so the caller gates this on
    * row count rather than always showing it. */
   showMatchMode?: boolean;
-  /** Forwarded to ToolbarRow. [confirmed] Defaults to true (three tabs,
-   * Awarded locked behind Market Intelligence) — set false for the org
-   * variant where that upsell doesn't apply. */
+  /** Forwarded to ToolbarRow. Controlled country — omit to leave the select
+   * uncontrolled, as the static specimens do. */
+  country?: CountryCode;
+  onCountryChange?: (country: CountryCode) => void;
+  /** Forwarded to ToolbarRow. [confirmed] Defaults to true (three tabs) —
+   * set false for the one org variant Market Intelligence isn't offered
+   * to at all, dropping Awarded entirely. */
   showAwardedTab?: boolean;
+  /** Forwarded to ToolbarRow. [confirmed] The common case for orgs
+   * without Market Intelligence: Awarded stays visible but disabled,
+   * with a tooltip explaining why on hover or keyboard focus. */
+  awardedLocked?: boolean;
+  /** Collapses the panel. Wires up two affordances at once: the arrow in
+   * the toolbar's top-right, and Escape while focus is anywhere inside the
+   * panel. Omit where the panel is always open. */
+  onCollapse?: () => void;
 }) {
   const isEmpty = isEmptyProp ?? !children;
+  // The footer normally disappears with the rows — nothing to clear or
+  // search when the list is already everything. But "Clear all" empties the
+  // rows *pending*, so an empty panel can still have changes waiting: hiding
+  // the footer there would strand the user with a cleared search and no
+  // Search button to apply it.
+  const showFooter = !isEmpty || unappliedCount > 0;
+
+  // Escape collapses the panel — deliberately a native DOM listener on this
+  // element, not React's onKeyDown. Every picker in here is a Radix popover
+  // rendered into a portal; React's synthetic events bubble through the
+  // *React* tree, so a portalled popover's Escape would reach this handler
+  // and close the popover and the panel in one press. Native events follow
+  // the DOM tree, where the portal is a sibling of the whole app, so the
+  // first Escape closes the popover and only a second one gets here.
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const onCollapseRef = React.useRef(onCollapse);
+  onCollapseRef.current = onCollapse;
+
+  React.useEffect(() => {
+    const node = rootRef.current;
+    if (!node) {
+      return;
+    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCollapseRef.current?.();
+      }
+    };
+    node.addEventListener('keydown', handleKeyDown);
+    return () => node.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div
+      ref={rootRef}
       className={
         'flex min-w-0 flex-col items-end overflow-hidden rounded-20 border border-stroke-soft-200 bg-bg-white-0 px-4 pt-4 shadow-regular-xs' +
-        (isEmpty ? ' pb-4' : '')
+        (isEmpty && !showFooter ? ' pb-4' : '')
       }
     >
       {/* gap-4, not gap-8: the toolbar and the filter-rows list are two
@@ -271,7 +415,11 @@ export function FilterPanel({
           matchMode={matchMode}
           onMatchModeChange={onMatchModeChange}
           showMatchMode={showMatchMode}
+          country={country}
+          onCountryChange={onCountryChange}
           showAwardedTab={showAwardedTab}
+          awardedLocked={awardedLocked}
+          onCollapse={onCollapse}
         />
 
         {isEmpty ? (
@@ -281,7 +429,7 @@ export function FilterPanel({
         )}
       </div>
 
-      {isEmpty ? null : (
+      {showFooter ? (
         <div
           className={
             'flex w-full items-center gap-4 py-4' +
@@ -301,6 +449,15 @@ export function FilterPanel({
           ) : null}
 
           <div className='flex shrink-0 items-center gap-4'>
+            {unappliedCount > 0 ? (
+              // text-sub-600, not soft-400: this is 12px text on white, where
+              // soft-400 falls under the AA contrast floor.
+              <p className='whitespace-nowrap text-paragraph-xs text-text-sub-600'>
+                {unappliedCount === 1
+                  ? '1 unapplied change'
+                  : `${unappliedCount} unapplied changes`}
+              </p>
+            ) : null}
             <Button.Root
               variant='neutral'
               mode='stroke'
@@ -326,7 +483,7 @@ export function FilterPanel({
             </Button.Root>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

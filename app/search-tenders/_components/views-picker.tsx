@@ -23,6 +23,7 @@ import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import { cn } from '@/utils/cn';
 import { CheckboxPickerShell } from './checkbox-search-picker';
+import { optionId, useOptionNavigation } from './use-option-navigation';
 
 // More than fits in the max-height below, on purpose — this is what forces
 // the list to actually scroll instead of just having room to. Exported as
@@ -43,10 +44,20 @@ function ViewsList({
   views,
   current,
   onSelect,
+  listId,
+  activeIndex,
+  onActiveIndexChange,
+  optionRef,
 }: {
   views: string[];
   current: string;
   onSelect: (view: string) => void;
+  /** Keyboard navigation from the search box above — see
+   * use-option-navigation.ts. */
+  listId: string;
+  activeIndex: number;
+  onActiveIndexChange: (index: number) => void;
+  optionRef: (index: number) => (element: HTMLElement | null) => void;
 }) {
   return (
     // max-h + overflow-y-auto, not a fixed height: below the cap, the list
@@ -56,15 +67,36 @@ function ViewsList({
     // the checkbox lists, each row here carries its own background when
     // selected — with no gap, two adjacent selected/hovered rows merge
     // into one solid block instead of reading as separate options.
-    <div className='flex max-h-[240px] w-full flex-col gap-1 overflow-y-auto'>
-      {views.map((view) => (
+    <div
+      id={listId}
+      className='flex max-h-[240px] w-full flex-col gap-1 overflow-y-auto'
+    >
+      {views.map((view, index) => (
         <button
           key={view}
+          id={optionId(listId, index)}
+          ref={optionRef(index)}
           type='button'
+          // tabIndex -1: the search box is the list's single tab stop now
+          // that the arrow keys reach every row. Tabbing through eight
+          // saved views to leave the popover was never the point.
+          tabIndex={-1}
+          onMouseMove={() => onActiveIndexChange(index)}
           onClick={() => onSelect(view)}
           className={cn(
-            'rounded-lg px-2 py-1 text-left text-label-sm text-text-strong-950 transition-colors duration-100 ease',
-            view === current ? 'bg-bg-weak-50' : 'hover:bg-bg-weak-50',
+            'rounded-lg px-2 py-1 text-left text-label-sm text-text-strong-950',
+            // No colour transition on a keyboard-driven highlight, and no
+            // CSS :hover — `activeIndex` alone drives it, moved by the
+            // arrow keys and by the pointer alike, so the pointer can never
+            // light a second row.
+            //
+            // `current` still shares that same tint, which is how this
+            // picker already worked. It does mean two rows can read as lit
+            // at once when the cursor is elsewhere — but those two are
+            // saying different things ("the view you're in" vs "the row
+            // Enter takes"), and giving them separate treatments is a
+            // design call, not a bug fix.
+            (activeIndex === index || view === current) && 'bg-bg-weak-50',
           )}
         >
           {view}
@@ -211,6 +243,17 @@ export function ViewsPicker({
     ? views.filter((view) => view.toLowerCase().includes(trimmedSearch.toLowerCase()))
     : views;
 
+  // Above the `isNaming` early return, since hooks can't run conditionally.
+  // Virtual focus: the search box keeps focus while the arrows move the
+  // highlight, so typing two letters and pressing Enter opens that view.
+  const listId = React.useId();
+  const { activeIndex, setActiveIndex, onKeyDown, optionRef } =
+    useOptionNavigation({
+      count: filtered.length,
+      resetKey: search,
+      onSelect: (index) => selectView(filtered[index]),
+    });
+
   if (isNaming) {
     return (
       <SaveViewForm
@@ -233,6 +276,14 @@ export function ViewsPicker({
             placeholder='Search by Views...'
             value={search}
             onChange={(e) => changeSearch(e.target.value)}
+            onKeyDown={onKeyDown}
+            role='combobox'
+            aria-expanded
+            aria-autocomplete='list'
+            aria-controls={listId}
+            aria-activedescendant={
+              filtered.length > 0 ? optionId(listId, activeIndex) : undefined
+            }
           />
         </Input.Wrapper>
       </Input.Root>
@@ -262,7 +313,15 @@ export function ViewsPicker({
           </p>
         </div>
       ) : (
-        <ViewsList views={filtered} current={current} onSelect={selectView} />
+        <ViewsList
+          views={filtered}
+          current={current}
+          onSelect={selectView}
+          listId={listId}
+          activeIndex={activeIndex}
+          onActiveIndexChange={setActiveIndex}
+          optionRef={optionRef}
+        />
       )}
 
       {hasUnsavedChanges && views.length > 0 ? (

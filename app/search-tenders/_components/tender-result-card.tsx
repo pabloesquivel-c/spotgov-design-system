@@ -29,6 +29,8 @@ import {
   RiErrorWarningFill,
   RiFileTextLine,
   RiForbidFill,
+  RiGroupLine,
+  RiMedalLine,
   RiNodeTree,
 } from '@remixicon/react';
 
@@ -123,10 +125,13 @@ function DeadlineStatusPill({ status }: { status: DeadlineStatus }) {
 export const MATCHED_FILTER_FIELDS = [
   'Buyer',
   'Category',
+  'CPV',
   'Location',
   'Procedure type',
   'Publication date',
   'Base value',
+  'Winner',
+  'Competitor',
   'Contract Object',
   'Documents',
 ] as const;
@@ -136,6 +141,24 @@ export type MatchedFilterField = (typeof MATCHED_FILTER_FIELDS)[number];
 export type MatchedKeyword = {
   documentTitle: string;
   snippet: string;
+};
+
+/** Awarded tenders only. One entry per distinct winning supplier, with that
+ * supplier's lots already grouped into a display string ("Lot 2", "Lots 1,
+ * 3", or undefined for a single-lot tender where naming a lot adds nothing).
+ * Grouping happens upstream so this card stays presentational, the same way
+ * `matchedKeyword` arrives pre-resolved. */
+export type AwardWinner = {
+  supplier: string;
+  lots?: string;
+};
+
+/** The picked supplier's recorded outcome on this tender — only set when a
+ * Competitor filter actually matched, since it exists to answer that
+ * filter's question ("did they win or lose this one?"). */
+export type CompetitorOutcome = {
+  supplier: string;
+  outcome: string;
 };
 
 // Figma: 2519:22815 (badge), 2446:35205 "Tooltip [1.1]" (keyword-match-
@@ -232,6 +255,10 @@ export type TenderResultCardProps = {
   deadlineDate: string;
   baseValue: string;
   deadlineStatus: DeadlineStatus;
+  /** Awarded tenders only — omitted entirely on Active/Evaluating, and on
+   * an awarded tender with no recorded winner. */
+  award?: AwardWinner[];
+  competitorOutcome?: CompetitorOutcome;
   matchedKeyword?: MatchedKeyword;
   matchedFilters: MatchedFilterField[];
   // Spells out each meta tag as "Field: value" instead of relying on the
@@ -254,6 +281,8 @@ export function TenderResultCard({
   deadlineDate,
   baseValue,
   deadlineStatus,
+  award,
+  competitorOutcome,
   matchedKeyword,
   matchedFilters,
   showFieldLabels = false,
@@ -321,6 +350,35 @@ export function TenderResultCard({
                 value={procedureType}
                 showFieldLabel={showFieldLabels}
               />
+              {/* Winner reads as a fact about the tender, so it joins the
+                  existing meta-tag row rather than getting its own line —
+                  a medal carries "who won" without spending a word on it,
+                  and `showFieldLabels` still spells out "Winner:" for the
+                  variant that doesn't rely on icon recognition. Fixtures
+                  keep at most two distinct winners per tender, so the row's
+                  own flex-wrap is enough; no "+N more" disclosure is built
+                  for a case that can't occur yet. */}
+              {award?.map((winner) => (
+                <BorderedMetaTag
+                  key={winner.supplier}
+                  icon={RiMedalLine}
+                  fieldLabel='Winner'
+                  value={
+                    winner.lots
+                      ? `${winner.supplier} · ${winner.lots}`
+                      : winner.supplier
+                  }
+                  showFieldLabel={showFieldLabels}
+                />
+              ))}
+              {competitorOutcome ? (
+                <BorderedMetaTag
+                  icon={RiGroupLine}
+                  fieldLabel='Competitor'
+                  value={`${competitorOutcome.supplier} · ${competitorOutcome.outcome}`}
+                  showFieldLabel={showFieldLabels}
+                />
+              ) : null}
               {matchedKeyword ? (
                 <MatchedKeywordTag
                   documentTitle={matchedKeyword.documentTitle}

@@ -1,0 +1,58 @@
+/* A dim band sweeping across the text, looping — the ChatGPT-style
+ * "thinking" shimmer. An alpha mask, not a background-clip:text gradient:
+ * the first pass used `currentColor` in the gradient, but that needs
+ * `color: transparent` on this same element for the clip trick to show the
+ * gradient through the glyphs — and CSS custom properties store unresolved
+ * tokens, so `currentColor` re-resolves wherever `var()` is finally used,
+ * not where it was declared. Piping it through a wrapper's custom property
+ * didn't help: it still resolved against this element's own (transparent)
+ * color. A mask sidesteps all of it — text keeps its real, inherited color
+ * always; the mask just dips opacity in a band that travels across. */
+
+.shimmer {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    black 0%,
+    black 30%,
+    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.45) 55%,
+    black 70%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    black 0%,
+    black 30%,
+    rgba(0, 0, 0, 0.45) 45%,
+    rgba(0, 0, 0, 0.45) 55%,
+    black 70%,
+    black 100%
+  );
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  animation: shimmer-sweep 2.25s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+@keyframes shimmer-sweep {
+  0%,
+  18% {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  82%,
+  100% {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    /* mask-position 0% lands on the mask's leading fully-opaque band (the
+       0%-30% stop above) — plain, fully legible text, not a frozen
+       mid-sweep frame. */
+    animation: none;
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}

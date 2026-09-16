@@ -17,6 +17,14 @@
 // and store the date on the row. Clear only resets the calendar's own
 // selection — it doesn't fire onSelect or close, so clearing mid-pick
 // doesn't dismiss the popover out from under you.
+//
+// Keyboard: react-day-picker already moves focus through the grid with the
+// arrow keys, so there's no index model to add here — but the same two
+// rules as every other picker on this screen still apply, and neither was
+// being met. Hover is switched off while the keyboard drives (`data-nav`,
+// see useNavMode), or the day the pointer is parked on stays lit next to
+// the focused one; and the focused day now draws a ring, which a bare
+// `outline-none` had been suppressing with nothing put back in its place.
 
 import * as React from 'react';
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
@@ -24,6 +32,7 @@ import { DayPicker, useNavigation } from 'react-day-picker';
 
 import * as Button from '@/components/ui/button';
 import { cn } from '@/utils/cn';
+import { isNavigationKey, useNavMode } from './use-option-navigation';
 
 function CalendarCaption() {
   const { currentMonth, goToMonth, previousMonth, nextMonth } =
@@ -76,9 +85,24 @@ export function DateFilterCalendar({
   const [selected, setSelected] = React.useState<Date | undefined>(
     value ?? new Date(2024, 0, 11),
   );
+  const { navMode, markKeyboard, onPointerMove } = useNavMode();
 
   return (
-    <div className='flex w-[320px] flex-col items-start overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0 shadow-regular-md'>
+    <div
+      data-nav={navMode}
+      onPointerMoveCapture={onPointerMove}
+      // Capture, not bubble: react-day-picker calls stopPropagation() on
+      // every arrow key it handles (dist/index.js:1560), so a bubble-phase
+      // listener here never hears the one event it exists to hear. A
+      // "which device is driving" detector shouldn't be defeatable by a
+      // child in any case — capture is the correct phase for it.
+      onKeyDownCapture={(event) => {
+        if (isNavigationKey(event.key)) {
+          markKeyboard();
+        }
+      }}
+      className='group/calendar flex w-[320px] flex-col items-start overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0 shadow-regular-md'
+    >
       <div className='w-full border-b border-stroke-soft-200 px-4 py-5'>
         <DayPicker
           mode='single'
@@ -105,9 +129,18 @@ export function DateFilterCalendar({
             cell: 'flex-1 p-0 text-center',
             day: cn(
               'flex size-10 w-full items-center justify-center rounded-lg text-label-sm text-text-sub-600 outline-none',
-              'transition-colors duration-100 ease',
-              'hover:bg-bg-weak-50 hover:text-text-strong-950',
-              'aria-[selected]:bg-bg-strong-950 aria-[selected]:text-static-white aria-[selected]:hover:bg-bg-strong-950',
+              // No colour transition: arrowing across a month is a keyboard
+              // action, and easing each day smears the trail behind it.
+              // Hover is gated on the pointer actually being in charge.
+              'group-data-[nav=pointer]/calendar:hover:bg-bg-weak-50 group-data-[nav=pointer]/calendar:hover:text-text-strong-950',
+              // Same treatment as the option rows in the other pickers, so
+              // a focused day and a focused filter-type row read alike —
+              // bg-fill, the same tone hover already uses, not a ring. A
+              // ring is the standalone-control treatment (buttons, inputs);
+              // a day cell inside an already-open calendar just needs to
+              // read as "highlighted".
+              'focus-visible:bg-bg-weak-50 focus-visible:text-text-strong-950',
+              'aria-[selected]:bg-bg-strong-950 aria-[selected]:text-static-white group-data-[nav=pointer]/calendar:aria-[selected]:hover:bg-bg-strong-950',
             ),
             day_today: '!bg-bg-weak-50',
             day_outside: '!text-text-disabled-300',

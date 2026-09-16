@@ -11,6 +11,7 @@
 import * as React from 'react';
 
 import { cn } from '@/utils/cn';
+import { useOptionNavigation } from './use-option-navigation';
 
 function OperatorPickerShell({ children }: { children: React.ReactNode }) {
   return (
@@ -29,27 +30,53 @@ function OperatorOptionList<T extends string>({
   selected: T;
   onSelect: (value: T) => void;
 }) {
+  // Roving focus, same as the filter-type picker — no search box to hold
+  // focus, so the arrow keys move it for real and Enter stays native.
+  const { navMode, onKeyDown, onPointerMove, optionRef } = useOptionNavigation({
+    count: options.length,
+    focusMode: 'roving',
+    initialIndex: Math.max(
+      options.findIndex((option) => option.value === selected),
+      0,
+    ),
+    onSelect: () => {},
+  });
+
   return (
-    <>
-      {options.map((option) => (
+    // data-nav + group, same as the filter-type picker: hover is the only
+    // pointer feedback in a roving-focus list, so it has to go away while
+    // the keyboard has the list or two rows read as lit at once.
+    <div
+      data-nav={navMode}
+      onKeyDown={onKeyDown}
+      onPointerMove={onPointerMove}
+      className='group/picker contents'
+    >
+      {options.map((option, index) => (
         <button
           key={option.value}
+          ref={optionRef(index)}
           type='button'
           onClick={() => onSelect(option.value)}
           className={cn(
-            'rounded-md px-2 py-1 text-left text-label-sm text-text-strong-950 transition-[background-color,transform] duration-100 ease hover:bg-bg-weak-50 active:scale-[0.98]',
+            'rounded-md px-2 py-1 text-left text-label-sm text-text-strong-950 transition-transform duration-100 ease active:scale-[0.98]',
+            'group-data-[nav=pointer]/picker:hover:bg-bg-weak-50',
+            // No ring — same call as filter-type-picker.tsx: an option row
+            // reads as "highlighted" via bg-fill, the same as hover and the
+            // selected state, not via the standalone-control focus ring.
+            'focus-visible:bg-bg-weak-50 focus-visible:outline-none',
             selected === option.value && 'bg-bg-weak-50',
           )}
         >
           {option.label}
         </button>
       ))}
-    </>
+    </div>
   );
 }
 
-// Buyer, Category, Location — set-kind filters whose value is a list of
-// options to include or exclude. Figma: node 2544:32105 "Modal - Is
+// Buyer, Category, CPV, Location — set-kind filters whose value is a list
+// of options to include or exclude. Figma: node 2544:32105 "Modal - Is
 // any/none".
 export type SetOperatorValue = 'any-of' | 'none-of';
 

@@ -600,6 +600,8 @@ const config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-in-up': 'fade-in-up 320ms cubic-bezier(0.23, 1, 0.32, 1) forwards',
+        'fade-in': 'fade-in 320ms cubic-bezier(0.23, 1, 0.32, 1) forwards',
       },
       keyframes: {
         'accordion-down': {
@@ -612,6 +614,16 @@ const config = {
             opacity: '1',
           },
           to: { height: '0', opacity: '0' },
+        },
+        // Entrance for staggered lists (skeleton rows, revealed cards) —
+        // 'fade-in' is the prefers-reduced-motion fallback, opacity only.
+        'fade-in-up': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
       },
     },

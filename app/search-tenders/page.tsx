@@ -3,21 +3,24 @@
 // Workbench for the Search Tenders screen, built brick by brick from Figma
 // frames. Not production.
 // Archetype: page-level data index (screen-composition.md:119).
-// Four views: "Page" is the one composed screen, reading a page-level state
-// (see states.ts). "Filter rows", "Filter panel" and "Applied summary" are
-// specimen tabs for auditing a component family's variants/states side by
-// side, independent of page state.
+// "Page" is the one composed screen, reading a page-level state (see
+// states.ts). Everything else is a specimen tab auditing one component
+// family's variants/states in isolation: "Filter rows", "Filter panel",
+// "Filter chips", "Modals", "Toasts", "Search results", "Loading pacing"
+// (the results-area loading treatment) and "Ready results" (the reveal
+// once loading finishes) — both also wired into the real flow, in
+// rich-state-flow.tsx's LoadingResults and the block right after it.
 // Teardown: rm -rf app/search-tenders
 
 import * as React from 'react';
 import { DialRoot, useDialKit } from 'dialkit';
 import 'dialkit/styles.css';
 
-import { AppliedSummary } from './_components/applied-summary';
+import { FilterChips, type MatchMode } from './_components/filter-chips';
 import {
-  AppliedSummaryStates,
+  FilterChipsStates,
   WRAPPING_CHIPS,
-} from './_components/applied-summary-states';
+} from './_components/filter-chips-states';
 import { FilterPanel } from './_components/filter-panel';
 import {
   FilterPanelStates,
@@ -25,6 +28,8 @@ import {
 } from './_components/filter-panel-states';
 import { FilterRowVariants } from './_components/filter-row-variants';
 import { FLOW_IDS, FORCE_STATE_IDS, FlowsDemo } from './_components/flows';
+import { LoadingPacing } from './_components/loading-pacing';
+import { ReadyResults } from './_components/ready-results';
 import { ModalStates } from './_components/modal-states';
 import { PageHeader } from './_components/page-header';
 import { ResultsSummary } from './_components/results-summary';
@@ -36,10 +41,12 @@ const VIEW_IDS = [
   'page',
   'filter rows',
   'filter panel',
-  'applied summary',
+  'filter chips',
   'modals',
   'toasts',
   'search results',
+  'loading pacing',
+  'ready results',
 ] as const;
 type ViewId = (typeof VIEW_IDS)[number];
 
@@ -113,14 +120,16 @@ export default function SearchTendersWorkbenchPage() {
             {flow === 'none' && view === 'filter panel' ? (
               <FilterPanelStates />
             ) : null}
-            {flow === 'none' && view === 'applied summary' ? (
-              <AppliedSummaryStates />
+            {flow === 'none' && view === 'filter chips' ? (
+              <FilterChipsStates />
             ) : null}
             {flow === 'none' && view === 'modals' ? <ModalStates /> : null}
             {flow === 'none' && view === 'toasts' ? <ToastStates /> : null}
             {flow === 'none' && view === 'search results' ? (
               <SearchResultsStates />
             ) : null}
+            {flow === 'none' && view === 'loading pacing' ? <LoadingPacing /> : null}
+            {flow === 'none' && view === 'ready results' ? <ReadyResults /> : null}
           </div>
         </div>
       </div>
@@ -130,6 +139,13 @@ export default function SearchTendersWorkbenchPage() {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `state` will be read once more than one section is built
 function SearchTendersScreen({ state: _state }: { state: StateId }) {
+  // Static composition, but the match-mode control is real: it decides how
+  // every condition combines, so a screen that shows the panel without it
+  // isn't showing the panel. The chips below stay mock (this screen has no
+  // pending-search state of its own) — the wired version is the rich-state
+  // flow.
+  const [matchMode, setMatchMode] = React.useState<MatchMode>('any');
+
   return (
     <div className='flex flex-col gap-6'>
       <div className='px-8'>
@@ -137,11 +153,11 @@ function SearchTendersScreen({ state: _state }: { state: StateId }) {
       </div>
 
       <div className='flex flex-col gap-4 px-8'>
-        <FilterPanel>
+        <FilterPanel matchMode={matchMode} onMatchModeChange={setMatchMode}>
           <MockFilterRows />
         </FilterPanel>
 
-        <AppliedSummary chips={WRAPPING_CHIPS} matchMode='any' />
+        <FilterChips chips={WRAPPING_CHIPS} matchMode={matchMode} />
 
         <ResultsSummary count={1234} stage='active' country='Portugal' />
       </div>

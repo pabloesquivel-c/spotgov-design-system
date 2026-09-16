@@ -9,22 +9,31 @@
 // it reads more like a toolbar-level query setting (alongside stage/country)
 // than something that belongs inside the rows it governs.
 //
-// Active/Evaluating/Awarded are all a real controlled toggle — Awarded
-// isn't locked or disabled, it's a normal clickable stage like the other
-// two. [confirmed] The only variant is whether it's there at all:
-// `showAwardedTab={false}` drops it entirely for the one org Market
-// Intelligence isn't offered to, rather than showing it disabled with
-// nothing to unlock.
+// Active/Evaluating/Awarded are a real controlled toggle. [confirmed] Three
+// variants: a normal clickable tab (default), dropped entirely via
+// `showAwardedTab={false}` for the one org Market Intelligence isn't
+// offered to at all, or — the common case — visible but disabled via
+// `awardedLocked`, with a tooltip naming Market Intelligence on hover or
+// keyboard focus. Locked uses `aria-disabled`, not the native `disabled`
+// attribute, so the tab stays focusable and hoverable enough for that
+// tooltip to actually reach keyboard users.
 
 import * as React from 'react';
-import { RiAddLine, RiFilter3Line, RiSearch2Line } from '@remixicon/react';
+import {
+  RiAddLine,
+  RiArrowUpSLine,
+  RiFilter3Line,
+  RiSearch2Line,
+} from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
 import * as Checkbox from '@/components/ui/checkbox';
+import * as CompactButton from '@/components/ui/compact-button';
 import * as Input from '@/components/ui/input';
 import * as Select from '@/components/ui/select';
 import * as SegmentedControl from '@/components/ui/segmented-control';
-import type { MatchMode } from './applied-summary';
+import * as Tooltip from '@/components/ui/tooltip';
+import type { MatchMode } from './filter-chips';
 
 const BASE_STAGE_TABS = [
   { value: 'active', label: 'Active' },
@@ -36,6 +45,32 @@ const AWARDED_TAB = { value: 'awarded', label: 'Awarded' } as const;
 export type Stage =
   | (typeof BASE_STAGE_TABS)[number]['value']
   | typeof AWARDED_TAB.value;
+
+export const STAGE_LABELS: Record<Stage, string> = {
+  active: BASE_STAGE_TABS[0].label,
+  evaluating: BASE_STAGE_TABS[1].label,
+  awarded: AWARDED_TAB.label,
+};
+
+export type CountryCode = 'pt' | 'es' | 'uk' | 'eu';
+
+/** One table instead of four hand-written Select.Items: the country is now
+ * real state (it gates which Awarded filters exist, see
+ * dynamic-filter-rows.tsx), so its label has to be readable from
+ * rich-state-flow.tsx too — for the results count line and for the "filter
+ * unavailable in <country>" toast. A second hardcoded list there would
+ * drift from this one. */
+export const COUNTRIES: Record<
+  CountryCode,
+  { label: string; short: string; flag: string }
+> = {
+  pt: { label: 'Portugal', short: 'PT', flag: '🇵🇹' },
+  es: { label: 'Spain', short: 'ES', flag: '🇪🇸' },
+  uk: { label: 'United Kingdom', short: 'UK', flag: '🇬🇧' },
+  eu: { label: 'European Union', short: 'EU', flag: '🇪🇺' },
+};
+
+export const COUNTRY_CODES = Object.keys(COUNTRIES) as CountryCode[];
 
 export function ToolbarRow({
   searchInputRef,
@@ -53,8 +88,12 @@ export function ToolbarRow({
   onStageChange,
   matchMode,
   onMatchModeChange,
-  showMatchMode,
+  showMatchMode = true,
+  country,
+  onCountryChange,
   showAwardedTab = true,
+  awardedLocked,
+  onCollapse,
 }: {
   /** Lets a parent (e.g. the collapse/expand toggle) move focus into the
    * search input right after it expands. */
@@ -81,17 +120,53 @@ export function ToolbarRow({
   onStageChange?: (stage: Stage) => void;
   matchMode?: MatchMode;
   onMatchModeChange?: (mode: MatchMode) => void;
-  /** [suggested] Only meaningful with 2+ configured rows — with 0 or 1,
-   * "any" and "all" produce the same results, so the caller gates this on
-   * row count rather than always showing it. */
+  /** Whether to show the "Results must match all/any" control. Defaults on:
+   * it decides how every condition combines, so hiding it until a second
+   * row exists made the rule look like it appeared out of nowhere, and left
+   * it absent from the panel specimens entirely. Set false only for a
+   * surface that genuinely has no conditions to combine. */
   showMatchMode?: boolean;
+  /** Controlled country. Omit to leave the select uncontrolled (defaults to
+   * Portugal), as the static specimens do — only the wired flow needs it,
+   * since the country decides which Awarded filters are offered at all. */
+  country?: CountryCode;
+  onCountryChange?: (country: CountryCode) => void;
   /** [confirmed] Default is three real, clickable tabs — Active,
    * Evaluating, Awarded. Set false for the one org variant Market
    * Intelligence isn't offered to, dropping Awarded entirely rather than
    * showing it disabled. */
   showAwardedTab?: boolean;
+  /** [confirmed] The common case for orgs without Market Intelligence:
+   * Awarded stays visible but can't be selected. A tooltip on hover or
+   * keyboard focus explains why. Ignored when `showAwardedTab` is false. */
+  awardedLocked?: boolean;
+  /** Collapses the whole panel. Given by callers that render the panel as a
+   * disclosure — the panel had a way in ("Edit Search" on the collapsed
+   * bar) but no way out, so the only exit was pressing Search. Omit on a
+   * surface where the panel is always open. */
+  onCollapse?: () => void;
 }) {
   const stageTabs = showAwardedTab ? [...BASE_STAGE_TABS, AWARDED_TAB] : BASE_STAGE_TABS;
+
+  // Radix's Tabs.Root only respects a guard in `onValueChange` while it's
+  // controlled (a `value` prop is passed) — left uncontrolled, it commits
+  // its own internal selection regardless of what the callback does. An
+  // internal fallback keeps the lock real (can't be clicked or arrowed
+  // into) for every specimen and caller, not just ones that happen to wire
+  // `stage`/`onStageChange` themselves.
+  const [internalStage, setInternalStage] = React.useState<Stage>('active');
+  const resolvedStage = stage ?? internalStage;
+
+  function handleStageChange(value: string) {
+    if (awardedLocked && value === 'awarded') {
+      return;
+    }
+    if (onStageChange) {
+      onStageChange(value as Stage);
+    } else {
+      setInternalStage(value as Stage);
+    }
+  }
 
   return (
     <div className='flex flex-col gap-4'>
@@ -102,19 +177,36 @@ export function ToolbarRow({
             scale, so lining them up here needs no height override, just
             items-center in a shared row. */}
         <SegmentedControl.Root
-          value={stage}
-          defaultValue={stage ? undefined : 'active'}
-          onValueChange={
-            onStageChange ? (value) => onStageChange(value as Stage) : undefined
-          }
+          value={resolvedStage}
+          onValueChange={handleStageChange}
           className='w-[368px] shrink-0'
         >
           <SegmentedControl.List>
-            {stageTabs.map((tab) => (
-              <SegmentedControl.Trigger key={tab.value} value={tab.value}>
-                {tab.label}
-              </SegmentedControl.Trigger>
-            ))}
+            {stageTabs.map((tab) => {
+              const locked = awardedLocked && tab.value === 'awarded';
+              const trigger = (
+                <SegmentedControl.Trigger
+                  value={tab.value}
+                  aria-disabled={locked}
+                  className='aria-disabled:cursor-not-allowed aria-disabled:text-text-disabled-300'
+                >
+                  {tab.label}
+                </SegmentedControl.Trigger>
+              );
+
+              if (!locked) {
+                return <React.Fragment key={tab.value}>{trigger}</React.Fragment>;
+              }
+
+              return (
+                <Tooltip.Root key={tab.value}>
+                  <Tooltip.Trigger asChild>{trigger}</Tooltip.Trigger>
+                  <Tooltip.Content side='bottom'>
+                    Available only with Market Intelligence
+                  </Tooltip.Content>
+                </Tooltip.Root>
+              );
+            })}
           </SegmentedControl.List>
         </SegmentedControl.Root>
 
@@ -122,19 +214,43 @@ export function ToolbarRow({
             stroked pill shell, not an icon-leading button. Paired with the
             stage tabs (both scope which tenders show) rather than living in
             the search/action row below, which was getting crowded. */}
-        <label className='flex h-9 shrink-0 items-center gap-1 rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-regular-xs'>
-          <Checkbox.Root
-            checked={savedOnly}
-            onCheckedChange={
-              onSavedOnlyChange
-                ? (checked) => onSavedOnlyChange(checked === true)
-                : undefined
-            }
-          />
-          <span className='px-1 text-label-sm text-text-sub-600'>
-            Saved only
-          </span>
-        </label>
+        {/* gap-3 matches the row's own outer gap: "Saved only" scopes which
+            tenders show, the collapse control acts on the panel itself, and
+            they're only adjacent because both belong at this edge. */}
+        <div className='flex shrink-0 items-center gap-3'>
+          <label className='flex h-9 shrink-0 items-center gap-1 rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-regular-xs'>
+            <Checkbox.Root
+              checked={savedOnly}
+              onCheckedChange={
+                onSavedOnlyChange
+                  ? (checked) => onSavedOnlyChange(checked === true)
+                  : undefined
+              }
+            />
+            <span className='px-1 text-label-sm text-text-sub-600'>
+              Saved only
+            </span>
+          </label>
+
+          {/* The panel's way out, in the same top-right corner the collapsed
+              bar puts "Edit Search" — so opening and closing read as one
+              control in one place rather than two unrelated buttons. Ghost,
+              not stroke: a second bordered box beside the "Saved only" pill
+              would compete with it, and this is panel chrome, not a filter.
+              Collapsing keeps every pending edit — the chip bar and the
+              unapplied-changes count stay visible below with their own
+              Search, so this only ever means "give me more room". */}
+          {onCollapse ? (
+            <CompactButton.Root
+              variant='ghost'
+              size='large'
+              aria-label='Collapse search filters'
+              onClick={onCollapse}
+            >
+              <CompactButton.Icon as={RiArrowUpSLine} />
+            </CompactButton.Root>
+          ) : null}
+        </div>
       </div>
 
       {/* gap-6: the one deliberate section break in this row — 3x the
@@ -149,11 +265,19 @@ export function ToolbarRow({
             <span className='shrink-0 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
               Results must
             </span>
+            {/* Same controlled/uncontrolled idiom as the country select
+                below: a caller that passes no `matchMode` still gets a
+                working control defaulted to "match all". */}
             <Select.Root
               size='small'
               variant='compact'
               value={matchMode}
-              onValueChange={onMatchModeChange}
+              defaultValue={matchMode ? undefined : 'all'}
+              onValueChange={
+                onMatchModeChange
+                  ? (value) => onMatchModeChange(value as MatchMode)
+                  : undefined
+              }
             >
               <Select.Trigger>
                 <Select.Value />
@@ -225,35 +349,33 @@ export function ToolbarRow({
               (e.g. 🇬🇧 vs 🇪🇸), so hugging content shifted the search input's
               right edge by ~2px on every country change. Sized to the widest
               current option (UK, ~91px) with a little headroom. */}
-          <Select.Root size='small' variant='compact' defaultValue='pt'>
+          <Select.Root
+            size='small'
+            variant='compact'
+            value={country}
+            defaultValue={country ? undefined : 'pt'}
+            onValueChange={
+              onCountryChange
+                ? (value) => onCountryChange(value as CountryCode)
+                : undefined
+            }
+          >
             <Select.Trigger className='w-24'>
               <Select.Value />
             </Select.Trigger>
             <Select.Content>
-              <Select.Item value='pt' textValue='Portugal'>
-                <span aria-hidden='true' className='text-label-md leading-none'>
-                  🇵🇹
-                </span>
-                PT
-              </Select.Item>
-              <Select.Item value='es' textValue='Spain'>
-                <span aria-hidden='true' className='text-label-md leading-none'>
-                  🇪🇸
-                </span>
-                ES
-              </Select.Item>
-              <Select.Item value='uk' textValue='United Kingdom'>
-                <span aria-hidden='true' className='text-label-md leading-none'>
-                  🇬🇧
-                </span>
-                UK
-              </Select.Item>
-              <Select.Item value='eu' textValue='European Union'>
-                <span aria-hidden='true' className='text-label-md leading-none'>
-                  🇪🇺
-                </span>
-                EU
-              </Select.Item>
+              {COUNTRY_CODES.map((code) => (
+                <Select.Item
+                  key={code}
+                  value={code}
+                  textValue={COUNTRIES[code].label}
+                >
+                  <span aria-hidden='true' className='text-label-md leading-none'>
+                    {COUNTRIES[code].flag}
+                  </span>
+                  {COUNTRIES[code].short}
+                </Select.Item>
+              ))}
             </Select.Content>
           </Select.Root>
 

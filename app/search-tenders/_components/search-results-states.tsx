@@ -50,6 +50,36 @@ export function SearchResultsStates() {
       </Specimen>
 
       <Specimen
+        title='Awarded — winner across lots'
+        description='Awarded results always name the winner. A medal tag carries "who won" without spending a word on it; lots won by the same supplier collapse into one tag rather than repeating the name.'
+      >
+        <TenderResultCard
+          {...BASE_CARD_PROPS}
+          name='Renovação integral de duas escolas básicas (Lote 1 e Lote 2)'
+          deadlineStatus={{ type: 'closed' }}
+          award={[
+            { supplier: 'Mota-Engil', lots: 'Lot 1' },
+            { supplier: 'Acme Construction', lots: 'Lot 2' },
+          ]}
+          matchedFilters={['Winner', 'Category']}
+        />
+      </Specimen>
+
+      <Specimen
+        title='Awarded — competitor outcome'
+        description='Only shown when a Competitor filter matched, since it answers that filter’s question. Reads "Bid submitted" rather than "Lost": the records show a bid, not a defeat.'
+      >
+        <TenderResultCard
+          {...BASE_CARD_PROPS}
+          name='Prestação de serviços de apoio informático municipal'
+          deadlineStatus={{ type: 'closed' }}
+          award={[{ supplier: 'NovaRede Sistemas' }]}
+          competitorOutcome={{ supplier: 'BuildCo', outcome: 'Bid submitted' }}
+          matchedFilters={['Competitor']}
+        />
+      </Specimen>
+
+      <Specimen
         title='Matched via keyword in a document'
         description='A distinct match type: the tender only matched because a keyword was found inside a Contract Object or Document. The tag always reads "Matched keyword" — hover it to see which document and where.'
       >

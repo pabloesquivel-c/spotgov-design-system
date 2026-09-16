@@ -94,11 +94,26 @@ function withAutoClose(picker: React.ReactNode, close: () => void): React.ReactN
 function PopoverTriggerButton({
   trigger,
   picker,
+  openPicker = false,
+  onPickerOpened,
 }: {
   trigger: React.ReactElement;
   picker?: React.ReactNode;
+  openPicker?: boolean;
+  onPickerOpened?: () => void;
 }) {
   const [open, setOpen] = React.useState(false);
+
+  // Opened from outside (the CPV chip in the filter bar). The callback
+  // clears the caller's flag, so the same chip works a second time — and
+  // so a user who closes the popover doesn't have it spring back open.
+  React.useEffect(() => {
+    if (!openPicker) {
+      return;
+    }
+    setOpen(true);
+    onPickerOpened?.();
+  }, [openPicker, onPickerOpened]);
 
   if (!picker) {
     return trigger;
@@ -213,6 +228,8 @@ export function FilterValueTrigger({
    * for free from `placeholder:`. */
   filled = false,
   chips,
+  openPicker,
+  onPickerOpened,
 }: {
   placeholder?: string;
   showChevron?: boolean;
@@ -233,6 +250,11 @@ export function FilterValueTrigger({
    * clicking anywhere on the row that isn't a chip still opens it to add
    * more. An empty array still renders the plain "Choose..." prompt. */
   chips?: SelectedValueChip[];
+  /** Opens `picker` without a click, for callers that own an entry point
+   * elsewhere on the page (the CPV chip in the filter bar). Flip it back to
+   * false from `onPickerOpened`. */
+  openPicker?: boolean;
+  onPickerOpened?: () => void;
 }) {
   if (chips) {
     // Capped, not wrapped: letting the row wrap to a second (third,
@@ -291,7 +313,14 @@ export function FilterValueTrigger({
       </div>
     );
 
-    return <PopoverTriggerButton trigger={chipsTrigger} picker={picker} />;
+    return (
+      <PopoverTriggerButton
+        trigger={chipsTrigger}
+        picker={picker}
+        openPicker={openPicker}
+        onPickerOpened={onPickerOpened}
+      />
+    );
   }
 
   if (onValueChange) {
