@@ -131,7 +131,7 @@ export const MATCHED_FILTER_FIELDS = [
   'CPV',
   'Location',
   'Procedure type',
-  'Publication date',
+  'Submission deadline',
   'Base value',
   'Winner',
   'Competitor',
@@ -341,7 +341,7 @@ export function TenderResultCard({
     // 150ms `ease` (hover/color change, not an entrance/exit) —
     // border-color is a paint-only property, the accepted exception to
     // transform/opacity-only for a static row hover like this one.
-    <div className='flex w-full cursor-pointer flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs transition-[border-color] duration-150 ease [&:hover:not(:has(button:hover))]:border-stroke-sub-300'>
+    <div className='flex w-full cursor-pointer select-none flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs transition-[border-color] duration-150 ease [&:hover:not(:has(button:hover))]:border-stroke-sub-300'>
       <div className='flex w-full items-start gap-4'>
         <div className='flex min-w-0 flex-1 flex-col gap-3'>
           <div className='flex flex-col gap-2'>
@@ -436,7 +436,7 @@ export function TenderResultCard({
                   type='button'
                   onClick={() => setExpanded((prev) => !prev)}
                   aria-expanded={expanded}
-                  className='shrink-0 whitespace-nowrap text-label-xs text-text-disabled-300 underline-offset-2 transition-[color,transform] duration-100 ease-out hover:text-text-sub-600 hover:underline active:scale-[0.97]'
+                  className='shrink-0 whitespace-nowrap text-label-xs text-text-sub-600 underline-offset-2 transition-[color,transform] duration-100 ease-out hover:text-text-sub-600 hover:underline active:scale-[0.97]'
                 >
                   {expanded ? 'Show less' : `+${hiddenCount} more filters`}
                 </button>

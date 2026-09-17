@@ -8,7 +8,7 @@ import * as React from 'react';
 import {
   RiBarcodeLine,
   RiBuildingLine,
-  RiCalendarEventFill,
+  RiCalendarEventLine,
   RiCoinsLine,
   RiFileTextLine,
   RiGroupLine,
@@ -108,7 +108,7 @@ export function MockFilterRows() {
       <FilterRow>
         <FilterFieldTrigger
           label='Submission Deadline'
-          icon={RiCalendarEventFill}
+          icon={RiCalendarEventLine}
           picker={<FilterTypePicker defaultValue='submission-deadline' />}
         />
         <FilterOperatorTrigger
@@ -193,7 +193,7 @@ export function ErrorMockRows() {
       <FilterRow>
         <FilterFieldTrigger
           label='Submission Deadline'
-          icon={RiCalendarEventFill}
+          icon={RiCalendarEventLine}
         />
         <FilterOperatorTrigger
           label='is between'
@@ -309,7 +309,7 @@ function LimitReachedMockRows() {
       <FilterRow>
         <FilterFieldTrigger
           label='Submission Deadline'
-          icon={RiCalendarEventFill}
+          icon={RiCalendarEventLine}
         />
         <FilterOperatorTrigger
           label='is between'
@@ -322,7 +322,7 @@ function LimitReachedMockRows() {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label='Publication Date' icon={RiCalendarEventFill} />
+        <FilterFieldTrigger label='Publication Date' icon={RiCalendarEventLine} />
         <FilterOperatorTrigger
           label='is after'
           picker={<DateOperatorPicker defaultValue='after' />}

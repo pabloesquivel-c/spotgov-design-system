@@ -2,7 +2,10 @@
 
 import * as React from 'react';
 
-import { CheckboxSearchPicker } from './checkbox-search-picker';
+import {
+  CheckboxSearchPicker,
+  useLabelSelection,
+} from './checkbox-search-picker';
 
 // One flat list across every country. A real picker would scope options to
 // the selected country (a Portuguese user has no use for Leeds City
@@ -32,30 +35,14 @@ export function BuyerPicker({
   selected?: string[];
   onChange?: (selected: string[]) => void;
 }) {
-  const selectedSet = React.useMemo(
-    () => (selected ? new Set(selected) : undefined),
-    [selected],
-  );
-
-  function toggle(label: string) {
-    if (!selectedSet || !onChange) {
-      return;
-    }
-    const next = new Set(selectedSet);
-    if (next.has(label)) {
-      next.delete(label);
-    } else {
-      next.add(label);
-    }
-    onChange(Array.from(next));
-  }
+  const { selectedSet, onToggle } = useLabelSelection(selected, onChange);
 
   return (
     <CheckboxSearchPicker
       searchPlaceholder='Search buyer...'
       options={BUYER_OPTIONS}
       selected={selectedSet}
-      onToggle={onChange ? toggle : undefined}
+      onToggle={onToggle}
     />
   );
 }

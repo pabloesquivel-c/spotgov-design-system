@@ -7,7 +7,7 @@
 import * as React from 'react';
 import {
   RiBuildingLine,
-  RiCalendarEventFill,
+  RiCalendarEventLine,
   RiCoinsLine,
   RiFileTextLine,
   RiMapPinLine,
@@ -80,7 +80,7 @@ function DateFieldVariants({ title }: { title: string }) {
       description='A date field: a range between two dates, or a single before/after bound. Click a value trigger to open the calendar.'
     >
       <FilterRow>
-        <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
+        <FilterFieldTrigger label={title} icon={RiCalendarEventLine} />
         <FilterOperatorTrigger label='is between' />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRangeSeparator />
@@ -89,14 +89,14 @@ function DateFieldVariants({ title }: { title: string }) {
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
+        <FilterFieldTrigger label={title} icon={RiCalendarEventLine} />
         <FilterOperatorTrigger label='is after' />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />
       </FilterRow>
 
       <FilterRow>
-        <FilterFieldTrigger label={title} icon={RiCalendarEventFill} />
+        <FilterFieldTrigger label={title} icon={RiCalendarEventLine} />
         <FilterOperatorTrigger label='is before' />
         <FilterValueTrigger showChevron={false} picker={<DateFilterCalendar />} />
         <FilterRemoveButton />

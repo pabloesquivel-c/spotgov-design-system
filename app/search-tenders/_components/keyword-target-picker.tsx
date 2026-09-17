@@ -58,10 +58,10 @@ export function KeywordTargetPicker({
             <label
               key={option.value}
               className={cn(
-                'flex items-center gap-2 rounded-md px-2 py-1 transition-colors duration-100 ease',
+                'flex select-none items-center gap-2 rounded-md px-2 py-1 transition-colors duration-100 ease',
                 disabled
                   ? 'cursor-not-allowed opacity-50'
-                  : 'hover:bg-bg-weak-50',
+                  : 'cursor-pointer hover:bg-bg-weak-50',
               )}
             >
               <Checkbox.Root

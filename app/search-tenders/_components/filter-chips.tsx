@@ -51,7 +51,7 @@ export function FilterChips({
 
   return (
     <div className='flex w-full flex-wrap items-center gap-2'>
-      <span className='shrink-0 whitespace-nowrap text-label-sm text-text-soft-400'>
+      <span className='shrink-0 whitespace-nowrap text-label-sm text-text-sub-600'>
         {matchMode === 'any' ? 'Matching any of:' : 'Matching all of:'}
       </span>
       {chips.map((chip) => (
@@ -78,7 +78,7 @@ function ConditionChip({ chip }: { chip: FilterChip }) {
       className={
         'max-w-[320px]' +
         (editable
-          ? ' cursor-pointer focus-visible:outline-none focus-visible:ring-stroke-strong-950'
+          ? ' cursor-pointer select-none focus-visible:outline-none focus-visible:ring-stroke-strong-950'
           : '')
       }
       role={editable ? 'button' : undefined}

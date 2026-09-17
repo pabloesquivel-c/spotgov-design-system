@@ -1,8 +1,11 @@
 'use client';
 
 // The results toolbar: the shelf directly above the result list. Figma:
-// node 2495:20710 "Header / Results". Sort on the left, Views + Export CSV
-// on the right.
+// node 2495:20710 "Header / Results" (Sort on the left, Views + Export CSV
+// on the right), updated per node 2586:24259 — Current view now groups
+// with Views + Export CSV on the right (gap-3 across all three) rather
+// than sitting beside Sort on the left. Sort is the only thing left in
+// the left-hand group.
 //
 // The running count used to lead this row; it now lives in the collapsed
 // search panel above (filter-panel.tsx), where it reads as the result of
@@ -94,52 +97,60 @@ export function ResultsToolbar({
 
   return (
     <div className='flex items-center justify-between'>
-      {/* gap-6: "how results are sorted" and "which view you're in" are two
-          independent mini-widgets sharing this shelf, not one group — same
-          widget-to-widget break ToolbarRow uses to separate "Results must"
-          from its own row. Each pairs its label tightly to its control via
-          gap-3/gap-1.5, matching that same precedent. */}
-      <div className='flex items-center gap-6'>
-        <div className='flex items-center gap-3'>
-          <span className='shrink-0 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
-            Sort by
-          </span>
-          <Select.Root
-            size='xsmall'
-            variant='compact'
-            value={sort}
-            onValueChange={onSortChange}
-          >
-            <Select.Trigger className='w-[125px] shrink-0'>
-              <Select.Value />
-            </Select.Trigger>
-            <Select.Content>
-              {SORT_OPTIONS.map((option) => (
-                <Select.Item key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Root>
-        </div>
+      <div className='flex items-center gap-3'>
+        <span className='shrink-0 whitespace-nowrap text-paragraph-sm text-text-sub-600'>
+          Sort by
+        </span>
+        <Select.Root
+          size='xsmall'
+          variant='compact'
+          value={sort}
+          onValueChange={onSortChange}
+        >
+          <Select.Trigger className='w-[125px] shrink-0'>
+            <Select.Value />
+          </Select.Trigger>
+          <Select.Content>
+            {SORT_OPTIONS.map((option) => (
+              <Select.Item key={option.value} value={option.value}>
+                {option.label}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </div>
 
+      <div className='flex shrink-0 items-center gap-3'>
         {currentView ? (
           <div className='flex shrink-0 items-center gap-1.5'>
             <span className='whitespace-nowrap text-paragraph-sm text-text-sub-600'>
               Current view:
             </span>
-            {/* Figma (node 2454:45549) specs this as the same Tag [1.1]
+            {/* Figma (node 2606:28062) specs this as the same Tag [1.1]
                 component SelectedValueChips/AppliedSummary already use for
                 dismissible chips — gray, not the blue Badge tried earlier.
                 Tag.DismissButton's built-in -mr-1 against the root's px-2
                 already produces the design's pl-8/pr-4 optical asymmetry,
-                so no padding override is needed here. text-paragraph-sm
-                overrides Tag's own default text-label-xs (12px/medium) —
-                at 12px the view name read visibly smaller than "Sort by"'s
-                14px/regular select value right next to it; scoped to this
-                instance only, since every other chip (Buyer/Category
-                picks, AppliedSummary) is a compact 12px label on purpose. */}
-            <Tag.Root variant='gray' className='text-paragraph-sm'>
+                so no horizontal padding override is needed here.
+                text-label-sm overrides Tag's own default text-label-xs
+                (12px) — Figma specs this instance at 14px/medium (matching
+                "Sort by"'s select value beside it), while every other chip
+                (Buyer/Category picks, AppliedSummary) stays a compact 12px
+                label on purpose. h-auto py-1.5 overrides Tag's fixed h-6
+                (24px) — at the larger 14px text, Figma's own py-[6px]
+                brings this tag to 32px, the same height as the Views/
+                Export CSV buttons beside it, rather than the shorter 24px
+                every other (12px-label) chip uses.
+                transition-none + the hover overrides: this tag states
+                which view the search is already framed as — a fact, not
+                a button — so it shouldn't invite a click the way
+                SelectedValueChips/AppliedSummary's interactive chips do
+                (their hover→white+border, borrowed from `gray`'s default,
+                doesn't apply here). */}
+            <Tag.Root
+              variant='gray'
+              className='h-auto py-1.5 text-label-sm transition-none hover:bg-bg-weak-50 hover:ring-transparent'
+            >
               {currentView}
               <Tag.DismissButton
                 aria-label={`Exit "${currentView}" view`}
@@ -148,9 +159,7 @@ export function ResultsToolbar({
             </Tag.Root>
           </div>
         ) : null}
-      </div>
 
-      <div className='flex shrink-0 items-center gap-3'>
         {views ? (
           <Popover.Root open={viewsOpen} onOpenChange={setViewsOpen}>
             <Popover.Trigger asChild>{viewsButton}</Popover.Trigger>

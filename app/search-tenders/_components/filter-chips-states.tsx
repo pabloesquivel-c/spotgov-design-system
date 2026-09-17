@@ -6,15 +6,15 @@
 
 import * as React from 'react';
 
-import { describeCpvSelection } from './dynamic-filter-rows';
-import { FilterChips, type FilterChip } from './filter-chips';
 import {
   createKeywordRow,
   createStructuredRow,
+  describeCpvSelection,
   describeRow,
   isRowConfigured,
   type FilterRowState,
 } from './dynamic-filter-rows';
+import { FilterChips, type FilterChip } from './filter-chips';
 import { Specimen } from './specimen';
 
 /** The specimens below are static, so their chips have nothing to remove.

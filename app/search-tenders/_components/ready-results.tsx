@@ -62,7 +62,7 @@ const MOCK_RESULTS: TenderResultCardProps[] = [
     deadlineDate: '15th Sept, 2026',
     baseValue: '€650,000',
     deadlineStatus: { type: 'today' },
-    matchedFilters: ['Category', 'Publication date'],
+    matchedFilters: ['Category', 'Submission deadline'],
   },
 ];
 
@@ -149,7 +149,7 @@ function RunButton({ onRun, loading }: { onRun: () => void; loading: boolean }) 
 function EmptyHint() {
   return (
     <div className='flex flex-1 items-center justify-center py-16'>
-      <p className='text-paragraph-sm text-text-soft-400'>
+      <p className='text-paragraph-sm text-text-sub-600'>
         Click “Run search” to preview this reveal
       </p>
     </div>

@@ -292,7 +292,7 @@ export function ViewsPicker({
         <>
           <div className='flex w-full flex-col items-center gap-1 py-6 text-center'>
             <p className='text-label-sm text-text-sub-600'>No views yet</p>
-            <p className='max-w-[210px] text-label-sm text-text-soft-400'>
+            <p className='max-w-[210px] text-label-sm text-text-sub-600'>
               Click below to create your first view
             </p>
           </div>
@@ -308,7 +308,7 @@ export function ViewsPicker({
         </>
       ) : filtered.length === 0 ? (
         <div className='flex w-full items-center justify-center py-4'>
-          <p className='max-w-[210px] text-center text-label-sm text-text-soft-400'>
+          <p className='max-w-[210px] text-center text-label-sm text-text-sub-600'>
             No views matched &quot;{search}&quot;
           </p>
         </div>
@@ -329,18 +329,27 @@ export function ViewsPicker({
         // list, unlike the invalid-range filter-panel hint which does have
         // one — different component, don't carry the pattern over.
         <div className='flex w-full flex-col gap-1'>
+          {/* Only when a view is actually current. After the results row's
+              "x" exits a view, the search is ad hoc and there is nothing to
+              update — the button stayed reachable and reported back
+              `Updated ""`. Save as new view and Reset both still apply. */}
+          {current ? (
+            <Button.Root
+              variant='neutral'
+              mode='filled'
+              size='xsmall'
+              className='w-full justify-center'
+              onClick={onUpdateView}
+            >
+              Update view
+            </Button.Root>
+          ) : null}
           <Button.Root
             variant='neutral'
-            mode='filled'
-            size='xsmall'
-            className='w-full justify-center'
-            onClick={onUpdateView}
-          >
-            Update view
-          </Button.Root>
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
+            // Steps up to the filled treatment when Update view isn't
+            // there: a footer of two ghost/stroke buttons has no primary
+            // action, which reads as neither being the thing to press.
+            mode={current ? 'stroke' : 'filled'}
             size='xsmall'
             className='w-full justify-center'
             onClick={() => setIsNaming(true)}
@@ -375,7 +384,7 @@ export function ViewsPickerEmpty() {
 
       <div className='flex w-full flex-col items-center gap-1 py-6 text-center'>
         <p className='text-label-sm text-text-sub-600'>No views yet</p>
-        <p className='max-w-[210px] text-label-sm text-text-soft-400'>
+        <p className='max-w-[210px] text-label-sm text-text-sub-600'>
           Click below to create your first view
         </p>
       </div>
@@ -409,7 +418,7 @@ export function ViewsPickerNoMatch({
       </Input.Root>
 
       <div className='flex w-full items-center justify-center py-4'>
-        <p className='max-w-[210px] text-center text-label-sm text-text-soft-400'>
+        <p className='max-w-[210px] text-center text-label-sm text-text-sub-600'>
           No views matched &quot;{query}&quot;
         </p>
       </div>

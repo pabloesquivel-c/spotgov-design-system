@@ -82,9 +82,11 @@ export function DateFilterCalendar({
    * specimen usage does. */
   onSelect?: (date: Date | undefined) => void;
 }) {
-  const [selected, setSelected] = React.useState<Date | undefined>(
-    value ?? new Date(2024, 0, 11),
-  );
+  // No fallback date. This used to seed `new Date(2024, 0, 11)` when the
+  // row had no date yet, so opening an untouched Submission Deadline filter
+  // landed on January 2024 with a day already selected — a value the user
+  // never picked, which Apply would then commit.
+  const [selected, setSelected] = React.useState<Date | undefined>(value);
   const { navMode, markKeyboard, onPointerMove } = useNavMode();
 
   return (
@@ -124,7 +126,7 @@ export function DateFilterCalendar({
             table: 'w-full border-collapse',
             head_row: 'flex gap-2',
             head_cell:
-              'flex-1 py-2.5 text-center text-label-sm text-text-soft-400',
+              'flex-1 py-2.5 text-center text-label-sm text-text-sub-600',
             row: 'flex w-full gap-2 mt-0',
             cell: 'flex-1 p-0 text-center',
             day: cn(

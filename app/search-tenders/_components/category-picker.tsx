@@ -2,7 +2,10 @@
 
 import * as React from 'react';
 
-import { CheckboxSearchPicker } from './checkbox-search-picker';
+import {
+  CheckboxSearchPicker,
+  useLabelSelection,
+} from './checkbox-search-picker';
 
 const CATEGORY_OPTIONS = [
   { label: 'Construction', checked: true },
@@ -21,30 +24,14 @@ export function CategoryPicker({
   selected?: string[];
   onChange?: (selected: string[]) => void;
 }) {
-  const selectedSet = React.useMemo(
-    () => (selected ? new Set(selected) : undefined),
-    [selected],
-  );
-
-  function toggle(label: string) {
-    if (!selectedSet || !onChange) {
-      return;
-    }
-    const next = new Set(selectedSet);
-    if (next.has(label)) {
-      next.delete(label);
-    } else {
-      next.add(label);
-    }
-    onChange(Array.from(next));
-  }
+  const { selectedSet, onToggle } = useLabelSelection(selected, onChange);
 
   return (
     <CheckboxSearchPicker
       searchPlaceholder='Search category...'
       options={CATEGORY_OPTIONS}
       selected={selectedSet}
-      onToggle={onChange ? toggle : undefined}
+      onToggle={onToggle}
     />
   );
 }

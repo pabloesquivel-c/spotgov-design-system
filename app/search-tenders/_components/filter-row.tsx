@@ -52,7 +52,7 @@ const CHEVRON_CLASS =
 // Linear-style fields actually use: a soft glow around the existing shape,
 // not a heavier redrawn outline.
 const TRIGGER_INTERACTIVE_CLASS =
-  'transition-[background-color,transform,box-shadow] duration-100 ease-out hover:bg-bg-weak-50 active:scale-[0.99] focus-visible:outline-none focus-visible:border-stroke-strong-950 focus-visible:shadow-button-important-focus';
+  'cursor-pointer select-none transition-[background-color,transform,box-shadow] duration-100 ease-out hover:bg-bg-weak-50 active:scale-[0.99] focus-visible:outline-none focus-visible:border-stroke-strong-950 focus-visible:shadow-button-important-focus';
 
 // A filled chip already carries its own bg-weak-50 — filling the row
 // behind it with the same gray on hover washes the chips out against their
@@ -62,7 +62,7 @@ const TRIGGER_INTERACTIVE_CLASS =
 // "you're hovering"). A near-invisible shadow lift reads as interactive
 // without competing with the chips or the chevron's own hover treatment.
 const CHIPS_TRIGGER_INTERACTIVE_CLASS =
-  'transition-[box-shadow,border-color] duration-100 ease-out hover:shadow-regular-sm active:scale-[0.99] focus-visible:outline-none focus-visible:border-stroke-strong-950 focus-visible:shadow-button-important-focus';
+  'cursor-pointer select-none transition-[box-shadow,border-color] duration-100 ease-out hover:shadow-regular-sm active:scale-[0.99] focus-visible:outline-none focus-visible:border-stroke-strong-950 focus-visible:shadow-button-important-focus';
 
 // Beyond this many, the rest collapse into a "+N" tag rather than wrapping
 // the row onto a second line.
@@ -507,22 +507,38 @@ export function FilterTagInput({
   const [draft, setDraft] = React.useState('');
   const atCap = maxTerms !== undefined && terms.length >= maxTerms;
 
+  // Blurring commits the draft, and clicking a chip's dismiss button blurs
+  // the input — so that one click fires two updates in the same tick. Both
+  // used to read the `terms` prop from the render that started the click,
+  // so the removal overwrote the commit and the typed term vanished: the
+  // exact "never silently dropped" promise in this component's own doc
+  // comment. Staging every update through this ref makes the second one
+  // build on the first.
+  const termsRef = React.useRef(terms);
+  termsRef.current = terms;
+
+  function setTerms(next: string[]) {
+    termsRef.current = next;
+    onTermsChange(next);
+  }
+
   function commitDraft() {
     const term = draft.trim();
     setDraft('');
-    if (!term || atCap) {
+    const current = termsRef.current;
+    if (!term || (maxTerms !== undefined && current.length >= maxTerms)) {
       return;
     }
-    if (terms.some((existing) => existing.toLowerCase() === term.toLowerCase())) {
+    if (current.some((existing) => existing.toLowerCase() === term.toLowerCase())) {
       return;
     }
-    onTermsChange([...terms, term]);
+    setTerms([...current, term]);
   }
 
   const chips: SelectedValueChip[] = terms.map((term) => ({
     id: term,
     label: term,
-    onRemove: () => onTermsChange(terms.filter((t) => t !== term)),
+    onRemove: () => setTerms(termsRef.current.filter((t) => t !== term)),
   }));
 
   return (
@@ -550,7 +566,7 @@ export function FilterTagInput({
             e.preventDefault();
             commitDraft();
           } else if (e.key === 'Backspace' && draft === '' && terms.length > 0) {
-            onTermsChange(terms.slice(0, -1));
+            setTerms(termsRef.current.slice(0, -1));
           }
         }}
         onBlur={commitDraft}
@@ -571,11 +587,19 @@ export function FilterRangeSeparator() {
   );
 }
 
-export function FilterRemoveButton({ onClick }: { onClick?: () => void }) {
+export function FilterRemoveButton({
+  onClick,
+  /** What this row is, for the accessible name — the same button sits on
+   * keyword rows, where "Remove filter" names the wrong thing. */
+  label = 'filter',
+}: {
+  onClick?: () => void;
+  label?: string;
+}) {
   return (
     <button
       type='button'
-      aria-label='Remove filter'
+      aria-label={`Remove ${label}`}
       className='shrink-0 rounded-md p-0.5 text-text-sub-600 transition-[background-color,color,transform,box-shadow] duration-100 ease-out hover:bg-bg-weak-50 hover:text-text-strong-950 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stroke-strong-950'
       onClick={onClick}
     >

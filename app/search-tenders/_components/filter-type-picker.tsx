@@ -14,7 +14,7 @@ import * as React from 'react';
 import {
   RiBarcodeLine,
   RiBuildingLine,
-  RiCalendarEventFill,
+  RiCalendarEventLine,
   RiCoinsLine,
   RiFileTextLine,
   RiGroupLine,
@@ -56,7 +56,7 @@ const OPTIONS: Array<{
   {
     value: 'submission-deadline',
     label: 'Submission Deadline',
-    icon: RiCalendarEventFill,
+    icon: RiCalendarEventLine,
   },
   { value: 'base-price', label: 'Base Price', icon: RiCoinsLine },
   { value: 'winner', label: 'Winner', icon: RiMedalLine },

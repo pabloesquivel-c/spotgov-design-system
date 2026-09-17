@@ -99,7 +99,7 @@ export function CheckboxOptionList({
             onActiveIndexChange ? () => onActiveIndexChange(index) : undefined
           }
           className={cn(
-            'flex items-center gap-2 rounded-md px-2 py-1 active:scale-[0.99]',
+            'flex cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1 active:scale-[0.99]',
             // No colour transition: the highlight is driven by held-down
             // arrow keys as often as by the pointer, and easing it turns a
             // fast scroll through the list into a smear.
@@ -144,6 +144,37 @@ export function CheckboxPickerShell({
       {children}
     </div>
   );
+}
+
+/** Controlled-selection plumbing shared by every label-based set picker
+ * (Buyer, Category, Supplier). All three held a byte-identical `toggle` —
+ * one copy means a fix to the selection semantics lands in all of them.
+ * CPV is deliberately not a caller: it selects by code, not label. */
+export function useLabelSelection(
+  selected: string[] | undefined,
+  onChange: ((selected: string[]) => void) | undefined,
+) {
+  const selectedSet = React.useMemo(
+    () => (selected ? new Set(selected) : undefined),
+    [selected],
+  );
+
+  const onToggle = React.useMemo(() => {
+    if (!selectedSet || !onChange) {
+      return undefined;
+    }
+    return (label: string) => {
+      const next = new Set(selectedSet);
+      if (next.has(label)) {
+        next.delete(label);
+      } else {
+        next.add(label);
+      }
+      onChange(Array.from(next));
+    };
+  }, [selectedSet, onChange]);
+
+  return { selectedSet, onToggle };
 }
 
 export function CheckboxSearchPicker({
@@ -198,7 +229,7 @@ export function CheckboxSearchPicker({
       </Input.Root>
 
       {filtered.length === 0 ? (
-        <p className='px-2 py-4 text-center text-label-sm text-text-soft-400'>
+        <p className='px-2 py-4 text-center text-label-sm text-text-sub-600'>
           No matches found
         </p>
       ) : (

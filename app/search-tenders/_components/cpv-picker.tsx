@@ -58,7 +58,7 @@ const CpvOptionRow = React.forwardRef<
       onMouseMove={onMouseMove}
       style={PICKER_CHECKBOX_VARS}
       className={cn(
-        'flex items-start gap-2 rounded-md px-2 py-1.5',
+        'flex cursor-pointer select-none items-start gap-2 rounded-md px-2 py-1.5',
         // No colour transition, and no CSS :hover — `active` is the single
         // source of the highlight, moved by both the arrow keys and the
         // pointer, so two rows can never be lit at once. Same reasoning as
@@ -131,7 +131,7 @@ export function CpvPicker({
       </Input.Root>
 
       {results.length === 0 ? (
-        <p className='px-2 py-4 text-center text-label-sm text-text-soft-400'>
+        <p className='px-2 py-4 text-center text-label-sm text-text-sub-600'>
           No matches found
         </p>
       ) : (

@@ -37,7 +37,7 @@ import * as React from 'react';
 import {
   RiBarcodeLine,
   RiBuildingLine,
-  RiCalendarEventFill,
+  RiCalendarEventLine,
   RiCoinsLine,
   RiFileTextLine,
   RiGroupLine,
@@ -254,7 +254,7 @@ const STRUCTURED_FIELD_META: Record<
   cpv: { label: 'CPV', icon: RiBarcodeLine, defaultOperator: 'any-of' },
   'submission-deadline': {
     label: 'Submission Deadline',
-    icon: RiCalendarEventFill,
+    icon: RiCalendarEventLine,
     defaultOperator: 'between',
   },
   'base-price': {
@@ -588,7 +588,14 @@ function isConfiguredDuplicate(row: FilterRowState, other: FilterRowState): bool
       return false;
     }
     const normalize = (terms: string[]) =>
-      [...new Set(terms.map((term) => term.trim().toLowerCase()))].sort().join(' ');
+      [...new Set(terms.map((term) => term.trim().toLowerCase()))]
+        .sort()
+        // A NUL separator, written as an escape rather than a literal
+        // byte: it can't occur inside a user-typed term, so ['a b'] and
+        // ['a','b'] can't normalize to the same string. A raw NUL in the
+        // source made this file read as binary to grep, diff and review
+        // tools, and was invisible in an editor.
+        .join('\u0000');
     return normalize(row.terms) === normalize(other.terms);
   }
 
@@ -643,7 +650,7 @@ const MAX_KEYWORD_TERMS = 5;
 
 function KeywordLimitNote() {
   return (
-    <p className='px-1 text-paragraph-xs text-text-soft-400'>
+    <p className='px-1 text-paragraph-xs text-text-sub-600'>
       You’ve reached the limit of {MAX_KEYWORD_TERMS} keyword terms.
     </p>
   );
@@ -681,6 +688,13 @@ export function DynamicFilterRows({
   onOpenPickerHandled?: () => void;
 }) {
   const [removingIds, setRemovingIds] = React.useState<Set<string>>(new Set());
+  // The removal below is applied ROW_EXIT_MS after the click, so it can't
+  // read `rows` from the render that handled the click — by then another
+  // edit may have landed. Two removals fired less than ROW_EXIT_MS apart
+  // did exactly that: the second timeout filtered the pre-first-removal
+  // array and put the first row back.
+  const rowsRef = React.useRef(rows);
+  rowsRef.current = rows;
 
   function updateRow(id: string, next: FilterRowState) {
     onChange(rows.map((row) => (row.id === id ? next : row)));
@@ -689,7 +703,7 @@ export function DynamicFilterRows({
   function removeRow(id: string) {
     setRemovingIds((prev) => new Set(prev).add(id));
     window.setTimeout(() => {
-      onChange(rows.filter((row) => row.id !== id));
+      onChange(rowsRef.current.filter((row) => row.id !== id));
       setRemovingIds((prev) => {
         const next = new Set(prev);
         next.delete(id);
@@ -744,7 +758,10 @@ export function DynamicFilterRows({
                 onTermsChange={(terms) => updateRow(row.id, { ...row, terms })}
                 maxTerms={MAX_KEYWORD_TERMS}
               />
-              <FilterRemoveButton onClick={() => removeRow(row.id)} />
+              <FilterRemoveButton
+                label='keyword row'
+                onClick={() => removeRow(row.id)}
+              />
             </FilterRow>
           );
         } else {

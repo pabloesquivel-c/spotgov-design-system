@@ -218,7 +218,7 @@ export function ToolbarRow({
             tenders show, the collapse control acts on the panel itself, and
             they're only adjacent because both belong at this edge. */}
         <div className='flex shrink-0 items-center gap-3'>
-          <label className='flex h-9 shrink-0 items-center gap-1 rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-regular-xs'>
+          <label className='flex h-9 shrink-0 cursor-pointer select-none items-center gap-1 rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-regular-xs'>
             <Checkbox.Root
               checked={savedOnly}
               onCheckedChange={
@@ -319,6 +319,7 @@ export function ToolbarRow({
                   mechanism as the Document/Contract Object rows. */}
               <Input.Input
                 ref={searchInputRef}
+                aria-label='Search by reference, buyer, or tender title'
                 className='group-hover/input-wrapper:placeholder:text-text-soft-400'
                 placeholder='Reference, buyer, or tender title'
                 value={searchValue}

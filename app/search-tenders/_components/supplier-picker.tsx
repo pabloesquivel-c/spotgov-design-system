@@ -11,7 +11,10 @@
 
 import * as React from 'react';
 
-import { CheckboxSearchPicker } from './checkbox-search-picker';
+import {
+  CheckboxSearchPicker,
+  useLabelSelection,
+} from './checkbox-search-picker';
 
 // The companies recorded as winners or bidders across the awarded fixtures
 // in rich-state-flow.tsx. Kept in sync by hand — the mock data is the only
@@ -37,30 +40,14 @@ export function SupplierPicker({
   selected?: string[];
   onChange?: (selected: string[]) => void;
 }) {
-  const selectedSet = React.useMemo(
-    () => (selected ? new Set(selected) : undefined),
-    [selected],
-  );
-
-  function toggle(label: string) {
-    if (!selectedSet || !onChange) {
-      return;
-    }
-    const next = new Set(selectedSet);
-    if (next.has(label)) {
-      next.delete(label);
-    } else {
-      next.add(label);
-    }
-    onChange(Array.from(next));
-  }
+  const { selectedSet, onToggle } = useLabelSelection(selected, onChange);
 
   return (
     <CheckboxSearchPicker
       searchPlaceholder='Search supplier...'
       options={SUPPLIER_OPTIONS}
       selected={selectedSet}
-      onToggle={onChange ? toggle : undefined}
+      onToggle={onToggle}
     />
   );
 }

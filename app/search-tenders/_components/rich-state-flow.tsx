@@ -58,6 +58,14 @@ import { toast } from '@/components/ui/toast';
 import * as AlertToast from '@/components/ui/toast-alert';
 import { cn } from '@/utils/cn';
 import { isCpvOrDescendant } from './cpv-data';
+import {
+  CrossfadeText,
+  FIXED_FLOOR_MS,
+  PHRASE_MS,
+  STATUS_PHRASES,
+  useMinimumVisibleDuration,
+  usePhraseSequence,
+} from './loading-status';
 import { FilterChips, type FilterChip, type MatchMode } from './filter-chips';
 import {
   availableFilterTypes,
@@ -90,82 +98,6 @@ import {
 } from './tender-result-card';
 import { VIEWS } from './views-picker';
 
-/** Keeps a just-shown loading state visible for at least `minMs` even if the
- * real request finishes sooner — without it, a fast connection makes the
- * skeleton's own entrance stagger flash and cut itself off mid-animation
- * instead of settling. Doesn't delay *showing* it, only hiding it. */
-function useMinimumVisibleDuration(active: boolean, minMs: number): boolean {
-  const [visible, setVisible] = React.useState(active);
-  const shownAtRef = React.useRef<number | null>(null);
-
-  React.useEffect(() => {
-    if (active) {
-      shownAtRef.current = Date.now();
-      setVisible(true);
-      return;
-    }
-    const shownAt = shownAtRef.current;
-    if (shownAt === null) {
-      setVisible(false);
-      return;
-    }
-    const remaining = Math.max(minMs - (Date.now() - shownAt), 0);
-    const id = window.setTimeout(() => setVisible(false), remaining);
-    return () => window.clearTimeout(id);
-  }, [active, minMs]);
-
-  return visible;
-}
-
-/** Steps through `phraseCount` phrases once, `phraseMs` apart, then holds on
- * the last one for as long as `active` stays true — timed off elapsed time
- * rather than a chain of timeouts, so it advances smoothly however long the
- * real request takes. Deliberately doesn't loop back to the first phrase:
- * repeating "Looking through tenders…" after "Almost there…" read as the
- * search restarting, which undercuts the one thing this line exists to
- * communicate. */
-function usePhraseSequence(active: boolean, phraseCount: number, phraseMs: number): number {
-  const [phraseIndex, setPhraseIndex] = React.useState(0);
-
-  React.useEffect(() => {
-    if (!active) {
-      setPhraseIndex(0);
-      return;
-    }
-    const start = Date.now();
-    const id = window.setInterval(() => {
-      setPhraseIndex(Math.min(Math.floor((Date.now() - start) / phraseMs), phraseCount - 1));
-    }, 80);
-    return () => window.clearInterval(id);
-  }, [active, phraseCount, phraseMs]);
-
-  return phraseIndex;
-}
-
-// Per docs/copy.md: specific over clever ("Bad: Working magic…"), name the
-// object, no em dashes.
-const STATUS_PHRASES = [
-  'Looking through tenders…',
-  'Matching your filters…',
-  'Almost there…',
-];
-// 1500ms/phrase, not the previous 1000ms: this is a deliberate "thinking"
-// pause, not a snappy UI transition, and 1000ms still read as short once
-// the rest of the treatment made the sequence feel more alive — the pace
-// should feel unhurried, not just technically readable. The resulting
-// 4500ms floor (below) derives from that pace instead of the pace being
-// squeezed to fit a pre-picked floor.
-const PHRASE_MS = 1500;
-// Chosen after prototyping three directions on the "Loading pacing"
-// specimen tab: a fixed floor long enough to read as real work — the "LLM
-// thinking tokens" reference — rather than resolving the instant a response
-// is ready. Equal to the full phrase sequence's own length (not a separate,
-// independently-picked number) so the floor never cuts the last phrase's
-// dwell time short.
-const FIXED_FLOOR_MS = PHRASE_MS * STATUS_PHRASES.length;
-// A real crossfade (both texts briefly overlap, blur-masked), not a hard
-// cut with a fade-in bolted on — see CrossfadeText below.
-const CROSSFADE_MS = 350;
 // The skeleton's own stagger (below) starts this many ms after Search is
 // clicked — not at 0 — so its entrance plays out *after* the filter panel
 // has (mostly) finished collapsing (AccordionRow's GRID_MS) instead of
@@ -199,87 +131,6 @@ function ResultCardSkeleton() {
         <div className='h-8 w-20 animate-pulse rounded-lg bg-bg-weak-50' />
       </div>
     </div>
-  );
-}
-
-/** A real crossfade, not a hard cut with a fade-in bolted on: the outgoing
- * text fades out (with a light blur, masking the swap per Emil Kowalski's
- * "blur bridges two states that would otherwise read as two objects
- * swapping") while the incoming text fades in, both driven by CSS
- * transitions so a fast re-trigger retargets smoothly instead of restarting
- * from zero. `ease`, not `ease-out` — the same "slightly slower, more
- * elegant" choice Sonner makes for a component with personality, rather
- * than the snappier default for functional UI chrome.
- *
- * The base layer only carries the transition *while* something is
- * crossfading over it — applying it unconditionally caused a bug where the
- * final handoff (clearing `incoming`) replayed as a second, unwanted
- * fade-in right after the first one finished. No transition rule at rest
- * means that handoff is instant.
- *
- * `shimmerStyles.shimmer` folds into `className` at the call site below —
- * the shimmer's `animation` (mask-position, infinite) and this component's
- * `transition` (opacity/filter) target different properties on the same
- * element, so they run independently: the phrase change still gets a real
- * crossfade, on top of which the shimmer keeps sweeping continuously
- * throughout. Dropping the crossfade for a shimmer-only treatment (an
- * earlier pass, on the specimen tab) was a mistake — the shimmer's motion
- * doesn't stand in for a transition on the text *content* changing; a
- * phrase swap with zero transition read as a jump cut regardless. */
-function CrossfadeText({ text, className }: { text: string; className?: string }) {
-  const [displayed, setDisplayed] = React.useState(text);
-  const [incoming, setIncoming] = React.useState<string | null>(null);
-  const [settled, setSettled] = React.useState(true);
-
-  React.useEffect(() => {
-    if (text === displayed) {
-      return;
-    }
-    setIncoming(text);
-    setSettled(false);
-    const raf = requestAnimationFrame(() => setSettled(true));
-    const id = window.setTimeout(() => {
-      setDisplayed(text);
-      setIncoming(null);
-    }, CROSSFADE_MS);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(id);
-    };
-  }, [text, displayed]);
-
-  const layerClassName = cn(className, 'col-start-1 row-start-1');
-  const crossfadeClassName = cn(layerClassName, 'transition-[opacity,filter] ease');
-
-  return (
-    <span className='relative inline-grid'>
-      <span
-        className={incoming ? crossfadeClassName : layerClassName}
-        style={
-          incoming
-            ? {
-                transitionDuration: `${CROSSFADE_MS}ms`,
-                opacity: settled ? 0 : 1,
-                filter: settled ? 'blur(2px)' : 'blur(0px)',
-              }
-            : undefined
-        }
-      >
-        {displayed}
-      </span>
-      {incoming ? (
-        <span
-          className={crossfadeClassName}
-          style={{
-            transitionDuration: `${CROSSFADE_MS}ms`,
-            opacity: settled ? 1 : 0,
-            filter: settled ? 'blur(0px)' : 'blur(2px)',
-          }}
-        >
-          {incoming}
-        </span>
-      ) : null}
-    </span>
   );
 }
 
@@ -1092,7 +943,7 @@ const FIELD_TO_MATCHED_LABEL: Record<StructuredField, MatchedFilterField> = {
   buyer: 'Buyer',
   category: 'Category',
   cpv: 'CPV',
-  'submission-deadline': 'Publication date',
+  'submission-deadline': 'Submission deadline',
   'base-price': 'Base value',
   winner: 'Winner',
   competitor: 'Competitor',
@@ -1284,7 +1135,7 @@ function LoadingResults({ previousCount }: { previousCount: number }) {
       ))}
       {overflow > 0 ? (
         <p
-          className='motion-safe:animate-fade-in motion-reduce:animate-fade-in px-1 text-paragraph-xs text-text-soft-400'
+          className='motion-safe:animate-fade-in motion-reduce:animate-fade-in px-1 text-paragraph-xs text-text-sub-600'
           style={{ animationDelay: `${SKELETON_STAGGER_START_MS + 250}ms` }}
         >
           Loading {overflow.toLocaleString('en-US')} more…
@@ -1436,15 +1287,13 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   const [savedIds, setSavedIds] = React.useState<Set<string>>(new Set());
   const [isSearching, setIsSearching] = React.useState(false);
   const [sort, setSort] = React.useState<SortValue>('most-recent');
+  // Two blank rows, not a pre-laid set of six named ones. A row you land on
+  // with its field already chosen hides the field picker entirely, and the
+  // rows nobody fills sit in the panel for the whole session reading as
+  // leftovers. Starting blank also means Add filter / Add keywords are on
+  // the path of a first search rather than off to the side.
   const initialRows = React.useMemo<FilterRowState[]>(
-    () => [
-      createStructuredRow('buyer'),
-      createStructuredRow('category'),
-      createStructuredRow('cpv'),
-      createStructuredRow('submission-deadline'),
-      createStructuredRow('base-price'),
-      createKeywordRow('contract-object'),
-    ],
+    () => [createStructuredRow(), createStructuredRow()],
     [],
   );
   const [rows, setRows] = React.useState<FilterRowState[]>(initialRows);
@@ -1456,7 +1305,11 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   const [matchMode, setMatchMode] = React.useState<MatchMode>('all');
   const [appliedMatchMode, setAppliedMatchMode] = React.useState<MatchMode>('all');
   const [views, setViews] = React.useState<string[]>(VIEWS);
-  const [currentView, setCurrentView] = React.useState<string>(VIEWS[1]);
+  // Empty string is the no-view-loaded value handleExitView already sets,
+  // and ResultsToolbar only renders the view tag when it's truthy. Opening
+  // on a named view while the panel is blank claims a saved search is
+  // loaded when none of its criteria are.
+  const [currentView, setCurrentView] = React.useState<string>('');
   const [viewSearch, setViewSearch] = React.useState('');
   const [isPanelExpanded, setIsPanelExpanded] = React.useState(true);
   // Set when the user clicks a chip body; DynamicFilterRows focuses that
@@ -1736,42 +1589,49 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
     appliedMatchMode,
   ]);
 
-  const toggleSave = React.useCallback((id: string, name: string) => {
-    let wasSaved = false;
-    setSavedIds((prev) => {
-      wasSaved = prev.has(id);
-      const next = new Set(prev);
-      if (wasSaved) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
+  // `savedIds` is read here rather than inside the updater below. Assigning
+  // to an outer variable from a state updater only works because React
+  // happens to run it eagerly when no other update is queued — an internal
+  // optimization, not a guarantee, and it makes the "was it already saved?"
+  // answer depend on what else the click did.
+  const toggleSave = React.useCallback(
+    (id: string, name: string) => {
+      const wasSaved = savedIds.has(id);
+      setSavedIds((prev) => {
+        const next = new Set(prev);
+        if (wasSaved) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
 
-    if (!wasSaved) {
-      toast.custom((t) => (
-        <AlertToast.Root
-          t={t}
-          status='success'
-          size='xsmall'
-          message={`Saved "${name}"`}
-          icon={RiCheckboxCircleFill}
-          action={{
-            label: 'Undo',
-            onClick: () => {
-              setSavedIds((current) => {
-                const reverted = new Set(current);
-                reverted.delete(id);
-                return reverted;
-              });
-              toast.dismiss(t);
-            },
-          }}
-        />
-      ));
-    }
-  }, []);
+      if (!wasSaved) {
+        toast.custom((t) => (
+          <AlertToast.Root
+            t={t}
+            status='success'
+            size='xsmall'
+            message={`Saved "${name}"`}
+            icon={RiCheckboxCircleFill}
+            action={{
+              label: 'Undo',
+              onClick: () => {
+                setSavedIds((current) => {
+                  const reverted = new Set(current);
+                  reverted.delete(id);
+                  return reverted;
+                });
+                toast.dismiss(t);
+              },
+            }}
+          />
+        ));
+      }
+    },
+    [savedIds],
+  );
 
   // The DialKit demo of the dropped-filter toast, kept so the state is
   // reachable without building a filter first. The real path is

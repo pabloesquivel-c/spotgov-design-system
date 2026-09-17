@@ -115,7 +115,7 @@ export const CollapsedFilterPanel = React.forwardRef<
     <div className='flex min-w-0 items-center justify-between gap-2 rounded-xl border border-stroke-soft-200 bg-bg-white-0 py-4 pl-5 pr-4 shadow-regular-xs'>
       <div className='grid min-w-0 flex-1 items-center'>
         <p
-          className='col-start-1 row-start-1 min-w-0 truncate text-label-md text-text-sub-600 transition-[opacity,filter] duration-[220ms] ease-out motion-reduce:transition-none'
+          className='col-start-1 row-start-1 min-w-0 truncate text-label-md text-text-strong-950 transition-[opacity,filter] duration-[220ms] ease-out motion-reduce:transition-none'
           style={
             showLoadingIndicator
               ? { opacity: 0, filter: 'blur(2px)' }
@@ -128,7 +128,7 @@ export const CollapsedFilterPanel = React.forwardRef<
           ) : (
             <>
               {count.toLocaleString('en-US')}{' '}
-              <span className='text-text-soft-400'>
+              <span className='text-text-sub-600'>
                 {count === 1 ? 'tender' : 'tenders'} found
               </span>
             </>
@@ -269,7 +269,7 @@ export function AccordionRow({
 
 function EmptyFilters() {
   return (
-    <div className='flex h-[150px] w-full flex-col items-center justify-center gap-3'>
+    <div className='flex h-[250px] w-full flex-col items-center justify-center gap-3'>
       <div className='flex size-10 shrink-0 items-center justify-center rounded-full border border-stroke-soft-200 shadow-regular-xs'>
         <RiListCheck3 className='size-5 text-text-sub-600' />
       </div>
@@ -277,7 +277,7 @@ function EmptyFilters() {
         <p className='text-label-sm text-text-strong-950'>
           No filters or keywords
         </p>
-        <p className='text-label-sm text-text-soft-400'>
+        <p className='text-label-sm text-text-sub-600'>
           You are searching everything in this country and stage
         </p>
       </div>
@@ -519,7 +519,10 @@ export function FilterPanel({
             <p
               className={
                 'flex items-start gap-1 text-paragraph-xs ' +
-                (hint.tone === 'error' ? 'text-error-base' : 'text-text-soft-400')
+                // sub-600, not soft-400: soft-400 is 2.52:1 on white,
+                // under the AA 4.5:1 floor at any size. Same call as the
+                // unapplied-count line below.
+                (hint.tone === 'error' ? 'text-error-base' : 'text-text-sub-600')
               }
             >
               <RiInformationFill className='size-4 shrink-0' />
