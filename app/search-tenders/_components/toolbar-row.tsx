@@ -59,18 +59,29 @@ export type CountryCode = 'pt' | 'es' | 'uk' | 'eu';
  * dynamic-filter-rows.tsx), so its label has to be readable from
  * rich-state-flow.tsx too — for the results count line and for the "filter
  * unavailable in <country>" toast. A second hardcoded list there would
- * drift from this one. */
+ * drift from this one.
+ *
+ * `article` exists because the count line reads the label inside a
+ * sentence — "in Portugal" but "in *the* United Kingdom". Held here rather
+ * than as a second full label so the country name has exactly one source. */
 export const COUNTRIES: Record<
   CountryCode,
-  { label: string; short: string; flag: string }
+  { label: string; short: string; flag: string; article?: string }
 > = {
   pt: { label: 'Portugal', short: 'PT', flag: '🇵🇹' },
   es: { label: 'Spain', short: 'ES', flag: '🇪🇸' },
-  uk: { label: 'United Kingdom', short: 'UK', flag: '🇬🇧' },
-  eu: { label: 'European Union', short: 'EU', flag: '🇪🇺' },
+  uk: { label: 'United Kingdom', short: 'UK', flag: '🇬🇧', article: 'the' },
+  eu: { label: 'European Union', short: 'EU', flag: '🇪🇺', article: 'the' },
 };
 
 export const COUNTRY_CODES = Object.keys(COUNTRIES) as CountryCode[];
+
+/** The country as it reads after a preposition — "in Portugal", "in the
+ * United Kingdom". Used by the collapsed panel's count line. */
+export function countryInSentence(code: CountryCode): string {
+  const { label, article } = COUNTRIES[code];
+  return article ? `${article} ${label}` : label;
+}
 
 export function ToolbarRow({
   searchInputRef,

@@ -87,7 +87,13 @@ import { Orb } from './orb';
 import { PageHeader } from './page-header';
 import { ResultsToolbar, type SortValue } from './results-toolbar';
 import shimmerStyles from './shimmer-text.module.css';
-import { COUNTRIES, STAGE_LABELS, type CountryCode, type Stage } from './toolbar-row';
+import {
+  COUNTRIES,
+  STAGE_LABELS,
+  countryInSentence,
+  type CountryCode,
+  type Stage,
+} from './toolbar-row';
 import {
   TenderResultCard,
   type AwardWinner,
@@ -1924,6 +1930,12 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
             <CollapsedFilterPanel
               ref={editSearchRef}
               count={previousResultCountRef.current}
+              // Applied, not pending: switching the stage tab or the country
+              // select doesn't change these results until Search runs, so
+              // reading `stage`/`country` here would caption the list with a
+              // search that hasn't happened.
+              stageLabel={STAGE_LABELS[appliedStage]}
+              countryLabel={countryInSentence(appliedCountry)}
               onEditSearch={() => setIsPanelExpanded(true)}
               unappliedCount={unappliedCount}
               onSearch={canSearch ? handleSearch : undefined}

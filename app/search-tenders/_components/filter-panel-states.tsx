@@ -545,7 +545,29 @@ export function FilterPanelStates() {
 
       <Specimen
         title='Collapsed — applied search'
-        description='The panel collapsed over an applied search, stating what it found.'
+        description='The panel collapsed over an applied search. The stage tabs and the country select collapsed with it, so the count line names both — these are the applied values, not whatever the panel is currently set to.'
+      >
+        <CollapsedFilterPanel
+          count={1234}
+          stageLabel='Active'
+          countryLabel='Portugal'
+        />
+      </Specimen>
+
+      <Specimen
+        title='Collapsed — one result, country taking an article'
+        description='Singular noun, and the country reading inside the sentence: "the United Kingdom", not "United Kingdom". The article lives on the COUNTRIES table in toolbar-row.tsx.'
+      >
+        <CollapsedFilterPanel
+          count={1}
+          stageLabel='Awarded'
+          countryLabel='the United Kingdom'
+        />
+      </Specimen>
+
+      <Specimen
+        title='Collapsed — no context'
+        description='No stage or country passed, so the line falls back to the bare "N tenders found" it used before.'
       >
         <CollapsedFilterPanel count={1234} />
       </Specimen>

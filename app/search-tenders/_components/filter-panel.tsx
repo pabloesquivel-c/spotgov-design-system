@@ -40,6 +40,33 @@ import * as Button from '@/components/ui/button';
 import type { MatchMode } from './filter-chips';
 import { ToolbarRow, type CountryCode, type Stage } from './toolbar-row';
 
+/** The muted half of the count line: "active tenders in Portugal", or a
+ * bare "tenders found" when the caller has no stage/country to name (the
+ * specimen tabs, mostly). Each half degrades on its own — a stage with no
+ * country still reads, and so does the reverse — so a caller that only
+ * knows one of them isn't forced back to the generic form.
+ *
+ * "found" survives only in that fallback. In the full sentence it was
+ * filler; what it was really carrying — that this describes a search
+ * already run, while the chips above show the one being edited — the
+ * applied stage and country now carry better. */
+function describeCount(
+  count: number,
+  stageLabel?: string,
+  countryLabel?: string,
+): string {
+  const noun = count === 1 ? 'tender' : 'tenders';
+
+  if (!stageLabel && !countryLabel) {
+    return `${noun} found`;
+  }
+
+  const stage = stageLabel ? `${stageLabel.toLowerCase()} ` : '';
+  const country = countryLabel ? ` in ${countryLabel}` : '';
+
+  return `${stage}${noun}${country}`;
+}
+
 /**
  * Collapsed panel: node 2585:23754 "Popover / Search filters — Collapsed".
  * A different shape from the expanded panel, not a variant of it — a
@@ -92,6 +119,15 @@ export const CollapsedFilterPanel = React.forwardRef<
      * preventing a jarring swap, not the phrase-to-phrase pacing crossfade
      * the indicator's own text may use internally). */
     loadingIndicator?: React.ReactNode;
+    /** Stage and country of the search that produced `count`, already
+     * formatted — "active", "the United Kingdom". The collapsed bar hides
+     * the stage tabs and the country select, so without these the count is
+     * a number with nothing saying what it counted. Strings rather than the
+     * Stage/CountryCode enums so this stays presentational; pass the
+     * *applied* values, never the pending ones, or the line describes a
+     * search that hasn't run. Omit both for the bare "N tenders found". */
+    stageLabel?: string;
+    countryLabel?: string;
   }
 >(function CollapsedFilterPanel(
   {
@@ -101,6 +137,8 @@ export const CollapsedFilterPanel = React.forwardRef<
     onSearch,
     isSearching,
     loadingIndicator,
+    stageLabel,
+    countryLabel,
   },
   ref,
 ) {
@@ -129,7 +167,7 @@ export const CollapsedFilterPanel = React.forwardRef<
             <>
               {count.toLocaleString('en-US')}{' '}
               <span className='text-text-sub-600'>
-                {count === 1 ? 'tender' : 'tenders'} found
+                {describeCount(count, stageLabel, countryLabel)}
               </span>
             </>
           )}

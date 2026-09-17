@@ -54,6 +54,10 @@ You're a construction firm in Portugal looking for work over €150k.
      **"Almost there…"** at 3s,
    - at 4.5s the skeletons clear and the toolbar + 6 cards cascade up
      together.
+
+   The collapsed bar now reads **"6 active tenders in Portugal"** — the
+   stage tabs and the country select collapsed with the panel, so it names
+   what actually ran. Worth a beat on camera.
 6. **Sort by → Closest deadline.** Instant reorder; the red *Closes today*
    card jumps to the top.
 7. Click the **bookmark** on a card → success toast with **Undo**. Let it
