@@ -413,7 +413,7 @@ function FilterPanelToggle() {
       <AccordionRow open={!isExpanded}>
         <CollapsedFilterPanel
           ref={editSearchRef}
-          summary='Escola'
+          count={1234}
           onEditSearch={() => setIsExpanded(true)}
         />
       </AccordionRow>
@@ -537,17 +537,17 @@ export function FilterPanelStates() {
       </Specimen>
 
       <Specimen
-        title='Collapsed — placeholder'
-        description='The panel collapsed with no applied search to summarize.'
+        title='Collapsed — no count'
+        description='The panel collapsed before any search has run, so there is no result count to state yet.'
       >
         <CollapsedFilterPanel />
       </Specimen>
 
       <Specimen
         title='Collapsed — applied search'
-        description='The panel collapsed with an applied search summarized in its place.'
+        description='The panel collapsed over an applied search, stating what it found.'
       >
-        <CollapsedFilterPanel summary='Escola' />
+        <CollapsedFilterPanel count={1234} />
       </Specimen>
     </div>
   );

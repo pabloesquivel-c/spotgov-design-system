@@ -77,7 +77,7 @@ import type { ForceStateId } from './flows';
 import type { KeywordTarget } from './keyword-target-picker';
 import { Orb } from './orb';
 import { PageHeader } from './page-header';
-import { ResultsSummary, type SortValue } from './results-summary';
+import { ResultsToolbar, type SortValue } from './results-toolbar';
 import shimmerStyles from './shimmer-text.module.css';
 import { COUNTRIES, STAGE_LABELS, type CountryCode, type Stage } from './toolbar-row';
 import {
@@ -1255,38 +1255,22 @@ function tenderMatchesRow(tender: MockTender, row: FilterRowState): boolean {
   return true;
 }
 
-/** Orb + status line + adaptive stagger — chosen after prototyping three
- * loading-pacing directions, then two status-line treatments (plain vs.
- * this one), on the "Loading pacing" specimen tab. `previousCount` sizes
+/** Adaptive stagger — chosen after prototyping three loading-pacing
+ * directions on the "Loading pacing" specimen tab. `previousCount` sizes
  * the skeleton to the last known result count (capped) rather than a fixed
  * number, so a 3-result search and a 480-result one don't show the same
- * three placeholder rows. `phraseIndex` drives the status line
- * (see usePhraseSequence above) — it steps through the sequence once and
- * holds on the last phrase, so a genuinely slow request reads as "almost
- * there" rather than restarting its own narration. The text shimmers
- * (`shimmerStyles.shimmer` folded into CrossfadeText's className — an
- * alpha mask, not a background-clip gradient, so it isn't fighting
- * `text-text-sub-600` for the `color` property) continuously, independent
- * of and on top of the crossfade that still plays on every phrase change. */
-function LoadingResults({
-  previousCount,
-  phraseIndex,
-}: {
-  previousCount: number;
-  phraseIndex: number;
-}) {
+ * three placeholder rows.
+ *
+ * The orb+status line that used to sit above these rows now lives one level
+ * up, in CollapsedFilterPanel's own count slot (see this file's
+ * `loadingIndicator` prop below) — one loading tell instead of this row
+ * plus a frozen, stale count above it. */
+function LoadingResults({ previousCount }: { previousCount: number }) {
   const visibleRows = Math.min(Math.max(previousCount, 1), SKELETON_MAX_VISIBLE_ROWS);
   const overflow = previousCount - visibleRows;
 
   return (
     <div className='flex flex-col gap-3'>
-      <div className='flex min-h-5 items-center gap-2 px-0.5'>
-        <Orb />
-        <CrossfadeText
-          text={STATUS_PHRASES[phraseIndex]}
-          className={cn('text-label-sm text-text-sub-600', shimmerStyles.shimmer)}
-        />
-      </div>
       {Array.from({ length: visibleRows }).map((_, i) => (
         <div
           key={i}
@@ -1487,9 +1471,13 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   const editSearchRef = React.useRef<HTMLButtonElement>(null);
   const isFirstPanelRender = React.useRef(true);
   // Snapshot of the result count from *before* the in-flight search — kept
-  // frozen for the entire loading + minimum-visible-duration window so the
-  // skeleton's row count can't jump right as `results` recomputes to the new
-  // (already-applied) count a beat before the floor timer lets it disappear.
+  // frozen for the entire loading + minimum-visible-duration window so
+  // neither the skeleton's row count nor the collapsed panel's "N tenders
+  // found" can jump right as `results` recomputes to the new
+  // (already-applied) value a beat before the floor timer lets the skeleton
+  // disappear. The collapsed bar stays on screen for the whole re-search, so
+  // without the freeze it would state the new count over rows that are
+  // still skeletons.
   const previousResultCountRef = React.useRef(0);
 
   // Mirrors the "Collapse ↔ Expand" specimen in filter-panel-states.tsx:
@@ -1994,106 +1982,121 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
   return (
     <div className='flex flex-col gap-6'>
       <div className='px-8'>
-        <PageHeader
-          views={views}
-          currentView={currentView}
-          onSelectView={handleSelectView}
-          viewSearch={viewSearch}
-          onViewSearchChange={setViewSearch}
-          hasUnsavedViewChanges={dirty}
-          onUpdateView={handleUpdateView}
-          onSaveAsNewView={handleSaveAsNewView}
-          onResetView={handleResetView}
-          onExport={handleExport}
-        />
+        <PageHeader />
       </div>
 
       <div className='flex flex-col gap-4 px-8'>
-        <AccordionRow open={isPanelExpanded}>
-          <FilterPanel
-            searchInputRef={searchInputRef}
-            onSearch={handleSearch}
-            onClearAll={handleClearAll}
-            searchDisabled={!canSearch}
-            isSearching={isSearching}
-            unappliedCount={unappliedCount}
-            onCollapse={() => setIsPanelExpanded(false)}
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            onSearchSubmit={canSearch ? handleSearch : undefined}
-            savedOnly={savedOnly}
-            onSavedOnlyChange={setSavedOnly}
-            stage={stage}
-            onStageChange={(next) => changeSearchContext({ stage: next })}
-            country={country}
-            onCountryChange={(next) => changeSearchContext({ country: next })}
-            matchMode={matchMode}
-            onMatchModeChange={setMatchMode}
-            isEmpty={rows.length === 0}
-            disableAddFilter={atStructuredCap || atTotalCap}
-            disableAddKeyword={atKeywordCap || atTotalCap}
-            onAddFilter={() => setRows((prev) => [...prev, createStructuredRow()])}
-            onAddKeyword={() => setRows((prev) => [...prev, createKeywordRow()])}
-            hint={
-              forceState === 'filter-error' || impossibleReason
-                ? {
-                    tone: 'error',
-                    message:
-                      impossibleReason ??
-                      'Base Price: the lower bound is above the upper bound, so this can never match.',
-                  }
-                : atTotalCap || atStructuredCap || atKeywordCap
+        {/* Both accordion rows share one wrapper with no gap of its own:
+            exactly one of them has height at any moment, and the other —
+            collapsed to 0fr — would otherwise still claim a gap-4 from the
+            parent column, padding the visible panel with a phantom 16px on
+            one side. Figma puts the page header 24px above this block and
+            the chip bar 16px below it, full stop. */}
+        <div>
+          <AccordionRow open={isPanelExpanded}>
+            <FilterPanel
+              searchInputRef={searchInputRef}
+              onSearch={handleSearch}
+              onClearAll={handleClearAll}
+              searchDisabled={!canSearch}
+              isSearching={isSearching}
+              unappliedCount={unappliedCount}
+              onCollapse={() => setIsPanelExpanded(false)}
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              onSearchSubmit={canSearch ? handleSearch : undefined}
+              savedOnly={savedOnly}
+              onSavedOnlyChange={setSavedOnly}
+              stage={stage}
+              onStageChange={(next) => changeSearchContext({ stage: next })}
+              country={country}
+              onCountryChange={(next) => changeSearchContext({ country: next })}
+              matchMode={matchMode}
+              onMatchModeChange={setMatchMode}
+              isEmpty={rows.length === 0}
+              disableAddFilter={atStructuredCap || atTotalCap}
+              disableAddKeyword={atKeywordCap || atTotalCap}
+              onAddFilter={() => setRows((prev) => [...prev, createStructuredRow()])}
+              onAddKeyword={() => setRows((prev) => [...prev, createKeywordRow()])}
+              hint={
+                forceState === 'filter-error' || impossibleReason
                   ? {
-                      tone: 'neutral',
-                      // Names which cap was actually hit — hitting the 7-
-                      // structured or 3-keyword sub-limit long before the
-                      // 10-total ceiling is the common case, and "up to 10
-                      // criteria" alone doesn't explain why just one of the
-                      // two Add buttons went gray.
-                      message: atTotalCap
-                        ? 'You’ve reached the 10-criteria limit for a search.'
-                        : atStructuredCap
-                          ? 'You’ve reached the limit of 7 structured filters. Remove one, or add a keyword instead.'
-                          : 'You’ve reached the limit of 3 keyword rows. Remove one, or add a filter instead.',
+                      tone: 'error',
+                      message:
+                        impossibleReason ??
+                        'Base Price: the lower bound is above the upper bound, so this can never match.',
                     }
-                  : undefined
-            }
-          >
-            {forceState === 'filter-error' ? (
-              <ErrorMockRows />
-            ) : (
-              <DynamicFilterRows
-                rows={rows}
-                onChange={setRows}
-                availableFields={availableFilterTypes(stage, country)}
-                matchMode={matchMode}
-                focusRowId={focusRowId}
-                onFocusRowHandled={() => setFocusRowId(undefined)}
-                openPickerRowId={openPickerRowId}
-                onOpenPickerHandled={handleOpenPickerHandled}
-              />
-            )}
-          </FilterPanel>
-        </AccordionRow>
+                  : atTotalCap || atStructuredCap || atKeywordCap
+                    ? {
+                        tone: 'neutral',
+                        // Names which cap was actually hit — hitting the 7-
+                        // structured or 3-keyword sub-limit long before the
+                        // 10-total ceiling is the common case, and "up to 10
+                        // criteria" alone doesn't explain why just one of the
+                        // two Add buttons went gray.
+                        message: atTotalCap
+                          ? 'You’ve reached the 10-criteria limit for a search.'
+                          : atStructuredCap
+                            ? 'You’ve reached the limit of 7 structured filters. Remove one, or add a keyword instead.'
+                            : 'You’ve reached the limit of 3 keyword rows. Remove one, or add a filter instead.',
+                      }
+                    : undefined
+              }
+            >
+              {forceState === 'filter-error' ? (
+                <ErrorMockRows />
+              ) : (
+                <DynamicFilterRows
+                  rows={rows}
+                  onChange={setRows}
+                  availableFields={availableFilterTypes(stage, country)}
+                  matchMode={matchMode}
+                  focusRowId={focusRowId}
+                  onFocusRowHandled={() => setFocusRowId(undefined)}
+                  openPickerRowId={openPickerRowId}
+                  onOpenPickerHandled={handleOpenPickerHandled}
+                />
+              )}
+            </FilterPanel>
+          </AccordionRow>
 
-        <AccordionRow open={!isPanelExpanded}>
-          <CollapsedFilterPanel
-            ref={editSearchRef}
-            summary={searchValue || undefined}
-            onEditSearch={() => setIsPanelExpanded(true)}
-            unappliedCount={unappliedCount}
-            onSearch={canSearch ? handleSearch : undefined}
-            isSearching={isSearching}
-          />
-        </AccordionRow>
+          <AccordionRow open={!isPanelExpanded}>
+            <CollapsedFilterPanel
+              ref={editSearchRef}
+              count={previousResultCountRef.current}
+              onEditSearch={() => setIsPanelExpanded(true)}
+              unappliedCount={unappliedCount}
+              onSearch={canSearch ? handleSearch : undefined}
+              isSearching={isSearching}
+              loadingIndicator={
+                // Tied to `showLoading` (the floored signal), same window
+                // the status line and skeleton stay on screen for — not the
+                // raw request state, so the count slot doesn't swap back a
+                // beat before the rest of the loading treatment clears.
+                showLoading ? (
+                  <div className='flex items-center gap-2'>
+                    <Orb />
+                    <CrossfadeText
+                      text={STATUS_PHRASES[phraseIndex]}
+                      className={cn(
+                        'text-label-md text-text-sub-600',
+                        shimmerStyles.shimmer,
+                      )}
+                    />
+                  </div>
+                ) : undefined
+              }
+            />
+          </AccordionRow>
+        </div>
 
         <FilterChips chips={chips} matchMode={matchMode} />
       </div>
 
-      {/* ResultsSummary lives with the cards it captions, not with the
-          panel above it — it's describing "5 active tenders..." for the
-          list right below, so proximity should point down, not up. Sharing
-          this group's gap-4 with the cards (was gap-3) also gives these
+      {/* The results toolbar lives with the cards it acts on, not with the
+          panel above it — sort, views and export all operate on the list
+          right below, so proximity should point down, not up. Sharing this
+          group's gap-4 with the cards (was gap-3) also gives these
           content-rich cards a touch more breathing room than a dense
           table row gets. */}
       <div className='flex flex-col gap-4 px-8 pb-8'>
@@ -2107,23 +2110,26 @@ export function RichStateFlow({ forceState }: { forceState: ForceStateId }) {
           // the skeleton's own established cadence (SKELETON_STAGGER_STEP_MS
           // / SKELETON_STAGGER_CAP below) rather than introducing a new one.
           <div className='motion-safe:animate-fade-in-up motion-reduce:animate-fade-in'>
-            <ResultsSummary
-              count={results.length}
-              stage={appliedStage}
-              country={COUNTRIES[appliedCountry].label}
+            <ResultsToolbar
               sort={sort}
               onSortChange={setSort}
               currentView={currentView}
               onExitView={handleExitView}
+              views={views}
+              onSelectView={handleSelectView}
+              viewSearch={viewSearch}
+              onViewSearchChange={setViewSearch}
+              hasUnsavedViewChanges={dirty}
+              onUpdateView={handleUpdateView}
+              onSaveAsNewView={handleSaveAsNewView}
+              onResetView={handleResetView}
+              onExport={handleExport}
             />
           </div>
         )}
 
         {showLoading ? (
-          <LoadingResults
-            previousCount={previousResultCountRef.current}
-            phraseIndex={phraseIndex}
-          />
+          <LoadingResults previousCount={previousResultCountRef.current} />
         ) : showNothingFound ? (
           <NothingFound stage={appliedStage} onClearAll={handleClearAll} />
         ) : (

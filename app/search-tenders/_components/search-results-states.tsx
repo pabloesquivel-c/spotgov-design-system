@@ -5,7 +5,7 @@
 
 import * as React from 'react';
 
-import { ResultsSummary } from './results-summary';
+import { ResultsToolbar } from './results-toolbar';
 import { Specimen } from './specimen';
 import {
   TenderResultCard,
@@ -33,10 +33,10 @@ export function SearchResultsStates() {
   return (
     <div className='flex flex-col gap-8'>
       <Specimen
-        title='Results header'
-        description='Running count + sort control, sitting between the applied-search summary and the result list. Interactive — try the sort dropdown.'
+        title='Results toolbar'
+        description='Sort on the left, Views and Export CSV on the right, sitting directly above the result list. Interactive — try the sort dropdown.'
       >
-        <ResultsSummary count={1234} stage='active' country='Portugal' />
+        <ResultsToolbar />
       </Specimen>
 
       <Specimen

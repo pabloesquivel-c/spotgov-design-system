@@ -2,7 +2,7 @@
 
 // The "Ready results" specimen tab: how the header + result cards land once
 // loading finishes. Replaced the previous hard, un-animated conditional
-// swap (`{showLoading ? null : <ResultsSummary .../>}` and a plain
+// swap (`{showLoading ? null : <ResultsToolbar .../>}` and a plain
 // `sortedResults.map(...)`) that read as a regression right after the
 // orb/shimmer loading sequence's own polish — an /animate escalation
 // trigger on its own ("everything-at-once entrance where a 30-80ms stagger
@@ -23,7 +23,7 @@ import * as React from 'react';
 import * as Button from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 import { Orb } from './orb';
-import { ResultsSummary } from './results-summary';
+import { ResultsToolbar } from './results-toolbar';
 import shimmerStyles from './shimmer-text.module.css';
 import { Specimen } from './specimen';
 import { TenderResultCard, type TenderResultCardProps } from './tender-result-card';
@@ -180,7 +180,7 @@ function MatchedStaggerDemo() {
               className='motion-safe:animate-fade-in-up motion-reduce:animate-fade-in'
               style={{ animationDelay: '0ms' }}
             >
-              <ResultsSummary count={MOCK_RESULTS.length} stage='active' country='Portugal' />
+              <ResultsToolbar />
             </div>
             <div className='flex flex-col gap-3'>
               {MOCK_RESULTS.map((card, i) => (

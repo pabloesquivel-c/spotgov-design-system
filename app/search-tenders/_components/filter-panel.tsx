@@ -34,7 +34,6 @@ import {
   RiInformationFill,
   RiListCheck3,
   RiLoader2Line,
-  RiSearch2Line,
 } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
@@ -42,19 +41,40 @@ import type { MatchMode } from './filter-chips';
 import { ToolbarRow, type CountryCode, type Stage } from './toolbar-row';
 
 /**
- * Collapsed panel: node 2464:48024 "Popover / Search filters — Collapsed".
+ * Collapsed panel: node 2585:23754 "Popover / Search filters — Collapsed".
  * A different shape from the expanded panel, not a variant of it — a
- * single-line bar with a plain search icon + a summary/placeholder in place
- * of the real input, and one action to reopen the full form. Presentational
- * only: this doesn't decide when the form collapses, it just renders the
- * collapsed state once something else says to.
+ * single-line bar stating what the applied search found, plus one action to
+ * reopen the full form. Presentational only: this doesn't decide when the
+ * form collapses, it just renders the collapsed state once something else
+ * says to.
+ *
+ * The count moved here from the results toolbar below. It reads as the
+ * outcome of the search that's collapsed into this bar ("this is what that
+ * search returned") rather than as a caption on the list.
+ *
+ * While a re-search is in flight, `loadingIndicator` takes this slot instead
+ * of the frozen previous count — a stale-but-real-looking number read as
+ * already correct, then hard-swapped, which is worse than admitting the
+ * count isn't known yet. It also folds what used to be a second,
+ * uncoordinated loading tell (an orb+status row under this bar) into the one
+ * place already announcing "still working."
+ *
+ * pl-5/pr-4, not an even padding: Figma (node 2603:28006) gives the text
+ * side more room than the button side — the count text is sharp-edged and
+ * sits flush in its own box, while Edit Search is a rounded, filled shape
+ * whose corner radius already recedes its visual mass inward, so equal
+ * geometric padding reads as tighter on the text side.
+ *
+ * rounded-xl (12px), not the expanded panel's rounded-20: Figma matches this
+ * bar to the tender cards below it, which use the same 12px radius — a
+ * collapsed search reads as one more row in that stack.
  */
 export const CollapsedFilterPanel = React.forwardRef<
   HTMLButtonElement,
   {
-    /** What the search input showed before collapsing, e.g. the applied
-     * query. Falls back to the input's own placeholder when there is none. */
-    summary?: string;
+    /** How many tenders the applied search returned. Omit to render the bar
+     * with no count, as the static specimens do. */
+    count?: number;
     onEditSearch?: () => void;
     /** Pending edits made while collapsed. The chip bar below this panel is
      * live in both states, so a condition can be removed with the full form
@@ -63,20 +83,70 @@ export const CollapsedFilterPanel = React.forwardRef<
     unappliedCount?: number;
     onSearch?: () => void;
     isSearching?: boolean;
+    /** Renders in place of the count whenever passed — the orb+status
+     * line from the real flow's loading state, handed in rather than owned
+     * here so this component stays presentational. One signal, not two:
+     * this replaces the count line instead of sitting in a second row below
+     * it.
+     * 220ms ease-out blur crossfade between the two (state indication /
+     * preventing a jarring swap, not the phrase-to-phrase pacing crossfade
+     * the indicator's own text may use internally). */
+    loadingIndicator?: React.ReactNode;
   }
 >(function CollapsedFilterPanel(
-  { summary = 'Search...', onEditSearch, unappliedCount = 0, onSearch, isSearching },
+  {
+    count,
+    onEditSearch,
+    unappliedCount = 0,
+    onSearch,
+    isSearching,
+    loadingIndicator,
+  },
   ref,
 ) {
   const showSearch = unappliedCount > 0 && Boolean(onSearch);
+  // Callers hand in `loadingIndicator` only for the window it should be
+  // shown (see rich-state-flow.tsx — keyed to the floored `showLoading`
+  // signal, not raw `isSearching`, so this doesn't swap back a beat before
+  // the skeleton/status line clear), so presence alone gates the swap.
+  const showLoadingIndicator = Boolean(loadingIndicator);
 
   return (
-    <div className='flex min-w-0 items-start justify-between gap-2 rounded-20 border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs'>
-      <div className='flex min-w-0 flex-1 items-center gap-2 p-2'>
-        <RiSearch2Line className='size-5 shrink-0 text-text-sub-600' />
-        <span className='min-w-0 flex-1 truncate whitespace-nowrap text-paragraph-sm text-text-sub-600'>
-          {summary}
-        </span>
+    <div className='flex min-w-0 items-center justify-between gap-2 rounded-xl border border-stroke-soft-200 bg-bg-white-0 py-4 pl-5 pr-4 shadow-regular-xs'>
+      <div className='grid min-w-0 flex-1 items-center'>
+        <p
+          className='col-start-1 row-start-1 min-w-0 truncate text-label-md text-text-sub-600 transition-[opacity,filter] duration-[220ms] ease-out motion-reduce:transition-none'
+          style={
+            showLoadingIndicator
+              ? { opacity: 0, filter: 'blur(2px)' }
+              : { opacity: 1, filter: 'blur(0px)' }
+          }
+          aria-hidden={showLoadingIndicator}
+        >
+          {count === undefined ? (
+            'Search filters'
+          ) : (
+            <>
+              {count.toLocaleString('en-US')}{' '}
+              <span className='text-text-soft-400'>
+                {count === 1 ? 'tender' : 'tenders'} found
+              </span>
+            </>
+          )}
+        </p>
+        {loadingIndicator ? (
+          <div
+            className='col-start-1 row-start-1 flex min-w-0 items-center transition-[opacity,filter] duration-[220ms] ease-out motion-reduce:transition-none'
+            style={
+              showLoadingIndicator
+                ? { opacity: 1, filter: 'blur(0px)' }
+                : { opacity: 0, filter: 'blur(2px)', pointerEvents: 'none' }
+            }
+            aria-hidden={!showLoadingIndicator}
+          >
+            {loadingIndicator}
+          </div>
+        ) : null}
       </div>
 
       <div className='flex shrink-0 items-center gap-4'>
@@ -91,7 +161,7 @@ export const CollapsedFilterPanel = React.forwardRef<
         <Button.Root
           ref={ref}
           variant='neutral'
-          mode='stroke'
+          mode='filled'
           size='small'
           className='h-9 shrink-0'
           onClick={onEditSearch}
@@ -162,7 +232,16 @@ export function AccordionRow({
   return (
     <div
       className={
-        'grid motion-reduce:transition-none' + (animate ? '' : ' transition-none')
+        // `!` on the motion-reduce variant, not on the inner opacity row's:
+        // this row's transition is an inline style (it interpolates GRID_MS
+        // and GRID_EASE), and a plain utility class loses to inline styles,
+        // so the reduced-motion opt-out this line already declares was never
+        // actually taking effect. `!important` from a stylesheet does beat a
+        // non-important inline style. The inner row sets only
+        // `transition-duration` inline and gets its property from a class,
+        // so its own `motion-reduce:transition-none` already wins outright.
+        'grid motion-reduce:!transition-none' +
+        (animate ? '' : ' transition-none')
       }
       style={{
         gridTemplateRows: open ? '1fr' : '0fr',
@@ -190,7 +269,7 @@ export function AccordionRow({
 
 function EmptyFilters() {
   return (
-    <div className='flex h-[200px] w-full flex-col items-center justify-center gap-3'>
+    <div className='flex h-[150px] w-full flex-col items-center justify-center gap-3'>
       <div className='flex size-10 shrink-0 items-center justify-center rounded-full border border-stroke-soft-200 shadow-regular-xs'>
         <RiListCheck3 className='size-5 text-text-sub-600' />
       </div>

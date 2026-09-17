@@ -32,7 +32,7 @@ import { LoadingPacing } from './_components/loading-pacing';
 import { ReadyResults } from './_components/ready-results';
 import { ModalStates } from './_components/modal-states';
 import { PageHeader } from './_components/page-header';
-import { ResultsSummary } from './_components/results-summary';
+import { ResultsToolbar } from './_components/results-toolbar';
 import { SearchResultsStates } from './_components/search-results-states';
 import { DEFAULT_STATE, STATE_IDS, type StateId } from './_components/states';
 import { ToastStates } from './_components/toast-states';
@@ -159,7 +159,7 @@ function SearchTendersScreen({ state: _state }: { state: StateId }) {
 
         <FilterChips chips={WRAPPING_CHIPS} matchMode={matchMode} />
 
-        <ResultsSummary count={1234} stage='active' country='Portugal' />
+        <ResultsToolbar />
       </div>
     </div>
   );

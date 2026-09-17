@@ -1,105 +1,22 @@
-'use client';
-
-// Page header. Figma: node 2541:4446 "Page Header [1.1]".
-// Title/subtitle + Views (stroke) and Export (filled) actions. No divider,
-// no side padding — the header bleeds edge-to-edge; callers own outer
-// spacing.
+// Page header. Figma: node 2586:23831 "Page Header [1.1]".
+// Title + subtitle only — no actions, no divider, no side padding. The
+// header bleeds edge-to-edge; callers own outer spacing.
 //
-// Views is real when a caller passes `views` — it opens the same
-// ViewsPicker used in the Modals specimen tab, wired to select/search/save.
-// Selecting a view, updating it, or saving as new all close the popover
-// (decisive actions); Reset doesn't, so you can keep adjusting. Omit
-// `views` to keep the button decorative, as every other PageHeader call
-// site still does.
+// Views and Export CSV used to live here. They moved down to the results
+// toolbar (results-toolbar.tsx), beside Sort — all three act on the result
+// list, so they belong on the shelf that captions it rather than on the
+// page title. That leaves this a pure heading, with no client state left
+// to hold, hence no 'use client'.
 
-import * as React from 'react';
-import { RiExportLine, RiStackLine } from '@remixicon/react';
-
-import * as Button from '@/components/ui/button';
-import * as Popover from '@/components/ui/popover';
-import { ViewsPicker } from './views-picker';
-
-export function PageHeader({
-  views,
-  currentView,
-  onSelectView,
-  viewSearch,
-  onViewSearchChange,
-  hasUnsavedViewChanges,
-  onUpdateView,
-  onSaveAsNewView,
-  onResetView,
-  onExport,
-}: {
-  views?: string[];
-  currentView?: string;
-  onSelectView?: (view: string) => void;
-  viewSearch?: string;
-  onViewSearchChange?: (value: string) => void;
-  hasUnsavedViewChanges?: boolean;
-  onUpdateView?: () => void;
-  onSaveAsNewView?: (name: string) => void;
-  onResetView?: () => void;
-  onExport?: () => void;
-}) {
-  const [viewsOpen, setViewsOpen] = React.useState(false);
-
-  const viewsButton = (
-    <Button.Root variant='neutral' mode='stroke' size='small'>
-      <Button.Icon as={RiStackLine} />
-      Views
-    </Button.Root>
-  );
-
+export function PageHeader() {
   return (
     <div className='flex items-center gap-3 py-5'>
       <div className='flex flex-1 flex-col gap-1'>
         <p className='text-label-lg text-text-strong-950'>Search Tenders</p>
         <p className='text-paragraph-sm text-text-sub-600'>
-          Every tender, at every stage of its life.
+          Find any tender, at any stage, and narrow thousands of results to the
+          ones worth your time.
         </p>
-      </div>
-
-      <div className='flex shrink-0 items-center gap-3'>
-        {views ? (
-          <Popover.Root open={viewsOpen} onOpenChange={setViewsOpen}>
-            <Popover.Trigger asChild>{viewsButton}</Popover.Trigger>
-            <Popover.Content align='end' unstyled showArrow={false}>
-              <ViewsPicker
-                views={views}
-                current={currentView}
-                onSelectView={(view) => {
-                  onSelectView?.(view);
-                  setViewsOpen(false);
-                }}
-                searchValue={viewSearch}
-                onSearchChange={onViewSearchChange}
-                hasUnsavedChanges={hasUnsavedViewChanges}
-                onUpdateView={() => {
-                  onUpdateView?.();
-                  setViewsOpen(false);
-                }}
-                onSaveAsNewView={(name) => {
-                  onSaveAsNewView?.(name);
-                  setViewsOpen(false);
-                }}
-                onReset={onResetView}
-              />
-            </Popover.Content>
-          </Popover.Root>
-        ) : (
-          viewsButton
-        )}
-
-        <Button.Root
-          variant='neutral'
-          mode='filled'
-          size='small'
-          onClick={onExport}
-        >
-          <Button.Icon as={RiExportLine} />
-          Export
-        </Button.Root>
       </div>
     </div>
   );

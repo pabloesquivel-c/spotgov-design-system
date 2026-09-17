@@ -1,10 +1,13 @@
 'use client';
 
 // Tender Result card: one row in the Search Tenders results list. Figma:
-// node 2508:22253 "Tender Result Redesigned" (current layout — base value
+// node 2602:27893 "Tender Result Redesigned" (current layout — base value
 // and a deadline-status pill promoted to their own top-right column, a
-// smaller icon+label Save button below them, tighter card padding, wider
-// meta-tag spacing), 2495:21275 "+3 more filters" (matched-filter
+// smaller icon+label Save button below them, uniform 16px card padding,
+// wider meta-tag spacing), 2602:27917 (base value drops its stroke and fill,
+// with even 6px side padding — unlike every other meta tag's bordered,
+// asymmetric shell), 2602:27918 (Save button's shorter
+// px-1.5/py-1 padding), 2495:21275 "+3 more filters" (matched-filter
 // overflow).
 //
 // The "Matched keyword" meta tag is the same signal the keyword-match
@@ -214,6 +217,11 @@ type BorderedMetaTagProps = {
   // rather than pulling in a per-country flag asset.
   icon?: React.ElementType;
   flag?: string;
+  // Base value (Figma node 2602:27917) drops the stroke every other meta
+  // tag keeps — it sits beside the deadline-status pill in its own
+  // top-right column rather than in the shared meta-tag row, so it reads as
+  // that column's plain second line rather than one more bordered chip.
+  bordered?: boolean;
 };
 
 // Figma: 2519:22873 (location, flag), 2519:22896 (procedure type — this
@@ -226,9 +234,21 @@ function BorderedMetaTag({
   fieldLabel,
   value,
   showFieldLabel,
+  bordered = true,
 }: BorderedMetaTagProps) {
   return (
-    <div className='flex shrink-0 items-center gap-1 rounded-md border border-stroke-soft-200 bg-bg-white-0 py-1 pl-1 pr-2'>
+    <div
+      className={cn(
+        'flex shrink-0 items-center gap-1 rounded-md py-1',
+        bordered
+          ? 'border border-stroke-soft-200 bg-bg-white-0 pl-1 pr-2'
+          // Base value (the only unbordered caller, Figma node 2602:27917):
+          // no fill, and even 6px side padding rather than the bordered
+          // tags' asymmetric pl-1/pr-2 (theirs compensates for a border and
+          // icon inset this one doesn't have).
+          : 'px-1.5',
+      )}
+    >
       {flag ? (
         <span className='flex size-4 shrink-0 items-center justify-center text-[13px] leading-none'>
           {flag}
@@ -301,18 +321,27 @@ export function TenderResultCard({
 
   return (
     // Hover-only affordance for the side drawer this card will open — no
-    // click handler yet. Flat bg tint + dropped border/shadow, same
-    // "clickable card" treatment as hr-modules-checkbox.tsx and
-    // selectable-radio/checkbox-cards.tsx: a list row reads as clickable
-    // by tinting in place, not rising off the page (how Notion/Linear
-    // rows do it too).
+    // click handler yet.
     //
     // :hover bubbles, so hovering Save/"+N more filters"/the keyword tag
-    // would tint the card *and* highlight the button at once — two
-    // hovers reading as one blurry one. :not(:has(button:hover)) drops
-    // the card's own hover the moment a nested button is the real
+    // would trigger the card's own hover *and* highlight the button at
+    // once — two hovers reading as one blurry one. :not(:has(button:hover))
+    // drops the card's own hover the moment a nested button is the real
     // target, so only that button's hover shows.
-    <div className='flex w-full cursor-pointer flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 px-3 pb-3 pt-2.5 shadow-regular-xs transition-[background-color,box-shadow,border-color] duration-150 ease [&:hover:not(:has(button:hover))]:border-transparent [&:hover:not(:has(button:hover))]:bg-bg-weak-50 [&:hover:not(:has(button:hover))]:shadow-none'>
+    //
+    // border-color only, never a bg fill: this row is scanned tens of
+    // times a session (list hover), so per /animate's frequency gate the
+    // treatment stays near-imperceptible — and a grey fill also broke
+    // visually against the nested white bordered tags, white Save button,
+    // and colored deadline pill, which all assumed a white card underneath
+    // them. Picked over two other border-based directions (a lift shadow,
+    // an inset ring) on the "Results hover state" specimen tab — this one
+    // was the decision, the other two were torn down rather than left to
+    // go stale, same precedent as "Ready results"/"Loading pacing".
+    // 150ms `ease` (hover/color change, not an entrance/exit) —
+    // border-color is a paint-only property, the accepted exception to
+    // transform/opacity-only for a static row hover like this one.
+    <div className='flex w-full cursor-pointer flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-regular-xs transition-[border-color] duration-150 ease [&:hover:not(:has(button:hover))]:border-stroke-sub-300'>
       <div className='flex w-full items-start gap-4'>
         <div className='flex min-w-0 flex-1 flex-col gap-3'>
           <div className='flex flex-col gap-2'>
@@ -417,16 +446,12 @@ export function TenderResultCard({
         </div>
 
         <div
-          className={cn(
-            'flex shrink-0 flex-col items-end self-stretch',
-            // A card with no matched filters has a shorter left column (no
-            // badges row). Stretching this column to match via
-            // justify-between would leave the Save button stranded far
-            // below the value/status block — a layout jump for what's
-            // otherwise the same card. Fixed 12px spacing instead keeps it
-            // compact when there's nothing pushing it down.
-            hasMatchedFilters ? 'justify-between' : 'justify-start gap-3',
-          )}
+          // Figma (node 2602:27914): Save always pins to the card's bottom
+          // edge, with or without a matched-filters row — self-stretch +
+          // justify-between unconditionally, so this column always spans
+          // the card's full height rather than shrinking to its own content
+          // when there's no badges row to stretch against.
+          className='flex shrink-0 flex-col items-end justify-between self-stretch'
         >
           <div className='flex items-center justify-end gap-1'>
             <DeadlineStatusPill status={deadlineStatus} />
@@ -435,6 +460,7 @@ export function TenderResultCard({
               fieldLabel='Base value'
               value={baseValue}
               showFieldLabel={showFieldLabels}
+              bordered={false}
             />
           </div>
 
@@ -443,7 +469,7 @@ export function TenderResultCard({
             onClick={onToggleSave}
             aria-pressed={saved}
             aria-label={saved ? 'Remove from saved' : 'Save tender'}
-            className='flex items-center gap-0.5 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-1.5 shadow-regular-xs transition hover:bg-bg-weak-50'
+            className='flex items-center gap-0.5 rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-1.5 py-1 shadow-regular-xs transition hover:bg-bg-weak-50'
           >
             {saved ? (
               <RiBookmarkFill className='size-5 text-text-sub-600' />
