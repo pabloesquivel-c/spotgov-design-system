@@ -34,6 +34,10 @@ When reviewing a new component, check it against the row that matches its job. F
 - Use existing button focus shadows: `shadow-button-primary-focus`, `shadow-button-important-focus`, and `shadow-button-error-focus`.
 - Prefer `primary-base` for action focus and `stroke-strong-950` for neutral focus.
 - Do not remove outlines unless an equal or stronger focus indicator replaces them.
+- Inside composite widgets (list items, menu and command items, nav items, cards, table rows) the focus indicator is a background fill, not a ring. This is the replacement the rule above asks for: `data-[highlighted]:bg-bg-weak-50` in `Dropdown` and `Select`, `data-[selected=true]:bg-bg-weak-50` in `CommandMenu`, `focus-visible:bg-bg-weak-50` in `side-navbar.tsx`. Pair the fill with the item's active text color where the item has one (`text-text-strong-950`).
+- Standalone controls keep the ring or shadow above: text inputs, select triggers, buttons, compact buttons, links, checkboxes, switches.
+- Where focus and selection can show at once (a selected option while arrowing through a list), selection also carries a non-color cue, such as a check icon or the active text color, so the two never read the same.
+- Hover-revealed content (tooltips, row actions) also appears on keyboard focus (`group-focus-within`), and icon-only triggers keep their `aria-label`.
 
 ## Status and color
 
@@ -69,8 +73,8 @@ Use Remix Icon Line icons only. Keep status icons at `size-4` (inline/dense cont
 
 ### Motion
 
-- Keep transitions short and functional.
-- Respect `prefers-reduced-motion` when adding non-essential animation.
+- Keep transitions short and functional. Durations and curves: [`design-system.md`](./design-system.md) §3.5.
+- Respect `prefers-reduced-motion` when adding non-essential animation: `motion-safe:` for movement, `motion-reduce:` fallback to opacity only or `transition-none`.
 
 ## Layout readability
 

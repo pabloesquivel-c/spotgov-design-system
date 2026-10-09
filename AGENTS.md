@@ -129,6 +129,11 @@ If these conflict with code, prefer existing production code and mention the mis
 - Hierarchy should come from spacing, typography, and layout before color
 - Keep copy short and product-native
 - Every interactive element needs hover, focus, active, disabled states where applicable
+- One hover target at a time: hovering a nested button clears the parent row or card's hover ([`docs/design-system.md`](docs/design-system.md) §9)
+- Focus and selection inside lists, menus, cards, and rows use a background fill, not a blue or black border; standalone controls keep their focus ring ([`docs/accessibility.md`](docs/accessibility.md))
+- Motion is quick ease-out with no bounce or overshoot, Linear and Notion as the reference, and respects `prefers-reduced-motion` ([`docs/design-system.md`](docs/design-system.md) §3.5)
+- Tooltips and hover-revealed actions appear after a short delay, never instantly; tooltips only on icon-only controls (§9)
+- Never add variants, types, or states that are not in the spec or Figma node; ask instead
 
 ## Non-negotiables
 

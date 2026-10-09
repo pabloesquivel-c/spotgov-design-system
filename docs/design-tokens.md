@@ -60,7 +60,7 @@ Use AlignUI's **semantic** token roles. Do not hardcode hex values or pick raw p
 |-----------|--------------------|
 | **1.4.3 Contrast (Minimum)** | 12–14px readable text uses `text-text-sub-600` or stronger on `bg-bg-white-0`. |
 | **1.4.1 Use of Color** | Status, validation, and alerts pair semantic color with text plus an icon or shape. |
-| **2.4.7 Focus Visible** | Interactive primitives keep a visible `focus-visible` ring or shadow. |
+| **2.4.7 Focus Visible** | Interactive primitives keep a visible `focus-visible` ring or shadow; items inside lists, menus, cards, and rows use a background fill instead. |
 | **2.1.1 Keyboard** | Menus, dialogs, dropdowns, form controls, and primary flows remain keyboard operable. |
 | **3.3.x Forms and Errors** | Labels, helper text, error text, and recovery guidance are part of form patterns. |
 | **4.1.2 Name, Role, Value** | Icon-only actions, custom controls, and status components expose names and states. |
@@ -78,7 +78,7 @@ Use AlignUI's **semantic** token roles. Do not hardcode hex values or pick raw p
 
 ### Focus
 
-Every interactive element must have a visible `focus-visible` state. Use the existing focus shadows (`shadow-button-primary-focus`, `shadow-button-important-focus`, `shadow-button-error-focus`) and pair focus rings with `primary-base` or `stroke-strong-950` depending on variant. Never remove outlines without replacing them.
+Every interactive element must have a visible `focus-visible` state. Use the existing focus shadows (`shadow-button-primary-focus`, `shadow-button-important-focus`, `shadow-button-error-focus`) and pair focus rings with `primary-base` or `stroke-strong-950` depending on variant. Never remove outlines without replacing them. Items inside composite widgets (list, menu, and nav items, cards, rows) replace the ring with a background fill; see [`accessibility.md`](./accessibility.md#keyboard-focus).
 
 ---
 
