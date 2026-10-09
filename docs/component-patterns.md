@@ -264,10 +264,12 @@ For each pattern document:
 
 **States**
 - Default, loading skeleton (preserve column layout), empty, error, selected rows, sorted column, disabled row actions
+- Selected and keyboard-focused rows use a background fill, not a border or outline; hovering a row action clears the row's own hover. Rules: `design-system.md` §9 Interaction rules
 
 **Accessibility**
 - `aria-label` on select-all and row checkboxes (`createSelectColumn` in `table-shared.tsx`)
 - Sort buttons keyboard operable; status uses text + icon
+- Row actions revealed on hover (after a short delay) also show on keyboard focus within the row
 - 12–14px metadata: `text-text-sub-600` minimum on white
 
 **Copy rules**
@@ -289,6 +291,8 @@ For each pattern document:
 - Loading spinner that collapses table layout
 - Generous row padding that wastes tender/procurement viewport
 - Decorative icons per row without meaning
+- Blue or black outline on a selected or focused row
+- Row and nested button showing hover at the same time
 
 ---
 

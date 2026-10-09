@@ -13,6 +13,8 @@ npm run format:write
 npm run generate:manifest   # refresh docs/component-manifest.md after adding components
 ```
 
+**Conductor:** `.conductor/settings.toml` runs `npm install` on workspace setup and adds run scripts for dev, Storybook, and checks (typecheck, lint, `verify:agent-context`) on the workspace's `$CONDUCTOR_PORT`, plus preview links for `/playground`, `/search-tenders`, and Storybook. Nothing to configure.
+
 If Storybook shows **“Failed to fetch dynamically imported module”**, clear the cache and restart:
 
 ```bash

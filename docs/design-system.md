@@ -157,7 +157,12 @@ Larger `title-h1`–`h5`, `doc-*`, and `subheading-*` utilities are for marketin
 | `shadow-regular-xs` | Resting inputs, cards, compact buttons |
 | `shadow-regular-md` | Float: dropdown, modal, drawer, popover, filter panel |
 
-**Motion:** `transition duration-200 ease-out` (AlignUI default on interactives).
+**Motion:** quick and calm; Linear and Notion are the reference. No bounce, spring, or overshoot in this enterprise product.
+
+- Interactives (hover, color, focus): `transition duration-200 ease-out` (AlignUI default).
+- Entrances: reuse `animate-fade-in-up` / `animate-fade-in` (320ms ease-out curve in `tailwind.config.ts`) before adding keyframes.
+- Ease-out curves only: no `animate-bounce`, no `cubic-bezier` control point above 1.
+- Respect `prefers-reduced-motion`: put movement behind `motion-safe:` with a `motion-reduce:` fallback (opacity only or `transition-none`), as in `app/search-tenders/_components/ready-results.tsx`.
 
 ---
 
@@ -313,7 +318,7 @@ Storybook: `UI/<Name>`. Import: `@/components/ui/<file>`.
 | `table` | Data grid | Card list for 20+ cols | `table.tsx`, `table-shared.tsx` |
 | `tag` | Removable label | Status | stories |
 | `textarea` | Multi-line text | Single-line | stories |
-| `tooltip` | Hover/focus supplement | Required instructions | `blocks/tooltip/*` |
+| `tooltip` | Name an icon-only control (see §9) | Labelled buttons, body text, required instructions | `blocks/tooltip/*` |
 | `vertical-stepper` | Vertical wizard | — | stories |
 
 ---
@@ -677,13 +682,22 @@ Import paths and child patterns: copy remaining markup from the canonical block 
 | State | Requirement |
 |-------|-------------|
 | Default | Semantic tokens from §3 |
-| Hover | Token step (e.g. `hover:bg-primary-darker`, `hover:bg-bg-weak-50`) |
+| Hover | Token step (e.g. `hover:bg-primary-darker`, `hover:bg-bg-weak-50`); one hover target at a time |
 | Active/pressed | Stronger step (`active:bg-primary-dark`) |
-| Focus-visible | Button shadows or `focus-visible:bg-bg-strong-950` on compact buttons — never omit |
+| Focus-visible | Standalone controls: button shadows or `focus-visible:bg-bg-strong-950` on compact buttons. Items inside lists, menus, cards, rows: background fill (below). Never omit |
+| Selected | Items inside lists, menus, cards, rows: background fill plus a non-color cue (check icon, active text color). No blue or black border |
 | Disabled | Native `disabled`; `text-text-disabled-300`; `pointer-events-none` |
 | Loading | `aria-busy`; spinner; stable width; block double submit |
 | Error | `Hint hasError` or `Alert status="error"` + readable text |
 | Empty | `EmptyState` in `components/blocks/empty-state/empty-state.tsx` |
+
+### Interaction rules
+
+- **One hover target at a time.** When a nested interactive (button inside a row or card) is hovered, the parent drops its hover state. Use `[&:hover:not(:has(button:hover))]:…` on the parent, as in `app/search-tenders/_components/tender-result-card.tsx`.
+- **Fill, not outline, inside composite widgets.** Keyboard focus and selection on list items, menu items, command items, nav items, cards, and rows use a background fill (`bg-bg-weak-50`, the step the primitives ship: `Dropdown`, `Select` items, `CommandMenu`, `TabMenuVertical`, `side-navbar.tsx`). No blue or black border, ring, or outline on these items. Standalone controls (text inputs, select triggers, buttons, compact buttons, links, checkboxes, switches) keep their existing focus ring or shadow. See [`accessibility.md`](./accessibility.md#keyboard-focus).
+- **Hover-revealed UI waits.** Tooltips and hover-revealed row actions appear after a short delay, never instantly. For tooltips, keep the Radix default from the root `TooltipProvider` in `app/layout.tsx`; do not set `delayDuration={0}`. Anything revealed on hover also reveals on keyboard focus.
+- **Tooltips on icon-only controls only.** The tooltip repeats the control's `aria-label`. Two documented exceptions: the full value of truncated text ([`screen-composition.md`](./screen-composition.md)), and the reason a control is disabled or locked (`app/search-tenders/_components/toolbar-row.tsx`).
+- **No invented variants.** Do not add variants, types, sizes, or product states that are not in the spec or Figma node. If one seems missing, ask. The interaction states in the table above still apply.
 
 **Upload file states:** `file-upload-status-cards.tsx` — `RiLoader2Line animate-spin`, `RiCheckboxCircleLine`, `RiErrorWarningLine`.
 
@@ -792,6 +806,7 @@ New icons: add via PR and extend grep list. No `*Fill`. No AlignUI Figma custom 
 - Use color-only status or validation.
 - Build settings as `TableBlock`, `FilterPanelShell`, or full-page `Drawer`.
 - Ship dark/system theme controls (light-only product; drawer theme block is demo-only).
+- Add variants, types, sizes, or states that are not in the spec or Figma node (§9).
 
 ---
 

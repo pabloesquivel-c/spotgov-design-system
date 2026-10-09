@@ -1,0 +1,26 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+preview_urls = [
+  { name = "playground", url = "http://localhost:$CONDUCTOR_PORT/playground" },
+  { name = "search tenders", url = "http://localhost:$CONDUCTOR_PORT/search-tenders" },
+  { name = "storybook", url = "http://localhost:$((CONDUCTOR_PORT + 1))" },
+]
+
+[scripts]
+setup = "npm install --prefer-offline --no-audit --no-fund"
+run_mode = "concurrent"
+
+[scripts.run.dev]
+available_in = [ "local" ]
+command = "npm run dev -- --port $CONDUCTOR_PORT"
+default = true
+icon = "play"
+
+[scripts.run.storybook]
+available_in = [ "local" ]
+command = "npm run storybook -- -p $((CONDUCTOR_PORT + 1)) --no-open"
+icon = "book-open"
+
+[scripts.run.check]
+command = "npx tsc --noEmit && npm run lint && npm run verify:agent-context"
+icon = "shield-check"
